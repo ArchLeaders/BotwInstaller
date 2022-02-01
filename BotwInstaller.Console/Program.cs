@@ -1,6 +1,4 @@
 ﻿using BotwInstaller.Lib;
-using BotwScripts.Lib.CheckSum;
-using BotwScripts.Lib.Common.IO.FileSystems;
 using System.Diagnostics;
 
 try

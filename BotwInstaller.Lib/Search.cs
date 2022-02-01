@@ -21,6 +21,8 @@ namespace BotwInstaller.Lib
             Dictionary<string, string> paths = new();
 
             // Check given path
+            Interface.WriteLine($"[CEMU.SEARCH] Checking '{path}'");
+
             if (File.Exists($"{path}\\Cemu.exe"))
             {
                 Interface.WriteLine($"[PARAM.CEMU.SEARCH] Cemu found in '{path}'", ConsoleColor.DarkGray);
@@ -28,19 +30,21 @@ namespace BotwInstaller.Lib
                 // Add cemu path
                 paths.Add("Cemu", path);
 
-                // Check for botw install
+                Verify.CheckMlc(path, ref paths);
 
                 // Return dict
                 return paths;
             }
 
             // Check root folder
+            Interface.WriteLine($"[CEMU.SEARCH] Checking '{Directory.GetCurrentDirectory()}'");
+
             if (File.Exists($"{Directory.GetCurrentDirectory()}\\Cemu.exe"))
             {
                 Interface.WriteLine($"[ROOT.CEMU.SEARCH] Cemu found in '{Directory.GetCurrentDirectory()}'", ConsoleColor.DarkGray);
                 paths.Add("Cemu", Directory.GetCurrentDirectory());
 
-                // Check for botw install
+                Verify.CheckMlc(Directory.GetCurrentDirectory(), ref paths);
 
                 return paths;
             }
@@ -48,12 +52,18 @@ namespace BotwInstaller.Lib
             // Check PC
             try
             {
+                Interface.WriteLine("[CEMU.UNSTABLE]");
+
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    Interface.WriteLine($"[CEMU.UNSTABLE] Searching {dv.Name}");
+
                     foreach (var file in Files.GetSafe(dv.Name, "Cemu.exe"))
                     {
+                        Interface.WriteLine($"[CEMU.UNSTABLE] Found {file}");
+
                         var dir = new FileInfo(file).DirectoryName;
-                        Interface.WriteLine($"[CEMU.SEARCH] Cemu found in '{dir}'", ConsoleColor.DarkGray);
+                        Interface.WriteLine($"[CEMU.UNSTABLE] Cemu found in '{dir}'", ConsoleColor.DarkGray);
                         paths.Add("Cemu", dir);
 
                         Verify.CheckMlc(dir, ref paths);
@@ -62,16 +72,24 @@ namespace BotwInstaller.Lib
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
+
+                Interface.WriteLine("[CEMU.STABLE]");
+
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    Interface.WriteLine($"[CEMU.STABLE] Searching {dv.Name}");
+
                     if (paths.ContainsKey("Cemu")) return paths;
 
                     foreach (var file in Files.GetSafeNoYield(dv.Name, "Cemu.exe"))
                     {
+                        Interface.WriteLine($"[CEMU.STABLE] Found {file}");
+
                         var dir = new FileInfo(file).DirectoryName;
-                        Interface.WriteLine($"[CEMU.SEARCH] Cemu found in '{dir}'", ConsoleColor.DarkGray);
+                        Interface.WriteLine($"[CEMU.STABLE] Cemu found in '{dir}'", ConsoleColor.DarkGray);
                         paths.Add("Cemu", dir);
 
                         Verify.CheckMlc(dir, ref paths);
@@ -96,18 +114,26 @@ namespace BotwInstaller.Lib
 
             try
             {
+                Interface.WriteLine("[UKING.UNSTABLE]");
+
                 // Get SafeFiles [UNSTABLE]
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    Interface.WriteLine($"[UKING.UNSTABLE] Searching {dv.Name}");
+
                     bool _break = false;
 
                     foreach (var file in Files.GetSafe(dv.Name, "U-King.rpx"))
                     {
+                        Interface.WriteLine($"[UKING.UNSTABLE] Found {file}");
+
                         while (!Verify.UKing(file, ref paths))
-                            continue;
+                            break;
 
                         if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
                         {
+                            Interface.WriteLine($"[UKING.UNSTABLE] Breaking Loop");
+
                             _break = true;
                             break;
                         }
@@ -116,20 +142,30 @@ namespace BotwInstaller.Lib
                     if (_break) break;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
+
+                Interface.WriteLine("[UKING.STABLE]");
+
                 // Get SafeFiles [STABLE]
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    Interface.WriteLine($"[UKING.STABLE] Searching {dv.Name}");
+
                     bool _break = false;
 
                     foreach (var file in Files.GetSafeNoYield(dv.Name, "U-King.rpx"))
                     {
+                        Interface.WriteLine($"[UKING.STABLE] Found {file}");
+
                         while (!Verify.UKing(file, ref paths))
-                            continue;
+                            break;
 
                         if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
                         {
+                            Interface.WriteLine($"[UKING.STABLE] Breaking Loop");
+
                             _break = true;
                             break;
                         }
@@ -143,28 +179,38 @@ namespace BotwInstaller.Lib
             {
                 try
                 {
+                    Interface.WriteLine("[UKING.UNSTABLE.DLC]");
+
                     // Get SafeFiles [UNSTABLE]
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
+                        Interface.WriteLine($"[UKING.UNSTABLE.DLC] Searching {dv.Name}");
+
                         foreach (var file in Files.GetSafe(dv.Name, "RollpictDLC001.sbstftex"))
                         {
                             while (!Verify.RollPictDLC(file, ref paths))
-                                continue;
+                                break;
 
                             if (paths.ContainsKey("DLC"))
                                 return paths;
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
+
+                    Interface.WriteLine("[UKING.STABLE.DLC]");
+
                     // Get SafeFiles [STABLE]
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
+                        Interface.WriteLine($"[UKING.STABLE.DLC] Searching {dv.Name}");
+
                         foreach (var file in Files.GetSafeNoYield(dv.Name, "RollpictDLC001.sbstftex"))
                         {
                             while (!Verify.RollPictDLC(file, ref paths))
-                                continue;
+                                break;
 
                             if (paths.ContainsKey("DLC"))
                                 return paths;

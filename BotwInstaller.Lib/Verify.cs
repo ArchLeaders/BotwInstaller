@@ -51,24 +51,36 @@ namespace BotwInstaller.Lib
         /// <returns></returns>
         public static void CheckMlc(this string cemu, ref Dictionary<string, string> paths)
         {
+            var mlc = "";
+
             if (!File.Exists($"{cemu}\\settings.xml"))
                 return;
 
             var xml = XDocument.Load(File.OpenRead($"{cemu}\\settings.xml")).Descendants("content").Descendants();
-            var mlc = "";
 
             foreach (var item in xml)
+            {
                 if (item.Name == "mlc_path")
-                    mlc = item.Value;
+                {
+                    mlc = mlc == "" ? "mlc01" : item.Value;
+
+                    if (!mlc.Contains(':'))
+                        mlc = $"{cemu}\\{mlc}";
+                }
+            }
 
             foreach (var titleId in TitleIds.Values)
             {
+                Console.WriteLine($"[{titleId}]");
+
                 foreach (var set in Checks)
                 {
                     var dir = $"{mlc}\\usr\\title\\{IDs[set.Key]}\\{titleId}";
 
                     if (File.Exists($"{dir}{set.Value}"))
                     {
+                        Console.WriteLine($"[{titleId}:{set.Key}]");
+
                         if (BotwContents(set.Key, dir))
                         {
                             Interface.WriteLine($"[CEMU.ABSOLUTE] {set.Key} found in '{dir}'", ConsoleColor.DarkGray);
@@ -123,7 +135,7 @@ namespace BotwInstaller.Lib
                     if (File.Exists($"{code.EditPath(6)}\\Cemu.exe") && !paths.ContainsKey("Cemu"))
                     {
                         Interface.WriteLine($"[UKING.CEMU.RELATIVE] Cemu found in '{code.EditPath(6)}'\n", ConsoleColor.DarkGray);
-                        paths.Add("Cemu_FromBotw", code.EditPath(6));
+                        if (!paths.ContainsKey("Cemu_FromBotw")) paths.Add("Cemu_FromBotw", code.EditPath(6));
                     }
 
                     if (BotwContents(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}"))

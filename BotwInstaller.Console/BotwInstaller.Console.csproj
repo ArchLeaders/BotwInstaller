@@ -12,10 +12,4 @@
     <ProjectReference Include="..\BotwInstaller.Lib\BotwInstaller.Lib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="BotwScripts.Lib.Common">
-      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\win-x64\BotwScripts.Lib.Common.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

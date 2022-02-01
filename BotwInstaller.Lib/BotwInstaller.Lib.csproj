@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Reference Include="BotwScripts.Lib.Common">
-      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\win-x64\BotwScripts.Lib.Common.dll</HintPath>
+      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 
