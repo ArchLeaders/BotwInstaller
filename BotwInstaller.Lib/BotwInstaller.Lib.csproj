@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BotwScripts.Lib.Common">
+      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\win-x64\BotwScripts.Lib.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

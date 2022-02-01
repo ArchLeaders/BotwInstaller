@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwInstaller.Lib", "BotwInstaller.Lib\BotwInstaller.Lib.csproj", "{B96EBDBC-185F-47E2-8436-B98F085FEC70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwInstaller.Console", "BotwInstaller.Console\BotwInstaller.Console.csproj", "{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B96EBDBC-185F-47E2-8436-B98F085FEC70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96EBDBC-185F-47E2-8436-B98F085FEC70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96EBDBC-185F-47E2-8436-B98F085FEC70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96EBDBC-185F-47E2-8436-B98F085FEC70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F83F6269-E69D-4BEE-831A-0B574F3FAC82}
+	EndGlobalSection
+EndGlobal
