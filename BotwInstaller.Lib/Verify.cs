@@ -49,7 +49,7 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="cemu"></param>
         /// <returns></returns>
-        public static void CheckMlc(this string cemu, ref Dictionary<string, string> paths)
+        public static void CheckMlc(this string cemu, ref Dictionary<string, string> paths, Interface.Notify print, string func = "[VERIFY.MLC]")
         {
             var mlc = "";
 
@@ -66,24 +66,21 @@ namespace BotwInstaller.Lib
 
                     if (!mlc.Contains(':'))
                         mlc = $"{cemu}\\{mlc}";
+
+                    print($"{func} Mlc found in '{mlc}'");
                 }
             }
 
             foreach (var titleId in TitleIds.Values)
             {
-                Console.WriteLine($"[{titleId}]");
-
                 foreach (var set in Checks)
                 {
                     var dir = $"{mlc}\\usr\\title\\{IDs[set.Key]}\\{titleId}";
 
                     if (File.Exists($"{dir}{set.Value}"))
                     {
-                        Console.WriteLine($"[{titleId}:{set.Key}]");
-
-                        if (BotwContents(set.Key, dir))
+                        if (BotwContents(set.Key, dir, print, func))
                         {
-                            Interface.WriteLine($"[CEMU.ABSOLUTE] {set.Key} found in '{dir}'", ConsoleColor.DarkGray);
                             paths.Add($"{set.Key}_IsInstalled", "TRUE");
                         }
                     }
@@ -98,11 +95,11 @@ namespace BotwInstaller.Lib
         /// <param name="uking"></param>
         /// <param name="paths"></param>
         /// <returns>Boolean</returns>
-        public static bool RollPictDLC(string rollpict, ref Dictionary<string, string> paths)
+        public static bool RollPictDLC(Interface.Notify print, string rollpict, ref Dictionary<string, string> paths, string func = "[VERIFY.ROLLPICTDLC]")
         {
-            if (BotwContents("DLC", rollpict.EditPath(5)))
+            if (BotwContents("DLC", rollpict.EditPath(5), print, func))
             {
-                Interface.WriteLine($"[ROLLPICTDLC.RELATIVE] DLC found in '{rollpict.EditPath(5)}'", ConsoleColor.DarkGray);
+                print($"{func} DLC found in '{rollpict.EditPath(5)}'");
                 paths.Add("DLC", rollpict.EditPath(5));
                 return true;
             }
@@ -116,14 +113,17 @@ namespace BotwInstaller.Lib
         /// <param name="uking"></param>
         /// <param name="paths"></param>
         /// <returns>Boolean</returns>
-        public static bool UKing(string uking, ref Dictionary<string, string> paths)
+        public static bool UKing(Interface.Notify print, string uking, ref Dictionary<string, string> paths, string func = "[VERIFY.UKING]")
         {
             // Get DirectoryName
             string code = new FileInfo(uking).DirectoryName;
 
             // Check for content folder
             if (!Directory.Exists($"{code.EditPath()}content"))
+            {
+                print($"{func}[UKING] UKing '{new FileInfo(uking).Directory}\\U-King.rpx' was invalid.", ConsoleColor.DarkYellow);
                 return false;
+            }
 
             // Check for cemu structure
             var id = $"{code.EditPath()}content".GetTitleID(TitleIDFormat.HexEnd);
@@ -132,21 +132,12 @@ namespace BotwInstaller.Lib
             {
                 if (File.Exists($"{code.EditPath(3)}{IDs[set.Key]}\\{id}{set.Value}") && !paths.ContainsKey(set.Key))
                 {
-                    if (File.Exists($"{code.EditPath(6)}\\Cemu.exe") && !paths.ContainsKey("Cemu"))
+                    if (BotwContents(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}", print, func))
                     {
-                        Interface.WriteLine($"[UKING.CEMU.RELATIVE] Cemu found in '{code.EditPath(6)}'\n", ConsoleColor.DarkGray);
-                        if (!paths.ContainsKey("Cemu_FromBotw")) paths.Add("Cemu_FromBotw", code.EditPath(6));
-                    }
-
-                    if (BotwContents(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}"))
-                    {
-                        Interface.WriteLine($"[UKING.CEMU.RELATIVE] {set.Key} found in '{code.EditPath(3)}{IDs[set.Key]}\\{id}'", ConsoleColor.DarkGray);
                         paths.Add(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}");
+                        print($"{func}[UKING][CEMU] {set.Key} found in '{code.EditPath(3)}{IDs[set.Key]}\\{id}'");
                     }
-                    else
-                    {
-                        return false;
-                    }
+                    else return false;
                 }
             }
 
@@ -157,19 +148,16 @@ namespace BotwInstaller.Lib
             // Loop supposed game directory
             foreach (var folder in Directory.GetDirectories(code.EditPath(2)))
             {
-                foreach (var set in Verify.Checks)
+                foreach (var set in Checks)
                 {
                     if (File.Exists(folder + set.Value) && !paths.ContainsKey(set.Key))
                     {
-                        if (BotwContents(set.Key, folder))
+                        if (BotwContents(set.Key, folder, print, func))
                         {
-                            Interface.WriteLine($"[UKING.RELATIVE] {set.Key} found in '{folder}'", ConsoleColor.DarkGray);
                             paths.Add(set.Key, folder);
+                            print($"{func} {set.Key} found in '{folder}'");
                         }
-                        else
-                        {
-                            return false;
-                        }
+                        else return false;
 
                         if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
                             return true;
@@ -187,9 +175,9 @@ namespace BotwInstaller.Lib
         /// <param name="key"></param>
         /// <param name="folder"></param>
         /// <returns>Boolean</returns>
-        public static bool BotwContents(this string key, string folder)
+        public static bool BotwContents(this string key, string folder, Interface.Notify print, string func = "[VERIFY.BOTW]")
         {
-            var checkSum = folder.GetCheckSum();
+            var checkSum = folder.GetCheckSum(print, func);
             var diff = checkSum[key].Except(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
 
             if (diff.Any())
@@ -209,7 +197,7 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="gameFiles"></param>
         /// <returns></returns>
-        public static Dictionary<string, List<string>> GetCheckSum(this string gameFiles)
+        public static Dictionary<string, List<string>> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]")
         {
             var ID = GameInfo.GetTitleID($"{gameFiles}\\content");
 
@@ -217,6 +205,7 @@ namespace BotwInstaller.Lib
 
             if (ID == "00050000101C9500" || ID == "0005000C101C9500" || ID == "0005000E101C9500")
             {
+                print($"{func} Returning EU data check as '{ID}'");
                 return new()
                 {
                     { "Game", BaseEU.Set(gameFiles) },
@@ -226,6 +215,7 @@ namespace BotwInstaller.Lib
             }
             else if (ID == "00050000101C9400" || ID == "0005000C101C9400" || ID == "0005000E101C9400")
             {
+                print($"{func} Returning US data check as '{ID}'");
                 return new()
                 {
                     { "Game", BaseUS.Set(gameFiles) },
@@ -235,6 +225,7 @@ namespace BotwInstaller.Lib
             }
             else if (ID == "00050000101C9300" || ID == "0005000C101C9300" || ID == "0005000E101C9300")
             {
+                print($"{func} Returning JP data check as '{ID}'");
                 return new()
                 {
                     { "Game", BaseJP.Set(gameFiles) },

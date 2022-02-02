@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS8602
+﻿#pragma warning disable CS8600
+#pragma warning disable CS8602
+#pragma warning disable CS8603
 #pragma warning disable CS8604
 
 using BotwScripts.Lib.Common;
@@ -14,37 +16,30 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> Cemu(string path = "A:")
+        public static Dictionary<string, string> Cemu(Interface.Notify print, string path = "::")
         {
-            Interface.WriteLine("Searching for Cemu.exe . . .");
+            var func = "[SEARCH.CEMU]";
 
             Dictionary<string, string> paths = new();
 
             // Check given path
-            Interface.WriteLine($"[CEMU.SEARCH] Checking '{path}'");
-
             if (File.Exists($"{path}\\Cemu.exe"))
             {
-                Interface.WriteLine($"[PARAM.CEMU.SEARCH] Cemu found in '{path}'", ConsoleColor.DarkGray);
-
                 // Add cemu path
                 paths.Add("Cemu", path);
 
-                Verify.CheckMlc(path, ref paths);
+                Verify.CheckMlc(path, ref paths, print, $"{func}[CHECKMLC]");
 
                 // Return dict
                 return paths;
             }
 
             // Check root folder
-            Interface.WriteLine($"[CEMU.SEARCH] Checking '{Directory.GetCurrentDirectory()}'");
-
             if (File.Exists($"{Directory.GetCurrentDirectory()}\\Cemu.exe"))
             {
-                Interface.WriteLine($"[ROOT.CEMU.SEARCH] Cemu found in '{Directory.GetCurrentDirectory()}'", ConsoleColor.DarkGray);
                 paths.Add("Cemu", Directory.GetCurrentDirectory());
 
-                Verify.CheckMlc(Directory.GetCurrentDirectory(), ref paths);
+                Verify.CheckMlc(Directory.GetCurrentDirectory(), ref paths, print, $"{func}[CHECKMLC]");
 
                 return paths;
             }
@@ -52,21 +47,20 @@ namespace BotwInstaller.Lib
             // Check PC
             try
             {
-                Interface.WriteLine("[CEMU.UNSTABLE]");
+                print($"{func} Start Unsafe");
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
-                    Interface.WriteLine($"[CEMU.UNSTABLE] Searching {dv.Name}");
+                    print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
-                    foreach (var file in Files.GetSafe(dv.Name, "Cemu.exe"))
+                    foreach (var file in Files.GetUnsafe(dv.Name, "Cemu.exe"))
                     {
-                        Interface.WriteLine($"[CEMU.UNSTABLE] Found {file}");
+                        print($"{func}[UNSAFE] Cemu found in '{path}'");
 
                         var dir = new FileInfo(file).DirectoryName;
-                        Interface.WriteLine($"[CEMU.UNSTABLE] Cemu found in '{dir}'", ConsoleColor.DarkGray);
                         paths.Add("Cemu", dir);
 
-                        Verify.CheckMlc(dir, ref paths);
+                        Verify.CheckMlc(dir, ref paths, print, $"{func}[UNSAFE][CHECKMLC]");
 
                         return paths;
                     }
@@ -74,25 +68,23 @@ namespace BotwInstaller.Lib
             }
             catch (Exception ex)
             {
-                Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
+                print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                print($"{func} Start Safe");
 
-                Interface.WriteLine("[CEMU.STABLE]");
+                if (paths.ContainsKey("Cemu")) return paths;
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
-                    Interface.WriteLine($"[CEMU.STABLE] Searching {dv.Name}");
+                    print($"{func}[SAFE] Searching '{dv.Name}'");
 
-                    if (paths.ContainsKey("Cemu")) return paths;
-
-                    foreach (var file in Files.GetSafeNoYield(dv.Name, "Cemu.exe"))
+                    foreach (var file in Files.GetSafe(dv.Name, "Cemu.exe"))
                     {
-                        Interface.WriteLine($"[CEMU.STABLE] Found {file}");
+                        print($"{func}[SAFE] Cemu found in '{path}'");
 
                         var dir = new FileInfo(file).DirectoryName;
-                        Interface.WriteLine($"[CEMU.STABLE] Cemu found in '{dir}'", ConsoleColor.DarkGray);
                         paths.Add("Cemu", dir);
 
-                        Verify.CheckMlc(dir, ref paths);
+                        Verify.CheckMlc(dir, ref paths, print, $"{func}[SAFE][CHECKMLC]");
 
                         return paths;
                     }
@@ -106,34 +98,30 @@ namespace BotwInstaller.Lib
         /// Searches for BotW and returns a Dictionary with the paths.
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, string> Botw()
+        public static Dictionary<string, string> Botw(Interface.Notify print)
         {
-            Interface.WriteLine("Searching for U-King.rpx . . .");
+            var func = "[SEARCH.BOTW]";
 
             Dictionary<string, string> paths = new();
 
             try
             {
-                Interface.WriteLine("[UKING.UNSTABLE]");
-
                 // Get SafeFiles [UNSTABLE]
+                print($"{func} Start Unsafe");
+
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
-                    Interface.WriteLine($"[UKING.UNSTABLE] Searching {dv.Name}");
+                    print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
                     bool _break = false;
 
-                    foreach (var file in Files.GetSafe(dv.Name, "U-King.rpx"))
+                    foreach (var file in Files.GetUnsafe(dv.Name, "U-King.rpx"))
                     {
-                        Interface.WriteLine($"[UKING.UNSTABLE] Found {file}");
-
-                        while (!Verify.UKing(file, ref paths))
+                        while (!Verify.UKing(print, file, ref paths))
                             break;
 
                         if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
                         {
-                            Interface.WriteLine($"[UKING.UNSTABLE] Breaking Loop");
-
                             _break = true;
                             break;
                         }
@@ -144,28 +132,23 @@ namespace BotwInstaller.Lib
             }
             catch (Exception ex)
             {
-                Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
-
-                Interface.WriteLine("[UKING.STABLE]");
-
                 // Get SafeFiles [STABLE]
+                print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                print($"{func} Start Safe");
+
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
-                    Interface.WriteLine($"[UKING.STABLE] Searching {dv.Name}");
+                    print($"{func}[SAFE] Searching '{dv.Name}'");
 
                     bool _break = false;
 
-                    foreach (var file in Files.GetSafeNoYield(dv.Name, "U-King.rpx"))
+                    foreach (var file in Files.GetSafe(dv.Name, "U-King.rpx"))
                     {
-                        Interface.WriteLine($"[UKING.STABLE] Found {file}");
-
-                        while (!Verify.UKing(file, ref paths))
+                        while (!Verify.UKing(print, file, ref paths))
                             break;
 
                         if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
                         {
-                            Interface.WriteLine($"[UKING.STABLE] Breaking Loop");
-
                             _break = true;
                             break;
                         }
@@ -175,20 +158,22 @@ namespace BotwInstaller.Lib
                 }
             }
 
+            func = $"{func}[DLC]";
+
             if (!paths.ContainsKey("DLC"))
             {
                 try
                 {
-                    Interface.WriteLine("[UKING.UNSTABLE.DLC]");
+                    // Get SafeFiles [UNSAFE]
+                    print($"{func} Start Unsafe");
 
-                    // Get SafeFiles [UNSTABLE]
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
-                        Interface.WriteLine($"[UKING.UNSTABLE.DLC] Searching {dv.Name}");
+                        print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
-                        foreach (var file in Files.GetSafe(dv.Name, "RollpictDLC001.sbstftex"))
+                        foreach (var file in Files.GetUnsafe(dv.Name, "RollpictDLC001.sbstftex"))
                         {
-                            while (!Verify.RollPictDLC(file, ref paths))
+                            while (!Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW][DLC][VERIFY]"))
                                 break;
 
                             if (paths.ContainsKey("DLC"))
@@ -198,18 +183,17 @@ namespace BotwInstaller.Lib
                 }
                 catch (Exception ex)
                 {
-                    Interface.WriteLine($"[WARNING] {ex.Message}", ConsoleColor.DarkYellow);
+                    // Get SafeFiles [SAFE]
+                    print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                    print($"{func} Start Safe");
 
-                    Interface.WriteLine("[UKING.STABLE.DLC]");
-
-                    // Get SafeFiles [STABLE]
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
-                        Interface.WriteLine($"[UKING.STABLE.DLC] Searching {dv.Name}");
+                        print($"{func}[SAFE] Searching '{dv.Name}'");
 
-                        foreach (var file in Files.GetSafeNoYield(dv.Name, "RollpictDLC001.sbstftex"))
+                        foreach (var file in Files.GetSafe(dv.Name, "RollpictDLC001.sbstftex"))
                         {
-                            while (!Verify.RollPictDLC(file, ref paths))
+                            while (!Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW][DLC]"))
                                 break;
 
                             if (paths.ContainsKey("DLC"))
@@ -231,13 +215,19 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static string Python(string path = "A:")
+        public static string Python(Interface.Notify print, string path = "::")
         {
-            Interface.WriteLine("Searching for python.exe . . .");
+            var func = "[SEARCH.PYTHON]";
 
             // Check given path
             if (File.Exists($"{path}\\python38.dll") || File.Exists($"{path}\\python37.dll"))
             {
+                // Add path to PATH
+                PATH.AddEntry(path);
+                PATH.AddEntry($"{path}\\Scripts");
+
+                print($"{func} Python found in '{path}'");
+
                 return path;
             }
 
@@ -246,54 +236,61 @@ namespace BotwInstaller.Lib
             foreach (string env_path in env)
             {
                 if (File.Exists($"{env_path}\\python38.dll") || File.Exists($"{env_path}\\python37.dll"))
+                {
+                    print($"{func} Python found on PATH in '{env_path}'");
+
                     return env_path;
+                }
             }
 
             // Check PC
             try
             {
+                print($"{func} Start Unsafe");
+
                 foreach (var dv in DriveInfo.GetDrives())
                 {
-                    foreach (var file in Files.GetSafe(dv.Name, "python.exe"))
+                    print($"{func}[UNSAFE] Searching {dv.Name}");
+
+                    foreach (var file in Files.GetUnsafe(dv.Name, "python.exe"))
                     {
-                        FileInfo info = new(file);
+                        string dir = new FileInfo(file).DirectoryName;
 
-                        if (File.Exists($"{info.DirectoryName}\\python38.dll") || File.Exists($"{info.DirectoryName}\\python37.dll"))
+                        if (File.Exists($"{dir}\\python38.dll") || File.Exists($"{dir}\\python37.dll"))
                         {
-                            // Add 'Python' to PATH
-                            PATH.AddEntry(info.DirectoryName);
-                            Interface.WriteLine($"Added '{info.DirectoryName}' to PATH", ConsoleColor.DarkGreen);
+                            print($"{func}[UNSAFE] Python found in '{dir}'");
 
-                            // Add 'Python\Scripts' to PATH
-                            PATH.AddEntry($"{info.DirectoryName}\\Scripts");
-                            Interface.WriteLine($"Added '{info.DirectoryName}\\Scripts' to PATH", ConsoleColor.DarkGreen);
+                            // Add Python to PATH
+                            print($"{func}[UNSAFE] Adding '{dir};{dir}\\Scripts' to the Environment Variables");
+                            PATH.AddEntry($"{dir};{dir}\\Scripts");
 
-                            // Return 'Python'
-                            return info.DirectoryName;
+                            return dir;
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                print($"{func} Start Safe");
+
                 foreach (var dv in DriveInfo.GetDrives())
                 {
-                    foreach (var file in Files.GetSafeNoYield(dv.Name, "python.exe"))
+                    print($"{func}[SAFE] Searching {dv.Name}");
+
+                    foreach (var file in Files.GetSafe(dv.Name, "python.exe"))
                     {
-                        FileInfo info = new(file);
+                        string dir = new FileInfo(file).DirectoryName;
 
-                        if (File.Exists($"{info.DirectoryName}\\python38.dll") || File.Exists($"{info.DirectoryName}\\python37.dll"))
+                        if (File.Exists($"{dir}\\python38.dll") || File.Exists($"{dir}\\python37.dll"))
                         {
-                            // Add 'Python' to PATH
-                            PATH.AddEntry(info.DirectoryName);
-                            Interface.WriteLine($"Added '{info.DirectoryName}' to PATH", ConsoleColor.DarkGreen);
+                            print($"{func}[SAFE] Python found in '{dir}'");
 
-                            // Add 'Python\Scripts' to PATH
-                            PATH.AddEntry($"{info.DirectoryName}\\Scripts");
-                            Interface.WriteLine($"Added '{info.DirectoryName}\\Scripts' to PATH", ConsoleColor.DarkGreen);
+                            // Add Python to PATH
+                            print($"{func}[SAFE] Adding '{dir};{dir}\\Scripts' to the Environment Variables");
+                            PATH.AddEntry($"{dir};{dir}\\Scripts");
 
-                            // Return 'Python'
-                            return info.DirectoryName;
+                            return dir;
                         }
                     }
                 }

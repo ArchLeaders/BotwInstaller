@@ -1,4 +1,5 @@
-﻿using BotwScripts.Lib.Common.IO.FileSystems;
+﻿using BotwScripts.Lib.Common;
+using BotwScripts.Lib.Common.IO.FileSystems;
 
 namespace BotwInstaller.Lib
 {
@@ -90,7 +91,7 @@ namespace BotwInstaller.Lib
         /// <param name="cemu"></param>
         /// <param name="python"></param>
         /// <returns></returns>
-        public static async Task<Dictionary<string, string>> GetFiles(string cemu = "A:", string python = "A:")
+        public static async Task<Dictionary<string, string>> GetFiles(string cemu = "::", string python = "::")
         {
             Dictionary<string, string> paths = new();
 
@@ -98,7 +99,7 @@ namespace BotwInstaller.Lib
 
             tasks.Add(Task.Run(() =>
             {
-                var botw = Search.Botw();
+                var botw = Search.Botw(Interface.WriteLine);
 
                 foreach (var item in botw)
                     paths.Add(item.Key, item.Value);
@@ -106,12 +107,12 @@ namespace BotwInstaller.Lib
 
             tasks.Add(Task.Run(() =>
             {
-                paths.Add("Python", Search.Python(python));
+                paths.Add("Python", Search.Python(Interface.WriteLine, python));
             }));
 
             tasks.Add(Task.Run(() =>
             {
-                var cemuRt = Search.Cemu();
+                var cemuRt = Search.Cemu(Interface.WriteLine, cemu);
 
                 foreach (var item in cemuRt)
                     paths.Add(item.Key, item.Value);
