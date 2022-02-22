@@ -10,6 +10,7 @@ namespace BotwInstaller.Lib
     public class Config
     {
         public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public static string Root { get; } = $"{AppData}\\botw";
         public static string User { get; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name;
 
@@ -29,6 +30,15 @@ namespace BotwInstaller.Lib
         public GroupShortcutClass Shortcuts { get; set; } = new();
 
         /// <summary>
+        /// Controller Api to be used in Cemu
+        /// <code>
+        /// Default: XInput
+        /// Options: XInput, DSUController, SDLController
+        /// </code>
+        /// </summary>
+        public string ControllerApi { get; set; } = "XInput";
+
+        /// <summary>
         /// Directory list class
         /// </summary>
         public class DirsClass
@@ -42,11 +52,6 @@ namespace BotwInstaller.Lib
             /// BCML's data directory
             /// </summary>
             public string BCML { get; set; } = Drive == "C:" ? $"{AppData}\\bcml" : $"{Drive}\\Games\\BotW\\BCML Data";
-
-            /// <summary>
-            /// BetterJoy installation directory
-            /// </summary>
-            public string BetterJoy { get; set; } = Drive == "C:" ? $"{AppData}\\BetterJoy" : $"{Drive}\\Games\\BotW\\BetterJoy";
 
             /// <summary>
             /// Cemu installation directory
@@ -95,11 +100,6 @@ namespace BotwInstaller.Lib
             public bool BCML { get; set; } = true;
 
             /// <summary>
-            /// Install BetterJoy
-            /// </summary>
-            public bool BetterJoy { get; set; } = false;
-
-            /// <summary>
             /// Install Cemu
             /// </summary>
             public bool Cemu { get; set; } = true;
@@ -128,6 +128,11 @@ namespace BotwInstaller.Lib
             /// Install the python documentaion
             /// </summary>
             public bool PythonDocs { get; set; } = true;
+
+            /// <summary>
+            /// Python version to install
+            /// </summary>
+            public string PythonVersion { get; set; } = "3.8.10";
         }
 
         /// <summary>
@@ -139,11 +144,6 @@ namespace BotwInstaller.Lib
             /// Shortcut meta data for BCML
             /// </summary>
             public ShortcutClass BCML { get; set; } = new();
-
-            /// <summary>
-            /// Shortcut meta data for BetterJoy
-            /// </summary>
-            public ShortcutClass BetterJoy { get; set; } = new();
 
             /// <summary>
             /// Shortcut meta data for BotW
@@ -200,34 +200,6 @@ namespace BotwInstaller.Lib
             /// Path to uninstaller or run script.
             /// </summary>
             public string BatchFile { get; set; } = "";
-        }
-
-        public static async Task RunInstallerAsync(Config c)
-        {
-            Config conf = new();
-
-            /// Get system information and update config -\-
-            
-            Dictionary<string, object> gameInfo = await GameInfo.GetFiles(conf.Dirs.Cemu, conf.Dirs.Python);
-
-            conf.Dirs.Cemu = (string)gameInfo["Cemu"] == "NOT FOUND" ? conf.Dirs.Cemu : (string)gameInfo["Cemu"];
-            conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
-
-            conf.Dirs.Base = (string)gameInfo["Game"] == "NOT FOUND" ? "" : (string)gameInfo["Game"];
-            conf.Dirs.Update = (string)gameInfo["Update"] == "NOT FOUND" ? "" : (string)gameInfo["Update"];
-            conf.Dirs.DLC = (string)gameInfo["DLC"] == "NOT FOUND" ? "" : (string)gameInfo["DLC"];
-
-            conf.Install.Base = !(bool)gameInfo["Game_IsInstalled"];
-            conf.Install.Update = !(bool)gameInfo["Update_IsInstalled"];
-            conf.Install.DLC = !(bool)gameInfo["DLC_IsInstalled"];
-            conf.Install.Cemu = !File.Exists($"{gameInfo["Cemu"]}\\Cemu.exe");
-            conf.Install.Python = !File.Exists($"{gameInfo["Python"]}\\python38.dll") || File.Exists($"{gameInfo["Python"]}\\python37.dll");
-
-            /// Get system information and update config -/-
-
-            /// END BLOCK ONE
-
-            /// 
         }
     }
 }
