@@ -16,11 +16,11 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> Cemu(Interface.Notify print, string path = "::")
+        public static Dictionary<string, object> Cemu(Interface.Notify print, string path = "::")
         {
             var func = "[SEARCH.CEMU]";
 
-            Dictionary<string, string> paths = new();
+            Dictionary<string, object> paths = new();
 
             // Check given path
             if (File.Exists($"{path}\\Cemu.exe"))
@@ -55,9 +55,8 @@ namespace BotwInstaller.Lib
 
                     foreach (var file in Files.GetUnsafe(dv.Name, "Cemu.exe"))
                     {
-                        print($"{func}[UNSAFE] Cemu found in '{path}'");
-
                         var dir = new FileInfo(file).DirectoryName;
+                        print($"{func}[UNSAFE] Cemu found in '{dir}'");
                         paths.Add("Cemu", dir);
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[UNSAFE][CHECKMLC]");
@@ -79,9 +78,8 @@ namespace BotwInstaller.Lib
 
                     foreach (var file in Files.GetSafe(dv.Name, "Cemu.exe"))
                     {
-                        print($"{func}[SAFE] Cemu found in '{path}'");
-
                         var dir = new FileInfo(file).DirectoryName;
+                        print($"{func}[SAFE] Cemu found in '{dir}'");
                         paths.Add("Cemu", dir);
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[SAFE][CHECKMLC]");
@@ -98,11 +96,11 @@ namespace BotwInstaller.Lib
         /// Searches for BotW and returns a Dictionary with the paths.
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, string> Botw(Interface.Notify print)
+        public static Dictionary<string, object> Botw(Interface.Notify print)
         {
             var func = "[SEARCH.BOTW]";
 
-            Dictionary<string, string> paths = new();
+            Dictionary<string, object> paths = new();
 
             try
             {
@@ -205,7 +203,7 @@ namespace BotwInstaller.Lib
 
             foreach (var set in Verify.Checks)
                 if (!paths.ContainsKey(set.Key))
-                    paths.Add(set.Key, "ERROR - NOT FOUND");
+                    paths.Add(set.Key, "NOT FOUND");
 
             return paths;
         }
@@ -296,7 +294,7 @@ namespace BotwInstaller.Lib
                 }
             }
 
-            return "";
+            return "NOT FOUND";
         }
     }
 }
