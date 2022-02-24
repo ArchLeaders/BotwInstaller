@@ -1,18 +1,49 @@
 ﻿using BotwInstaller.Lib;
-using System.Diagnostics;
+using BotwInstaller.Lib.Configurations.Cemu;
 
 try
 {
-    //Console.WriteLine("Renaming U-Kings...");
+    ///
+    /// TEST CONTROLLER WRITER
+    ///
+    #region TEST CONTROLLER WRITER
 
-    //foreach (var drive in DriveInfo.GetDrives())
-    //    foreach (var file in Files.GetSafeNoYield(drive.Name, "U-King.rpx"))
-    //    {
-    //        Console.WriteLine(file);
-    //        File.Move(file, $"{file}!");
-    //    }
+    ControllerProfile.Write(new Config() { Dirs = { Cemu = "D:\\Cemu_Test" } }, "XInput");
+    ControllerProfile.Write(new Config() { Dirs = { Cemu = "D:\\Cemu_Test" }, ControllerApi = "DSUController" }, "DSU");
+    ControllerProfile.Write(new Config() { Dirs = { Cemu = "D:\\Cemu_Test" }, ControllerApi = "SDLController-Joycon" }, "SDL_Joycons");
+    ControllerProfile.Write(new Config() { Dirs = { Cemu = "D:\\Cemu_Test" }, ControllerApi = "SDLController" }, "SDL_Pro");
 
-    //Console.WriteLine("\n");
+    #endregion
+
+    ///
+    /// RENAME UKING FILES - TEST
+    ///
+
+    #region RENAME UKING FILES - TEST
+
+    /*
+
+    Console.WriteLine("Renaming U-Kings...");
+
+    foreach (var drive in DriveInfo.GetDrives())
+        foreach (var file in Files.GetSafeNoYield(drive.Name, "U-King.rpx"))
+        {
+            Console.WriteLine(file);
+            File.Move(file, $"{file}!");
+        }
+
+    Console.WriteLine("\n");
+
+    */
+
+    #endregion
+
+    ///
+    /// SEARCH GAME PATH - TEST
+    ///
+    #region SEARCH GAME PATH - TEST
+
+    /*
 
     Stopwatch watch = new();
 
@@ -30,14 +61,29 @@ try
 
     Console.WriteLine($"Completed in {watch.ElapsedMilliseconds / 1000.0} seconds.\n");
 
-    //Console.WriteLine("Renaming U-Kings...");
+    */
 
-    //foreach (var drive in DriveInfo.GetDrives())
-    //    foreach (var file in Files.GetSafeNoYield(drive.Name, "U-King.rpx!"))
-    //    {
-    //        Console.WriteLine(file);
-    //        File.Move(file, file.Replace("!", ""));
-    //    }
+    #endregion
+
+    ///
+    /// UNDO RENAME UKING FILES - TEST
+    ///
+    #region UNDO RENAME UKING FILES - TEST
+
+    /*
+
+    Console.WriteLine("Renaming U-Kings...");
+
+    foreach (var drive in DriveInfo.GetDrives())
+        foreach (var file in Files.GetSafeNoYield(drive.Name, "U-King.rpx!"))
+        {
+            Console.WriteLine(file);
+            File.Move(file, file.Replace("!", ""));
+        }
+
+    */
+
+    #endregion
 }
 catch (Exception ex)
 {
