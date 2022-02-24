@@ -87,13 +87,26 @@ namespace BotwInstaller.Lib
 
         /// <summary>
         /// Searches for the files and software to install BotW and returns a dictionary with the found values.
+        /// <para> </para>
+        /// <code><b>
+        /// (string) Python
+        /// (string) Cemu
+        /// 
+        /// (string) DLC
+        /// (string) Game
+        /// (string) Update
+        /// 
+        /// (bool) Game_IsInstalled
+        /// (bool) Update_IsInstalled
+        /// (bool) DLC_IsInstalled
+        /// </b></code>
         /// </summary>
-        /// <param name="cemu"></param>
-        /// <param name="python"></param>
+        /// <param name="cemu">Supposed path to Cemu</param>
+        /// <param name="python">Supposed path to Python</param>
         /// <returns></returns>
-        public static async Task<Dictionary<string, string>> GetFiles(string cemu = "::", string python = "::")
+        public static async Task<Dictionary<string, object>> GetFiles(string cemu = "::", string python = "::")
         {
-            Dictionary<string, string> paths = new();
+            Dictionary<string, object> paths = new();
 
             List<Task> tasks = new();
 
@@ -121,6 +134,22 @@ namespace BotwInstaller.Lib
             await Task.WhenAll(tasks);
 
             return paths;
+        }
+
+        /// <summary>
+        /// Returns the game file count (Base, Update, DLC)
+        /// </summary>
+        /// <param name="pathToBase"></param>
+        /// <returns></returns>
+        public static int[] FileCount(this string pathToBase)
+        {
+            if (GetTitleID(pathToBase) == "00050000101C9500")
+                return new int[] { 18717, 22690, 15927 };
+            else if (GetTitleID(pathToBase) == "00050000101C9400")
+                return new int[] { 15996, 22647, 15219 };
+            else if (GetTitleID(pathToBase) == "00050000101C9300")
+                return new int[] { 14191, 22617, 14747 };
+            else return new int[] { 0 };
         }
     }
 }

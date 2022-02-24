@@ -49,7 +49,7 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="cemu"></param>
         /// <returns></returns>
-        public static void CheckMlc(this string cemu, ref Dictionary<string, string> paths, Interface.Notify print, string func = "[VERIFY.MLC]")
+        public static void CheckMlc(this string cemu, ref Dictionary<string, object> paths, Interface.Notify print, string func = "[VERIFY.MLC]")
         {
             var mlc = "";
 
@@ -77,11 +77,16 @@ namespace BotwInstaller.Lib
                 {
                     var dir = $"{mlc}\\usr\\title\\{IDs[set.Key]}\\{titleId}";
 
-                    if (File.Exists($"{dir}{set.Value}"))
+                    if (!paths.ContainsKey($"{set.Key}_IsInstalled"))
                     {
-                        if (BotwContents(set.Key, dir, print, func))
+                        paths.Add($"{set.Key}_IsInstalled", false);
+
+                        if (File.Exists($"{dir}{set.Value}"))
                         {
-                            paths.Add($"{set.Key}_IsInstalled", "TRUE");
+                            if (BotwContents(set.Key, dir, print, func))
+                            {
+                                paths[$"{set.Key}_IsInstalled"] = true;
+                            }
                         }
                     }
                 }
@@ -95,7 +100,7 @@ namespace BotwInstaller.Lib
         /// <param name="uking"></param>
         /// <param name="paths"></param>
         /// <returns>Boolean</returns>
-        public static bool RollPictDLC(Interface.Notify print, string rollpict, ref Dictionary<string, string> paths, string func = "[VERIFY.ROLLPICTDLC]")
+        public static bool RollPictDLC(Interface.Notify print, string rollpict, ref Dictionary<string, object> paths, string func = "[VERIFY.ROLLPICTDLC]")
         {
             if (BotwContents("DLC", rollpict.EditPath(5), print, func))
             {
@@ -113,7 +118,7 @@ namespace BotwInstaller.Lib
         /// <param name="uking"></param>
         /// <param name="paths"></param>
         /// <returns>Boolean</returns>
-        public static bool UKing(Interface.Notify print, string uking, ref Dictionary<string, string> paths, string func = "[VERIFY.UKING]")
+        public static bool UKing(Interface.Notify print, string uking, ref Dictionary<string, object> paths, string func = "[VERIFY.UKING]")
         {
             // Get DirectoryName
             string code = new FileInfo(uking).DirectoryName;
