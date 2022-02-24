@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace BotwInstaller.Lib.Cemu
+namespace BotwInstaller.Lib.Configurations.Cemu
 {
     interface DSUMappings
     {
