@@ -1,7 +1,5 @@
-﻿#pragma warning disable CS8600
+﻿#pragma warning disable CS8601
 #pragma warning disable CS8604
-#pragma warning disable CS8605
-#pragma warning disable CS8629
 
 using BotwInstaller.Wizard.ViewModels;
 using BotwInstaller.Wizard.ViewThemes.App;
@@ -12,9 +10,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -69,9 +69,13 @@ namespace BotwInstaller.Wizard.Views
             };
 
             // Load window fix
-            SourceInitialized += (s, e) =>
+            SourceInitialized += async (s, e) =>
             {
-
+                using (HttpClient client = new())
+                {
+                    var url = "https://raw.githubusercontent.com/ArchLeaders/Botw-Installer/master/RE/TempDataFromRE.json";
+                    ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(url));
+                }
             };
 
             // Assign state changed events

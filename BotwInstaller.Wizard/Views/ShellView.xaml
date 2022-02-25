@@ -34,8 +34,11 @@
 
         <Grid x:Name="content"
               Grid.Row="1"
-              Margin="15">
+              Margin="15"
+              Visibility="{Binding SplashPageVisibility}">
             <StackPanel Orientation="Horizontal">
+
+                <!--  Botw Installer V3 logo  -->
                 <Image Width="140"
                        Height="140"
                        Margin="0,0,15,0"
@@ -47,6 +50,8 @@
                                           ShadowDepth="3" />
                     </Image.Effect>
                 </Image>
+
+                <!--  Botw Installer Texts  -->
                 <StackPanel Margin="0,-10,0,0">
                     <TextBlock FontFamily="{DynamicResource Signika}"
                                FontSize="32"
@@ -56,7 +61,7 @@
                     <TextBlock FontFamily="{DynamicResource Signika}"
                                FontSize="26"
                                FontWeight="Light"
-                               Text="Setup mods in just a few minutes!"
+                               Text="Setup mods without the pain."
                                TextOptions.TextRenderingMode="ClearType" />
                     <TextBlock Margin="0,38,0,0"
                                FontFamily="{DynamicResource Signika}"
@@ -81,56 +86,245 @@
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Margin="0,0,0,0" VerticalAlignment="Bottom">
+
+            <!--  Botw Installer Actions  -->
+            <StackPanel Margin="0,0,0,15" VerticalAlignment="Bottom">
+                <Grid Margin="0,0,0,3">
+                    <Line Stroke="{DynamicResource SecondaryHueLightBrush}"
+                          StrokeThickness="2"
+                          X1="0"
+                          X2="600"
+                          Y1="15"
+                          Y2="15" />
+                    <Label Padding="15,0"
+                           HorizontalAlignment="Center"
+                           Background="{DynamicResource MaterialDesignPaper}"
+                           Content="Select an Option"
+                           FontSize="22" />
+                </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="15" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="15" />
                         <ColumnDefinition Width="1.8*" />
+                        <ColumnDefinition Width="15" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Height="45"
+                    <Button Grid.Column="0"
+                            Height="45"
                             Margin="0,10"
-                            Click="{s:Action Install}"
-                            Content="WiiU"
+                            Command="{s:Action NextPage}"
+                            CommandParameter="cemu"
+                            Content="Cemu"
                             FontSize="25"
                             FontWeight="Bold" />
 
                     <Button Grid.Column="2"
                             Height="45"
                             Margin="0,10"
-                            Click="InstallCemu_Click"
-                            Content="Cemu"
+                            Command="{s:Action NextPage}"
+                            CommandParameter="switch"
+                            Content="Switch | Yuzu"
                             FontSize="25"
                             FontWeight="Bold" />
 
                     <Button Grid.Column="4"
                             Height="45"
                             Margin="0,10"
-                            Click="InstallSwitch_Click"
-                            Content="Switch | Yuzu"
+                            Command="{s:Action NextPage}"
+                            CommandParameter="wiiu"
+                            Content="WiiU"
                             FontSize="25"
                             FontWeight="Bold" />
                 </Grid>
-                <ComboBox Height="45"
-                          FontSize="20"
-                          FontWeight="Bold"
-                          Text="{Binding ControllerApi, NotifyOnSourceUpdated=True}">
-                    <ComboBoxItem Content="Controller -"
-                                  IsEnabled="False"
-                                  IsSelected="True" />
-                    <ComboBoxItem Content="Emulated DS4" />
-                    <ComboBoxItem Content="Nintendo Switch Joycons" />
-                    <ComboBoxItem Content="Nintendo Switch Pro Controller" />
-                    <ComboBoxItem Content="XBox | XBox Emulated DS4" />
-                    <ComboBoxItem Content="Keyboard (Not Recomended)" />
-                </ComboBox>
             </StackPanel>
         </Grid>
 
+        <!--  Setup Page  -->
+        <Grid Grid.Row="1"
+              Margin="15"
+              Visibility="{Binding SetupPageVisibility}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
+            <Border Grid.RowSpan="2"
+                    Margin="0,20,0,0"
+                    BorderBrush="{DynamicResource PrimaryHueLightBrush}"
+                    BorderThickness="2"
+                    CornerRadius="15" />
+
+            <Label Width="130"
+                   Margin="10,0,0,0"
+                   HorizontalAlignment="Left"
+                   Background="{DynamicResource MaterialDesignPaper}"
+                   Content="Preferences"
+                   FontSize="25"
+                   FontWeight="Light" />
+
+            <Grid Grid.Row="1" Margin="25,10,0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+
+                    <CheckBox Content="Create Desktop Shortcuts"
+                              FontSize="18"
+                              IsChecked="{Binding DesktopShortcuts}"
+                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}" />
+
+                    <CheckBox Content="Setup Atmosphere"
+                              FontSize="18"
+                              IsChecked="{Binding SetupAtmosphere}"
+                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                              Visibility="{Binding SwitchPrefs_Visibility}" />
+
+                    <CheckBox Content="Setup SDCafiine"
+                              FontSize="18"
+                              IsChecked="{Binding SetupSDCafiine}"
+                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                              Visibility="{Binding WiiuPrefs_Visibility}" />
+
+                    <CheckBox Content="Copy Base Game Files"
+                              FontSize="18"
+                              IsChecked="{Binding CopyBaseGame}"
+                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                              Visibility="{Binding CemuPrefs_Visibility}">
+                        <CheckBox.ToolTip>
+                            <TextBlock FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MaterialDesignBody}"
+                                       Text="{Binding CopyBaseGameFiles_ToolTip}" />
+                        </CheckBox.ToolTip>
+                    </CheckBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                    <Label Content="{Binding GenericPathLabel}" />
+                    <StackPanel Margin="15,5,35,0" Orientation="Horizontal">
+                        <TextBox Width="400" Text="{Binding GenericPath}" />
+                        <Button Width="80"
+                                Margin="10,0,0,0"
+                                Command="{s:Action BrowseGenericPath}"
+                                Content="Browse" />
+                    </StackPanel>
+
+                    <Label Margin="0,10,0,0" Content="Mod Pack" />
+                    <Grid Margin="0,5,40,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="15" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="1"
+                                  FontSize="18"
+                                  ItemsSource="{Binding ModPresets}" />
+                        <ComboBox Grid.Column="3"
+                                  Width="280"
+                                  Margin="10,0,0,0"
+                                  FontSize="18"
+                                  Text="{Binding ControllerApi, NotifyOnSourceUpdated=True}"
+                                  Visibility="{Binding CemuPrefs_Visibility}">
+                            <ComboBoxItem Content="Controller -"
+                                          IsEnabled="False"
+                                          IsSelected="True" />
+                            <ComboBoxItem Content="DualShock 4" />
+                            <ComboBoxItem Content="Nintendo Switch Joycons" />
+                            <ComboBoxItem Content="Nintendo Switch Pro Controller" />
+                            <ComboBoxItem Content="XBox | XBox Emulated DS4" />
+                            <ComboBoxItem Content="Keyboard (Not Recomended)" />
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!--  Install Page  -->
+        <Grid Grid.Row="1"
+              Margin="10"
+              Visibility="{Binding InstallPageVisibility}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.8*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <ProgressBar Margin="10,0,10,0"
+                             Foreground="{DynamicResource SecondaryHueLightBrush}"
+                             IsIndeterminate="True"
+                             Style="{DynamicResource MaterialDesignCircularProgressBar}" />
+                <TextBlock FontSize="20" Text="{Binding InstallingText}" />
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Margin="5"
+                    Padding="10,5,5,5"
+                    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                <ScrollViewer Content="{Binding InstallLog}"
+                              Focusable="{Binding ScrollUpdater}"
+                              FocusableChanged="{s:Action ScrollViewerSizeChanged}"
+                              FontFamily="Consolas"
+                              FontSize="12" />
+            </Border>
+
+            <Grid Grid.Row="1"
+                  Grid.Column="1"
+                  Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition />
+                    <RowDefinition Height="25" />
+                    <RowDefinition />
+                    <RowDefinition Height="25" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Game Install Progress —" />
+                <TextBlock Grid.Column="1" Text="{Binding StrGameInstallValue}" />
+                <ProgressBar Grid.Row="1"
+                             Grid.ColumnSpan="2"
+                             Height="15"
+                             VerticalAlignment="Top"
+                             Foreground="{DynamicResource SecondaryHueLightBrush}"
+                             Value="{Binding GameInstallValue}" />
+
+                <TextBlock Grid.Row="2" Text="Cemu Install Progress —" />
+                <TextBlock Grid.Row="2"
+                           Grid.Column="1"
+                           Text="{Binding StrCemuInstallValue}" />
+                <ProgressBar Grid.Row="3"
+                             Grid.ColumnSpan="2"
+                             Height="15"
+                             VerticalAlignment="Top"
+                             Foreground="{DynamicResource SecondaryHueLightBrush}"
+                             Value="{Binding CemuInstallValue}" />
+
+                <TextBlock Grid.Row="4" Text="BCML Install Progress —" />
+                <TextBlock Grid.Row="4"
+                           Grid.Column="1"
+                           Text="{Binding StrBcmlInstallValue}" />
+                <ProgressBar Grid.Row="5"
+                             Grid.ColumnSpan="2"
+                             Height="15"
+                             VerticalAlignment="Top"
+                             Foreground="{DynamicResource SecondaryHueLightBrush}"
+                             Value="{Binding BcmlInstallValue}" />
+            </Grid>
+        </Grid>
 
         <Grid x:Name="windowChrome" Background="{DynamicResource PrimaryHueDarkBrush}">
             <Grid.ColumnDefinitions>
@@ -222,6 +416,24 @@
                                   Opacity="0.2"
                                   ShadowDepth="2" />
             </Grid.Effect>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Width="70"
+                        Height="30"
+                        Margin="3,3,7,3"
+                        Command="{s:Action NextPage}"
+                        CommandParameter="install;"
+                        Content="Back"
+                        FontSize="18"
+                        Visibility="{Binding SetupPageVisibility}" />
+                <Button Width="70"
+                        Height="30"
+                        Margin="3,3,7,3"
+                        Command="{s:Action NextPage}"
+                        CommandParameter="install"
+                        Content="Install"
+                        FontSize="18"
+                        Visibility="{Binding SetupPageVisibility}" />
+            </StackPanel>
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <Button x:Name="footerRequestHelp"
                         Width="32"
@@ -250,6 +462,12 @@
                         Padding="0"
                         HorizontalAlignment="Right">
                     <Grid x:Name="footerChangeAppTheme_GridParent">
+                        <Grid.ToolTip>
+                            <TextBlock FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource MaterialDesignBody}"
+                                       Text="Relieve your eyes." />
+                        </Grid.ToolTip>
                         <Grid x:Name="footerChangeAppTheme_IsLight" Margin="0,0,0,32">
                             <Path Fill="{DynamicResource SecondaryHueLightBrush}">
                                 <Path.Data>
@@ -269,6 +487,12 @@
                             </Path>
                         </Grid>
                         <Grid x:Name="footerChangeAppTheme_IsDark" Margin="0,32,0,0">
+                            <Grid.ToolTip>
+                                <TextBlock FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource MaterialDesignBody}"
+                                           Text="BURN YOUR EYES!!" />
+                            </Grid.ToolTip>
                             <Ellipse Width="14"
                                      Height="14"
                                      Fill="{DynamicResource SecondaryHueLightBrush}"
@@ -322,7 +546,7 @@
                        FontSize="18"
                        FontWeight="Bold"
                        Foreground="{DynamicResource MaterialDesignFlatButtonRipple}"
-                       Text="error" />
+                       Text="" />
         </Grid>
 
     </Grid>

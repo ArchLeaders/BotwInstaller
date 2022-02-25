@@ -1,15 +1,25 @@
 ﻿#pragma warning disable CS0108
+#pragma warning disable CS8600
+#pragma warning disable CS8602
 #pragma warning disable CS8612
 #pragma warning disable CS8618
+#pragma warning disable CS8629
 
+using BotwInstaller.Lib;
+using BotwInstaller.Wizard.ViewThemes.App;
+using BotwScripts.Lib.Common;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
@@ -17,29 +27,368 @@ namespace BotwInstaller.Wizard.ViewModels
     {
         #region Actions
 
-        public async Task Install()
+        /// <summary>
+        /// Browse logic for opening system folders.
+        /// </summary>
+        public void BrowseGenericPath()
         {
-            ShowDialog("Warning!", "MARIO SUCKS!");
+            System.Windows.Forms.FolderBrowserDialog browse = new();
+            browse.Description = GenericPathLabel;
+            browse.UseDescriptionForTitle = true;
+            browse.AutoUpgradeEnabled = true;
+            browse.InitialDirectory = GenericPath;
+
+            if (browse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                GenericPath = browse.SelectedPath;
         }
 
-        public void ShowDialog(string message, string? exMessage = null, string title = "Notice", bool isYesNo = false, string? exColor = null)
+        /// <summary>
+        /// Loads the mod presets.
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public List<string> GetModPresets(string mode)
         {
-            PromptViewModel promptViewModel = new(message, title, isYesNo, exMessage, exColor);
-            windowManager.ShowDialog(promptViewModel);
+            List<string> modPresets = new();
+
+            if (mode == "cemu" || mode == "wiiu" || mode == "switch")
+                foreach (var key in ModPresetData[mode.Replace("cemu", "wiiu")].Keys)
+                    modPresets.Add(key);
+
+            return modPresets;
+        }
+
+        public void FormatError(string error, ConsoleColor color = ConsoleColor.Black)
+        {
+
+        }
+
+        /// <summary>
+        /// Shows the next page and executes any related functions.
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public async Task NextPage(string mode)
+        {
+            // Check Contoller
+            if (ControllerApi == "Controller -" && mode == "install" && GameMode == "cemu")
+            {
+                if (ShowDialog("No controller is selected.\nWould you like to use the default API? (XInput)", "Warning", true) == true)
+                    ControllerApi = "XBox | XBox Emulated DS4";
+                else
+                    return;
+            }
+
+            // Set prefs
+            ModPresets = GetModPresets(mode);
+            if (mode == "wiiu")
+            {
+                GameMode = mode;
+                GenericPathLabel = "Merged Mods Directory";
+                GenericPath = $"{Config.LastDrive}\\sdcafiine\\00050000101C9400\\MergedMods";
+                WiiuPrefs_Visibility = Visibility.Visible;
+                CemuPrefs_Visibility = Visibility.Collapsed;
+                SwitchPrefs_Visibility = Visibility.Collapsed;
+            }
+            else if (mode == "cemu")
+            {
+                GameMode = mode;
+                GenericPathLabel = "Cemu Installation Directory";
+                GenericPath = new Config().Dirs.Cemu;
+                CemuPrefs_Visibility = Visibility.Visible;
+                WiiuPrefs_Visibility = Visibility.Collapsed;
+                SwitchPrefs_Visibility = Visibility.Collapsed;
+            }
+            else if (mode == "switch")
+            {
+                GameMode = mode;
+                GenericPathLabel = "Merged Mods Directory";
+                GenericPath = $"{Config.LastDrive}\\atmosphere\\contents";
+                SwitchPrefs_Visibility = Visibility.Visible;
+                WiiuPrefs_Visibility = Visibility.Collapsed;
+                CemuPrefs_Visibility = Visibility.Collapsed;
+            }
+
+            // Setup
+            if (SetupPageVisibility == Visibility.Hidden)
+            {
+                SetupPageVisibility = Visibility.Visible;
+
+                SplashPageVisibility = Visibility.Hidden;
+                InstallPageVisibility = Visibility.Hidden;
+            }
+
+            // Installing
+            else if (InstallPageVisibility == Visibility.Hidden && !mode.Contains(";"))
+            {
+                InstallPageVisibility = Visibility.Visible;
+
+                SplashPageVisibility = Visibility.Collapsed;
+                SetupPageVisibility = Visibility.Hidden;
+            }
+
+            // Splash
+            else if (SplashPageVisibility == Visibility.Hidden)
+            {
+                SplashPageVisibility = Visibility.Visible;
+
+                SetupPageVisibility = Visibility.Hidden;
+                InstallPageVisibility = Visibility.Hidden;
+            }
+
+            // Install
+            if (mode == "install")
+            {
+                StartAnimation();
+                await Task.Run(async () =>
+                {
+                    Config conf = new();
+
+                    #region Configure
+
+                    if (!DesktopShortcuts)
+                    {
+                        conf.Shortcuts.BCML.Desktop = false;
+                        conf.Shortcuts.BotW.Desktop = false;
+                        conf.Shortcuts.Cemu.Desktop = false;
+                        conf.Shortcuts.DS4Windows.Desktop = false;
+                    }
+
+                    if (GameMode == "cemu")
+                    {
+                        conf.UseCemu = true;
+                        conf.Install.Cemu = true;
+                        conf.Install.Base = CopyBaseGame;
+
+                        if (ControllerApiTranslate[ControllerApi] == "DSUController")
+                            conf.Install.DS4Windows = true;
+                    }
+
+                    #endregion
+
+                    if (GameMode == "switch")
+                    {
+                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, new(), nx: true);
+                    }
+                    else if (GameMode == "wiiu" || GameMode == "cemu")
+                    {
+                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
+                    }
+
+                });
+            }
+        }
+
+        /// <summary>
+        /// Starts the UI install animations.
+        /// </summary>
+        public void StartAnimation()
+        {
+            // Make timer
+            DispatcherTimer timer = new();
+            timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
+
+            // Iteration variables
+            Dictionary<string, string> installing = new() {
+                { "Installing .", "Installing . ." },
+                { "Installing . .", "Installing . . ." },
+                { "Installing . . .", "Installing ." },
+            };
+
+            timer.Tick += (s, e) =>
+            {
+                InstallingText = installing[InstallingText];
+                Update(GameInstallValue + 12, "game");
+                Update(CemuInstallValue + 2, "cemu");
+                Update(BcmlInstallValue + 13, "bcml");
+            };
+
+            timer.Start();
+        }
+
+        /// <summary>
+        /// Shows a new message box window.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <param name="isYesNo"></param>
+        /// <param name="exColor"></param>
+        /// <returns></returns>
+        public bool ShowDialog(string message, string title = "Notice", bool isYesNo = false, string? exColor = null)
+        {
+            MessageViewModel promptViewModel = new(message, title, isYesNo, exColor);
+            return !(bool)windowManager.ShowDialog(promptViewModel);
+        }
+
+        /// <summary>
+        /// Shows a new error box window.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="exMessage"></param>
+        /// <param name="title"></param>
+        /// <param name="isYesNo"></param>
+        /// <param name="exColor"></param>
+        /// <returns></returns>
+        public bool ShowError(string message, string? exMessage = null, string title = "Notice", bool isYesNo = false, string? exColor = null)
+        {
+            HandledErrorViewModel promptViewModel = new(message, title, isYesNo, exMessage, exColor);
+            return !(bool)windowManager.ShowDialog(promptViewModel);
+        }
+
+        /// <summary>
+        /// Writes a message to the app log.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="color"></param>
+        public void LogUpdate(string text, ConsoleColor color = ConsoleColor.Gray)
+        {
+            InstallLog = $"{InstallLog}\n{text}";
+            ScrollUpdater = !ScrollUpdater;
+        }
+
+        /// <summary>
+        /// Updates the ui progress bar based on the passed id.
+        /// <code>
+        /// Valid ID: game, cemu, bcml
+        /// </code>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="id"></param>
+        public void Update(double value, string id = "")
+        {
+            if (id == "game")
+            {
+                if (GameInstallValue != 100)
+                {
+                    if (value - 100 > 0)
+                        GameInstallValue = value - (value - 100);
+                    else
+                        GameInstallValue = value;
+                }
+                    
+            }
+            else if (id == "cemu")
+            {
+                if (CemuInstallValue != 100)
+                {
+                    if (value - 100 > 0)
+                        GameInstallValue = value - (value - 100);
+                    else
+                        CemuInstallValue = value;
+                }
+            }
+            else if (id == "bcml")
+            {
+                if (BcmlInstallValue != 100)
+                {
+                    if (value - 100 > 0)
+                        BcmlInstallValue = value - (value - 100);
+                    else
+                        BcmlInstallValue = value;
+                }
+            }
         }
 
         #endregion
 
         #region Props
 
+        private bool _desktopShortcuts = true;
+        public bool DesktopShortcuts
+        {
+            get { return _desktopShortcuts; }
+            set
+            {
+                _desktopShortcuts = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _copyBaseGame = false;
+        public bool CopyBaseGame
+        {
+            get { return _copyBaseGame; }
+            set
+            {
+                _copyBaseGame = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _setupAtmosphere = false;
+        public bool SetupAtmosphere
+        {
+            get { return _setupAtmosphere; }
+            set
+            {
+                _setupAtmosphere = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _setupSDCafiine = false;
+        public bool SetupSDCafiine
+        {
+            get { return _setupSDCafiine; }
+            set
+            {
+                _setupSDCafiine = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _genericPath = new Config().Dirs.Cemu;
+        public string GenericPath
+        {
+            get { return _genericPath; }
+            set
+            {
+                _genericPath = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _gameMode = "cemu";
+        public string GameMode
+        {
+            get { return _gameMode; }
+            set
+            {
+                _gameMode = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _modPreset = "none";
+        public string ModPreset
+        {
+            get { return _modPreset; }
+            set
+            {
+                _modPreset = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private List<string> _modPresets = new();
+        public List<string> ModPresets
+        {
+            get { return _modPresets; }
+            set
+            {
+                _modPresets = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private string _controllerApi = "Controller -";
         public Dictionary<string, string> ControllerApiTranslate { get; } = new()
         {
-            { "Controller -", "XInput\n\n\n\n\n\n\n\n\n\n\nTEXT" },
+            { "Controller -", "XInput" },
             { "XBox | XBox Emulated DS4", "XInput" },
             { "Nintendo Switch Joycons", "SDLController-Joycon" },
             { "Nintendo Switch Pro Controller", "SDLController" },
-            { "Emulated DS4", "DSUController" },
+            { "DualShock 4", "DSUController" },
             { "Keyboard (Not Recomended)", "Keyboard" },
         };
         public string ControllerApi
@@ -56,9 +405,203 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #region Bindings
 
-        private Visibility page = Visibility.Hidden;
+        public void ScrollViewerSizeChanged(ScrollViewer sender, DependencyPropertyChangedEventArgs e)
+        {
+            sender.ScrollToBottom();
+        }
+
+        private bool _scrollUpdater = true;
+        public bool ScrollUpdater
+        {
+            get { return _scrollUpdater; }
+            set
+            {
+                _scrollUpdater = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _installLog = "Loading Install Log...";
+        public string InstallLog
+        {
+            get { return _installLog; }
+            set
+            {
+                _installLog = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _genericPathLabel = "Merged Mods Directory";
+        public string GenericPathLabel
+        {
+            get { return _genericPathLabel; }
+            set
+            {
+                _genericPathLabel = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _wiiuPrefs_Visibility = Visibility.Collapsed;
+        public Visibility WiiuPrefs_Visibility
+        {
+            get { return _wiiuPrefs_Visibility; }
+            set
+            {
+                _wiiuPrefs_Visibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _switchPrefs_Visibility = Visibility.Collapsed;
+        public Visibility SwitchPrefs_Visibility
+        {
+            get { return _switchPrefs_Visibility; }
+            set
+            {
+                _switchPrefs_Visibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _cemuPrefs_Visibility = Visibility.Collapsed;
+        public Visibility CemuPrefs_Visibility
+        {
+            get { return _cemuPrefs_Visibility; }
+            set
+            {
+                _cemuPrefs_Visibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _splashPageVisibility = Visibility.Visible;
+        public Visibility SplashPageVisibility
+        {
+            get { return _splashPageVisibility; }
+            set
+            {
+                _splashPageVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _setupPageVisibility = Visibility.Hidden;
+        public Visibility SetupPageVisibility
+        {
+            get { return _setupPageVisibility; }
+            set
+            {
+                _setupPageVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility _installPageVisibility = Visibility.Hidden;
+        public Visibility InstallPageVisibility
+        {
+            get { return _installPageVisibility; }
+            set
+            {
+                _installPageVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         #endregion
+
+        #region ToolTips
+
+        public string CopyBaseGameFiles_ToolTip { get; } = "Copies the base game files into Cemu's mlc01 directory.\n(Recomended if your files are on an SDCard)";
+
+        #endregion
+
+        #region Animations
+
+        private string _installingText = "Installing . . .";
+        public string InstallingText
+        {
+            get { return _installingText; }
+            set
+            {
+                _installingText = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _strGameInstallValue = "0%";
+        public string StrGameInstallValue
+        {
+            get { return _strGameInstallValue; }
+            set
+            {
+                _strGameInstallValue = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _strCemuInstallValue = "0%";
+        public string StrCemuInstallValue
+        {
+            get { return _strCemuInstallValue; }
+            set
+            {
+                _strCemuInstallValue = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _strBcmlInstallValue = "0%";
+        public string StrBcmlInstallValue
+        {
+            get { return _strBcmlInstallValue; }
+            set
+            {
+                _strBcmlInstallValue = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private double _gameInstallValue = 0;
+        public double GameInstallValue
+        {
+            get { return _gameInstallValue; }
+            set
+            {
+                _gameInstallValue = value;
+                StrGameInstallValue = $"{Math.Round(value)}%";
+                NotifyPropertyChanged();
+            }
+        }
+
+        private double _cemuInstallValue = 0;
+        public double CemuInstallValue
+        {
+            get { return _cemuInstallValue; }
+            set
+            {
+                _cemuInstallValue = value;
+                StrCemuInstallValue = $"{Math.Round(value)}%";
+                NotifyPropertyChanged();
+            }
+        }
+
+        private double _bcmlInstallValue = 0;
+        public double BcmlInstallValue
+        {
+            get { return _bcmlInstallValue; }
+            set
+            {
+                _bcmlInstallValue = value;
+                StrBcmlInstallValue = $"{Math.Round(value)}%";
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        public static Dictionary<string, Dictionary<string, List<string>>> ModPresetData { get; set; } = new();
 
         private IWindowManager windowManager;
         public ShellViewModel(IWindowManager windowManager)
