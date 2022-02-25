@@ -1,21 +1,16 @@
-﻿using System.Xml.Serialization;
+﻿#pragma warning disable CS8602
+
+using System.Xml.Serialization;
 
 namespace BotwInstaller.Lib.Configurations.Cemu
 {
-    interface DSUMappings
-    {
-        public static int DSU_A { get; } = 13;
-        public static int DSU_B { get; } = 14;
-        public static int DSU_X { get; } = 12;
-        public static int DSU_Y { get; } = 15;
-    }
 
     public class ControllerProfile
     {
-        public static void Write(Config conf, string name = "XInput", int a = 13, int b = 12, int x = 15, int y = 14)
+        public static void Write(Config conf, string name = "XInput")
         {
-            A = a; B = b; X = x; Y = y; Api = conf.ControllerApi;
             Directory.CreateDirectory($"{conf.Dirs.Cemu}\\controllerProfiles");
+            Api = conf.ControllerApi;
 
             XmlSerializerNamespaces xmlns = new();
             xmlns.Add(string.Empty, string.Empty);
@@ -112,10 +107,10 @@ namespace BotwInstaller.Lib.Configurations.Cemu
         }
 
         public EmulatedControllerClass emulated_controller { get; set; } = new();
-        public static int A { get; set; } = 13;
-        public static int B { get; set; } = 12;
-        public static int X { get; set; } = 15;
-        public static int Y { get; set; } = 14;
+        public static int A { get; set; } = int.Parse(Api.Replace("XInput", "13").Replace("DSUController", $"13"));
+        public static int B { get; set; } = int.Parse(Api.Replace("XInput", "12").Replace("DSUController", $"14"));
+        public static int X { get; set; } = int.Parse(Api.Replace("XInput", "15").Replace("DSUController", $"12"));
+        public static int Y { get; set; } = int.Parse(Api.Replace("XInput", "14").Replace("DSUController", $"15"));
         public static string Api { get; set; } = "XInput";
 
         [XmlRoot(Namespace = null, ElementName = "emulated_controller")]
