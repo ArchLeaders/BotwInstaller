@@ -22,11 +22,11 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
                 if (lnk.BatchFile.StartsWith("https:"))
                 {
                     using (HttpClient client = new())
-                        await File.WriteAllTextAsync((await client.GetStringAsync(lnk.BatchFile)).EvaluateVariables(), $"{Root}\\{lnk.Name.ToLower()}.bat");
+                        await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", (await client.GetStringAsync(lnk.BatchFile)).EvaluateVariables());
                 }
                 else
                 {
-                    await File.WriteAllTextAsync(lnk.BatchFile.EvaluateVariables(), $"{Root}\\{lnk.Name.ToLower()}.bat");
+                    await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", lnk.BatchFile.EvaluateVariables());
                 }
 
                 if (!lnk.HasUninstaller)
