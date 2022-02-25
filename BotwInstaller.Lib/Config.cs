@@ -12,7 +12,8 @@ namespace BotwInstaller.Lib
         public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string Root { get; } = $"{AppData}\\botw";
         public static string User { get; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name;
+        public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name.Replace("\\", "");
+        public static string LastDrive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1].Name.Replace("\\", "");
 
         /// <summary>
         /// Directory list
@@ -37,6 +38,11 @@ namespace BotwInstaller.Lib
         /// </code>
         /// </summary>
         public string ControllerApi { get; set; } = "XInput";
+
+        /// <summary>
+        /// Use Cemu in BCML
+        /// </summary>
+        public bool UseCemu { get; set; } = false;
 
         /// <summary>
         /// Directory list class
@@ -102,7 +108,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// Install Cemu
             /// </summary>
-            public bool Cemu { get; set; } = true;
+            public bool Cemu { get; set; } = false;
 
             /// <summary>
             /// Install the DLC in Cemu
@@ -123,16 +129,6 @@ namespace BotwInstaller.Lib
             /// Install python
             /// </summary>
             public bool Python { get; set; } = true;
-
-            /// <summary>
-            /// Install the python documentaion
-            /// </summary>
-            public bool PythonDocs { get; set; } = true;
-
-            /// <summary>
-            /// Python version to install
-            /// </summary>
-            public string PythonVersion { get; set; } = "3.8.10";
         }
 
         /// <summary>
