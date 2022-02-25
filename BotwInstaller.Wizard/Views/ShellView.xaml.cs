@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS8601
 #pragma warning disable CS8604
 
+using BotwInstaller.Lib.temp;
 using BotwInstaller.Wizard.ViewModels;
 using BotwInstaller.Wizard.ViewThemes.App;
 using BotwScripts.Lib.Common.Computer;
@@ -73,8 +74,7 @@ namespace BotwInstaller.Wizard.Views
             {
                 using (HttpClient client = new())
                 {
-                    var url = "https://raw.githubusercontent.com/ArchLeaders/Botw-Installer/master/RE/TempDataFromRE.json";
-                    ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(url));
+                    ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(HttpLinks.ModPresetsJson));
                 }
             };
 
