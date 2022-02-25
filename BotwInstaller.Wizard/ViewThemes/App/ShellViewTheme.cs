@@ -7,8 +7,13 @@ using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewThemes.App
 {
-    public class ShellViewTheme
+    public static class ShellViewTheme
     {
+        private static Color Color(this string color)
+        {
+            return (Color)ColorConverter.ConvertFromString(color);
+        }
+
         public static string ThemeFile { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\BotwData\\Apps\\BotwInstaller.Wizard.theme";
         public static string ThemeStr { get; set; } = $"Dark";
         public static void Change(bool toLight = false)
@@ -24,18 +29,20 @@ namespace BotwInstaller.Wizard.ViewThemes.App
 
                 theme.SetBaseTheme(Theme.Light);
 
-                theme.PrimaryDark = (Color)ColorConverter.ConvertFromString("#fff");
-                theme.PrimaryMid = (Color)ColorConverter.ConvertFromString("#f7f7f7");
-                theme.PrimaryLight = (Color)ColorConverter.ConvertFromString("#25000000");
+                theme.PrimaryDark = "#fff".Color();
+                theme.PrimaryMid = "#f7f7f7".Color();
+                theme.PrimaryLight = "#25000000".Color();
 
-                theme.SecondaryDark = (Color)ColorConverter.ConvertFromString("#657160E8");
-                theme.SecondaryMid = (Color)ColorConverter.ConvertFromString("#357160E8");
-                theme.SecondaryLight = (Color)ColorConverter.ConvertFromString("#7160E8");
+                theme.SecondaryDark = "#657160E8".Color();
+                theme.SecondaryMid = "#7160E8".Color();
+                theme.SecondaryLight = "#8A80FA".Color();
 
-                theme.Selection = (Color)ColorConverter.ConvertFromString("#7160E8");
-                theme.Paper = (Color)ColorConverter.ConvertFromString("#D9D9D9");
-                theme.Body = (Color)ColorConverter.ConvertFromString("#1f1f1f");
-                theme.FlatButtonRipple = (Color)ColorConverter.ConvertFromString("#A32215");
+                theme.Selection = "#7160E8".Color();
+                theme.Paper = "#D9D9D9".Color();
+                theme.Body = "#1f1f1f".Color();
+                theme.FlatButtonRipple = "#A32215".Color();
+                theme.Background = "#fff".Color();
+                theme.ToolTipBackground = "#616161".Color();
             }
             else
             {
@@ -45,18 +52,20 @@ namespace BotwInstaller.Wizard.ViewThemes.App
 
                 theme.SetBaseTheme(Theme.Dark);
 
-                theme.PrimaryDark = (Color)ColorConverter.ConvertFromString("#1F1F1F");
-                theme.PrimaryMid = (Color)ColorConverter.ConvertFromString("#414141");
-                theme.PrimaryLight = (Color)ColorConverter.ConvertFromString("#15ffffff");
+                theme.PrimaryDark = "#1F1F1F".Color();
+                theme.PrimaryMid = "#414141".Color();
+                theme.PrimaryLight = "#15ffffff".Color();
 
-                theme.SecondaryDark = (Color)ColorConverter.ConvertFromString("#201B42");
-                theme.SecondaryMid = (Color)ColorConverter.ConvertFromString("#423887");
-                theme.SecondaryLight = (Color)ColorConverter.ConvertFromString("#7160E8");
+                theme.SecondaryDark = "#201B42".Color();
+                theme.SecondaryMid = "#423887".Color();
+                theme.SecondaryLight = "#7160E8".Color();
 
-                theme.Selection = (Color)ColorConverter.ConvertFromString("#7160E8");
-                theme.Paper = (Color)ColorConverter.ConvertFromString("#121212");
-                theme.Body = (Color)ColorConverter.ConvertFromString("#B0B0B0");
-                theme.FlatButtonRipple = (Color)ColorConverter.ConvertFromString("#E04343");
+                theme.Selection = "#7160E8".Color();
+                theme.Paper = "#121212".Color();
+                theme.Body = "#B0B0B0".Color();
+                theme.FlatButtonRipple = "#E04343".Color();
+                theme.Background = "#0A0A0A".Color();
+                theme.ToolTipBackground = "#0A0A0A".Color();
             }
 
             helper.SetTheme(theme);
