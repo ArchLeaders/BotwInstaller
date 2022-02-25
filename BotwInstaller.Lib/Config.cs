@@ -1,4 +1,6 @@
-﻿using BotwScripts.Lib.Common;
+﻿using BotwInstaller.Lib.Configurations.Shortcuts;
+using BotwInstaller.Lib.Remote;
+using BotwScripts.Lib.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ namespace BotwInstaller.Lib
     public class Config
     {
         public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public static string Desktop { get; } = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        public static string StartMenu { get; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\\Programs";
         public static string Root { get; } = $"{AppData}\\botw";
         public static string User { get; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name.Replace("\\", "");
@@ -139,63 +143,127 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// Shortcut meta data for BCML
             /// </summary>
-            public ShortcutClass BCML { get; set; } = new();
+            public ShortcutClass BCML
+            {
+                get
+                {
+                    return new()
+                    {
+                        Name = "BCML",
+                        Target = "$python\\python.exe".EvaluateVariables(),
+                        Args = "-m bcml",
+                        IconFile = "$root\\bcml.ico".EvaluateVariables(),
+                        Description = "Breath of the Wild Cross-Platform Mod Loader developed by Caleb Smith and GingerAvalanche",
+                        BatchFile = HttpLinks.BcmlBatchFile
+                    };
+                }
+            }
 
             /// <summary>
             /// Shortcut meta data for BotW
             /// </summary>
-            public ShortcutClass BotW { get; set; } = new();
+            public ShortcutClass BotW
+            {
+                get
+                {
+                    return new()
+                    {
+                        Name = "BOTW",
+                        Target = "$root\\botw.bat".EvaluateVariables(),
+                        IconFile = "$root\\botw.ico".EvaluateVariables(),
+                        Description = "Breath of the Wild developed by Nintendo",
+                        BatchFile = HttpLinks.BotwBatchFile,
+                        HasUninstaller = false
+                    };
+                }
+            }
 
             /// <summary>
             /// Shortcut meta data for Cemu
             /// </summary>
-            public ShortcutClass Cemu { get; set; } = new();
+            public ShortcutClass Cemu
+            {
+                get
+                {
+                    return new()
+                    {
+                        Name = "Cemu",
+                        Target = "$cemu\\Cemu.exe".EvaluateVariables(),
+                        IconFile = "$cemu\\Cemu.exe".EvaluateVariables(),
+                        Description = "WiiU Emulator developed by Exzap and Petergov",
+                        BatchFile = HttpLinks.CemuBatchFile
+                    };
+                }
+            }
 
             /// <summary>
             /// Shortcut meta data for DS4Windows
             /// </summary>
-            public ShortcutClass DS4Windows { get; set; } = new();
+            public ShortcutClass DS4Windows
+            {
+                get
+                {
+                    return new()
+                    {
+                        Name = "DS4Windows",
+                        Target = "$ds4\\DS4Windows.exe".EvaluateVariables(),
+                        IconFile = "$root\\bcml.ico".EvaluateVariables(),
+                        Description = "DualShock 4 for Windows developed by Jays2Kings and modified by Ryochan7",
+                        BatchFile = HttpLinks.DS4BatchFile
+                    };
+                }
+            }
         }
+    }
+
+    /// <summary>
+    /// Shortcut meta data instance class
+    /// </summary>
+    public class ShortcutClass
+    {
+        /// <summary>
+        /// Create a shortcut on the start menu and an uninstaller in the program files
+        /// </summary>
+        public bool Start { get; set; } = true;
 
         /// <summary>
-        /// Shortcut meta data instance class
+        /// Create a shortut on the desktop
         /// </summary>
-        public class ShortcutClass
-        {
-            /// <summary>
-            /// Create a shortcut on the start menu and an uninstaller in the program files
-            /// </summary>
-            public bool Start { get; set; } = true;
+        public bool Desktop { get; set; } = false;
 
-            /// <summary>
-            /// Create a shortut on the desktop
-            /// </summary>
-            public bool Desktop { get; set; } = true;
+        /// <summary>
+        /// Name of the shortcut
+        /// </summary>
+        public string Name { get; set; } = "";
 
-            /// <summary>
-            /// Name of the shortcut
-            /// </summary>
-            public string Name { get; set; } = "";
+        /// <summary>
+        /// Target file the shortcut will open
+        /// </summary>
+        public string Target { get; set; } = "";
 
-            /// <summary>
-            /// Target file the shortcut will open
-            /// </summary>
-            public string Target { get; set; } = "";
+        /// <summary>
+        /// Arguments to pass to the Target
+        /// </summary>
+        public string Args { get; set; } = "";
 
-            /// <summary>
-            /// Description of the shortcut
-            /// </summary>
-            public string Description { get; set; } = "";
+        /// <summary>
+        /// Description of the shortcut
+        /// </summary>
+        public string Description { get; set; } = "";
 
-            /// <summary>
-            /// Path to the icon (ico, dll, exe) of the shortcut.
-            /// </summary>
-            public string IconFile { get; set; } = "";
+        /// <summary>
+        /// Path to the icon (ico, dll, exe) of the shortcut.
+        /// </summary>
+        public string IconFile { get; set; } = "";
 
-            /// <summary>
-            /// Path to uninstaller or run script.
-            /// </summary>
-            public string BatchFile { get; set; } = "";
-        }
+        /// <summary>
+        /// Link to remote uninstaller or run script.
+        /// </summary>
+        public string BatchFile { get; set; } = "";
+
+        /// <summary>
+        /// Link to remote uninstaller or run script.
+        /// </summary>
+        public bool HasUninstaller { get; set; } = true;
     }
 }
