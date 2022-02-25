@@ -11,12 +11,24 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
     {
         public static async Task Write(ShortcutClass lnk)
         {
+            // Create root directory
+            Directory.CreateDirectory(Root);
+
+            // Download shell process
             string shell = $"{AppData}\\Temp\\BOTW\\lnk.shell";
             if (!File.Exists(shell))
                 await Download.FromUrl(DownloadLinks.LnkWriter, shell);
 
             if (lnk.Start)
             {
+                if (lnk.IconFile.StartsWith("https"))
+                {
+                    using (HttpClient client = new())
+                        await File.WriteAllBytesAsync($"{Root}\\{lnk.Name.ToLower()}.ico", await client.GetByteArrayAsync(lnk.IconFile));
+
+                    lnk.IconFile = $"{Root}\\{lnk.Name.ToLower()}.ico";
+                }
+
                 await HiddenProcess.Start(shell, $"/F:\"{StartMenu}\\{lnk.Name}.lnk\" /A:C /T:\"{lnk.Target}\" /P:\"{lnk.Args}\" /I:\"{lnk.IconFile}\" /D:\"{lnk.Description}\"");
 
                 if (lnk.BatchFile.StartsWith("https:"))
@@ -29,7 +41,7 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
                     await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", lnk.BatchFile.EvaluateVariables());
                 }
 
-                if (!lnk.HasUninstaller)
+                if (lnk.HasUninstaller)
                 {
                     await lnk.AddProgramEntry();
                 }
