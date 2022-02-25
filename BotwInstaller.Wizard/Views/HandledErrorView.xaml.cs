@@ -8,12 +8,12 @@ namespace BotwInstaller.Wizard.Views
     /// <summary>
     /// Interaction logic for PromptView.xaml
     /// </summary>
-    public partial class PromptView : Window
+    public partial class HandledErrorView : Window
     {
-        public PromptView()
+        public HandledErrorView()
         {
             InitializeComponent();
-            DataContext = new PromptViewModel("No details were provided.");
+            DataContext = new HandledErrorViewModel("No details were provided.");
             SourceInitialized += (s, a) =>
             {
                 Dispatcher.Invoke(InvalidateVisual, DispatcherPriority.Input);

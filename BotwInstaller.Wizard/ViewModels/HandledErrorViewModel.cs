@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
-    public class PromptViewModel : Screen, INotifyPropertyChanged
+    public class HandledErrorViewModel : Screen, INotifyPropertyChanged
     {
         #region Actions
 
@@ -166,7 +166,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
-        public PromptViewModel(string message, string title = "Notice", bool isYesNo = false, string? extendedMessage = null, string? extendedMessageColor = null)
+        public HandledErrorViewModel(string message, string title = "Notice", bool isYesNo = false, string? extendedMessage = null, string? extendedMessageColor = null)
         {
             Message = message;
             Title = title;
@@ -176,7 +176,7 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 DetailVisibility = Visibility.Visible;
                 ExtendedMessage = extendedMessage;
-                DetailHeight = 160;
+                DetailHeight = 140;
                 Width = 300;
 
                 if (extendedMessageColor != null)
