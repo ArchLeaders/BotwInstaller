@@ -131,7 +131,7 @@ namespace BotwInstaller.Lib
             }
 
             // Check for cemu structure
-            var id = $"{code.EditPath()}content".GetTitleID(TitleIDFormat.HexEnd);
+            var id = code.EditPath().GetTitleID(TitleIDFormat.HexEnd);
 
             foreach (var set in Checks)
             {
@@ -204,7 +204,7 @@ namespace BotwInstaller.Lib
         /// <returns></returns>
         public static Dictionary<string, List<string>> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]")
         {
-            var ID = GameInfo.GetTitleID($"{gameFiles}\\content");
+            var ID = GameInfo.GetTitleID(gameFiles);
 
             gameFiles = gameFiles.EndsWith("\\") ? gameFiles : $"{gameFiles}\\";
 

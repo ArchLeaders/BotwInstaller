@@ -26,7 +26,7 @@ namespace BotwInstaller.Lib
         public static string GetTitleID(this string gameFiles, string format = "HF")
         {
             string results = "";
-            foreach (string line in File.ReadAllLines($"{gameFiles}meta\\meta.xml"))
+            foreach (string line in File.ReadAllLines($"{gameFiles}\\meta\\meta.xml"))
                 if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
                     results = line.Split('>')[1].Replace("</title_id", "");
 
