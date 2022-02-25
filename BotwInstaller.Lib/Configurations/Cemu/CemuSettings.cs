@@ -4,7 +4,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
 {
     public class CemuSettings
     {
-        public static async Task Write(Config conf)
+        public static void Write(Config conf)
         {
             Directory.CreateDirectory(conf.Dirs.Cemu);
 
