@@ -146,12 +146,12 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     #region Configure
 
-                    if (!DesktopShortcuts)
+                    if (DesktopShortcuts)
                     {
-                        conf.Shortcuts.BCML.Desktop = false;
-                        conf.Shortcuts.BotW.Desktop = false;
-                        conf.Shortcuts.Cemu.Desktop = false;
-                        conf.Shortcuts.DS4Windows.Desktop = false;
+                        conf.Shortcuts.BCML.Desktop = true;
+                        conf.Shortcuts.BotW.Desktop = true;
+                        conf.Shortcuts.Cemu.Desktop = true;
+                        conf.Shortcuts.DS4Windows.Desktop = true;
                     }
 
                     if (GameMode == "cemu")
@@ -168,11 +168,11 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     if (GameMode == "switch")
                     {
-                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, new(), nx: true);
+                        // await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, new(), nx: true);
                     }
                     else if (GameMode == "wiiu" || GameMode == "cemu")
                     {
-                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
+                        // await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
                     }
 
                 });
