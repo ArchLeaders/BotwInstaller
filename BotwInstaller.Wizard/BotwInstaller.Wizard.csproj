@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ViewResources\Images\highres_icon.png">
+    <Resource Include="ViewResources\Images\highres_icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
     <Content Include="ViewResources\Images\icon.ico" />
     <Content Include="ViewThemes\Styles\TextEditor\SyntaxHighlighting\XmlDark.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
