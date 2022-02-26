@@ -16,6 +16,8 @@ FOR /D %%D IN "$cemu" DO (
 ECHO Removing shortcuts . . .
 DEL "$desktop\Cemu.lnk" /Q /F
 DEL "$start\Cemu.lnk" /Q /F
+DEL "$desktop\BOTW.lnk" /Q /F
+DEL "$start\BOTW.lnk" /Q /F
 
 :: Remove Registry Key
 ECHO Removing registry keys . . .

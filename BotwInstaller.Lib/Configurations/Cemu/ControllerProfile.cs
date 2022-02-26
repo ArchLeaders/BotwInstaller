@@ -9,7 +9,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
     {
         public static void Write(Config conf, string name = "XInput")
         {
-            Directory.CreateDirectory($"{conf.Dirs.Cemu}\\controllerProfiles");
+            Directory.CreateDirectory($"{conf.Dirs.Dynamic}\\controllerProfiles");
             Api = conf.ControllerApi;
 
             XmlSerializerNamespaces xmlns = new();
@@ -100,18 +100,18 @@ namespace BotwInstaller.Lib.Configurations.Cemu
             }
 
             XmlSerializer serializer = new XmlSerializer(typeof(EmulatedControllerClass));
-            FileStream stream = File.OpenWrite($"{conf.Dirs.Cemu}\\controllerProfiles\\{name}.xml");
+            FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\controllerProfiles\\{name}.xml");
 
             serializer.Serialize(stream, ecc, xmlns);
             stream.Dispose();
         }
 
         public EmulatedControllerClass emulated_controller { get; set; } = new();
-        public static int A { get; set; } = int.Parse(Api.Replace("XInput", "13").Replace("DSUController", $"13"));
-        public static int B { get; set; } = int.Parse(Api.Replace("XInput", "12").Replace("DSUController", $"14"));
-        public static int X { get; set; } = int.Parse(Api.Replace("XInput", "15").Replace("DSUController", $"12"));
-        public static int Y { get; set; } = int.Parse(Api.Replace("XInput", "14").Replace("DSUController", $"15"));
         public static string Api { get; set; } = "XInput";
+        public static int A { get { return int.Parse(Api.Replace("XInput", "13").Replace("DSUController", $"13")); } }
+        public static int B { get { return int.Parse(Api.Replace("XInput", "12").Replace("DSUController", $"14")); } }
+        public static int X { get { return int.Parse(Api.Replace("XInput", "15").Replace("DSUController", $"12")); } }
+        public static int Y { get { return int.Parse(Api.Replace("XInput", "14").Replace("DSUController", $"15")); } }
 
         [XmlRoot(Namespace = null, ElementName = "emulated_controller")]
         public class EmulatedControllerClass

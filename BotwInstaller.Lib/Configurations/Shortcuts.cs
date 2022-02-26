@@ -91,7 +91,7 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
                 { "$base", Conf.Dirs.Base },
                 { "$update", Conf.Dirs.Update },
                 { "$dlc", Conf.Dirs.DLC },
-                { "$cemu", Conf.Dirs.Cemu },
+                { "$cemu", Conf.Dirs.Dynamic },
                 { "$ds4", Conf.Dirs.DS4Windows },
             };
 

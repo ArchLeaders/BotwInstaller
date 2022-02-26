@@ -6,7 +6,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
     {
         public static void Write(Config conf)
         {
-            Directory.CreateDirectory(conf.Dirs.Cemu);
+            Directory.CreateDirectory(conf.Dirs.Dynamic);
 
             XmlSerializerNamespaces xmlns = new();
             xmlns.Add(string.Empty, string.Empty);
@@ -82,7 +82,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
             };
 
             XmlSerializer serializer = new XmlSerializer(typeof(SettingsConfigFile));
-            FileStream stream = File.OpenWrite($"{conf.Dirs.Cemu}\\settings.xml");
+            FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\settings.xml");
 
             serializer.Serialize(stream, scf, xmlns);
             stream.Dispose();
