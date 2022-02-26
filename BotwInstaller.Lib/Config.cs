@@ -64,9 +64,14 @@ namespace BotwInstaller.Lib
             public string BCML { get; set; } = Drive == "C:" ? $"{AppData}\\bcml" : $"{Drive}\\Games\\BotW\\BCML Data";
 
             /// <summary>
-            /// Cemu installation directory
+            /// BCML's data directory
             /// </summary>
-            public string Cemu { get; set; } = Drive == "C:" ? $"{User}\\Cemu" : $"{Drive}\\Games\\BotW\\Cemu";
+            public string BCMLExport { get; set; } = Drive == "C:" ? $"{AppData}\\bcml" : $"{Drive}\\Games\\BotW\\BCML Data";
+
+            /// <summary>
+            /// UseCemu is true ? Cemu installation directory : BCML export directory
+            /// </summary>
+            public string Dynamic { get; set; } = Drive == "C:" ? $"{User}\\Cemu" : $"{Drive}\\Games\\BotW\\Cemu";
 
             /// <summary>
             /// DS4Windows installation directory
@@ -105,11 +110,6 @@ namespace BotwInstaller.Lib
             public bool Base { get; set; } = true;
 
             /// <summary>
-            /// Install BCML
-            /// </summary>
-            public bool BCML { get; set; } = true;
-
-            /// <summary>
             /// Install Cemu
             /// </summary>
             public bool Cemu { get; set; } = false;
@@ -118,11 +118,6 @@ namespace BotwInstaller.Lib
             /// Install the DLC in Cemu
             /// </summary>
             public bool DLC { get; set; } = false;
-
-            /// <summary>
-            /// Install DS4Windows
-            /// </summary>
-            public bool DS4Windows { get; set; } = false;
 
             /// <summary>
             /// Install the update in Cemu
@@ -152,7 +147,7 @@ namespace BotwInstaller.Lib
                         Name = "BCML",
                         Target = "$python\\python.exe".EvaluateVariables(),
                         Args = "-m bcml",
-                        IconFile = "$root\\bcml.ico".EvaluateVariables(),
+                        IconFile = HttpLinks.BcmlIconFile,
                         Description = "Breath of the Wild Cross-Platform Mod Loader developed by Caleb Smith and GingerAvalanche",
                         BatchFile = HttpLinks.BcmlBatchFile
                     };
@@ -170,7 +165,7 @@ namespace BotwInstaller.Lib
                     {
                         Name = "BOTW",
                         Target = "$root\\botw.bat".EvaluateVariables(),
-                        IconFile = "$root\\botw.ico".EvaluateVariables(),
+                        IconFile = HttpLinks.BotwIconFile,
                         Description = "Breath of the Wild developed by Nintendo",
                         BatchFile = HttpLinks.BotwBatchFile,
                         HasUninstaller = false
