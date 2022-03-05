@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Lib", "BotwIn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Console", "BotwInstaller.Console\BotwInstaller.Console.csproj", "{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Wizard.Reference", "BotwInstaller.Wizard.Reference\BotwInstaller.Wizard.Reference.csproj", "{5200EE1F-ED8D-4246-BDB4-9157CB1DC386}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwInstaller.Wizard", "BotwInstaller.Wizard\BotwInstaller.Wizard.csproj", "{099A4D03-ED8F-4111-8119-A464F331B8C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Wizard", "BotwInstaller.Wizard\BotwInstaller.Wizard.csproj", "{099A4D03-ED8F-4111-8119-A464F331B8C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32C24B16-3E2F-4118-B2DE-D9CBDA9BEC0A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5200EE1F-ED8D-4246-BDB4-9157CB1DC386}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5200EE1F-ED8D-4246-BDB4-9157CB1DC386}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5200EE1F-ED8D-4246-BDB4-9157CB1DC386}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5200EE1F-ED8D-4246-BDB4-9157CB1DC386}.Release|Any CPU.Build.0 = Release|Any CPU
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
