@@ -17,7 +17,7 @@ namespace BotwInstaller.Lib
         public static string Root { get; } = $"{AppData}\\botw";
         public static string User { get; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name.Replace("\\", "");
-        public static string LastDrive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1].Name.Replace("\\", "");
+        public static string LastDrive { get; } = DriveInfo.GetDrives()[^1].Name.Replace("\\", "");
 
         /// <summary>
         /// Directory list
@@ -49,6 +49,25 @@ namespace BotwInstaller.Lib
         public bool UseCemu { get; set; } = false;
 
         /// <summary>
+        /// Installing the NX version
+        /// </summary>
+        public bool IsNX { get; set; } = false;
+
+        /// <summary>
+        /// The mod pack to be installed in BCML
+        /// </summary>
+        public string ModPack { get; set; } = "None";
+
+        /// <summary>
+        /// Mod packs that can be installed
+        /// </summary>
+        public Dictionary<string, Dictionary<string, List<string?>>> ModPacks { get; set; } = new()
+        {
+            { "wiiu", new() { { "None", new() { null } } } },
+            { "switch", new() { { "None", new() { null } } } }
+        };
+
+        /// <summary>
         /// Directory list class
         /// </summary>
         public class DirsClass
@@ -61,12 +80,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// BCML's data directory
             /// </summary>
-            public string BCML { get; set; } = Drive == "C:" ? $"{AppData}\\bcml" : $"{Drive}\\Games\\BotW\\BCML Data";
-
-            /// <summary>
-            /// BCML's data directory
-            /// </summary>
-            public string BCMLExport { get; set; } = Drive == "C:" ? $"{AppData}\\bcml" : $"{Drive}\\Games\\BotW\\BCML Data";
+            public string BCML { get; set; } = $"{AppData}\\bcml";
 
             /// <summary>
             /// UseCemu is true ? Cemu installation directory : BCML export directory
@@ -76,7 +90,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// DS4Windows installation directory
             /// </summary>
-            public string DS4Windows { get; set; } = Drive == "C:" ? $"{AppData}\\DS4Windows" : $"{Drive}\\Games\\BotW\\DS4Windows";
+            public string DS4Windows { get; set; } = $"{AppData}\\DS4Windows";
 
             /// <summary>
             /// Directory in which the BotW DLC files are stored
@@ -202,7 +216,7 @@ namespace BotwInstaller.Lib
                     {
                         Name = "DS4Windows",
                         Target = "$ds4\\DS4Windows.exe".EvaluateVariables(),
-                        IconFile = "$root\\bcml.ico".EvaluateVariables(),
+                        IconFile = "$ds4\\DS4Windows.exe".EvaluateVariables(),
                         Description = "DualShock 4 for Windows developed by Jays2Kings and modified by Ryochan7",
                         BatchFile = HttpLinks.DS4BatchFile
                     };
@@ -224,7 +238,7 @@ namespace BotwInstaller.Lib
         /// <summary>
         /// Create a shortut on the desktop
         /// </summary>
-        public bool Desktop { get; set; } = false;
+        public bool Desktop { get; set; } = true;
 
         /// <summary>
         /// Name of the shortcut
