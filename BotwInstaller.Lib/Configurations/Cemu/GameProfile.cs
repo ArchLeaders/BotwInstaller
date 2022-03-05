@@ -6,8 +6,8 @@ namespace BotwInstaller.Lib.Configurations.Cemu
     {
         public static void Write(Config conf)
         {
-            Directory.CreateDirectory($"{conf.Dirs.Cemu}\\gameProfiles");
-            IniFile ini = new($"{conf.Dirs.Cemu}\\gameProfiles\\{GameInfo.GetTitleID(conf.Dirs.Base)}.ini");
+            Directory.CreateDirectory($"{conf.Dirs.Dynamic}\\gameProfiles");
+            IniFile ini = new($"{conf.Dirs.Dynamic}\\gameProfiles\\{GameInfo.GetTitleID(conf.Dirs.Base)}.ini");
 
             Api = conf.ControllerApi;
             GameProfile gameProfile = new();

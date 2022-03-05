@@ -8,14 +8,14 @@ namespace BotwInstaller.Lib.Configurations
         {
             Dictionary<string, object> jsonObject = new()
             {
-                { "cemu_dir", conf.Dirs.Cemu },
+                { "cemu_dir", conf.Dirs.Dynamic },
                 { "game_dir", conf.Dirs.Base },
                 { "game_dir_nx", "" },
                 { "update_dir", conf.Dirs.Update },
                 { "dlc_dir", conf.Dirs.DLC },
                 { "dlc_dir_nx", "" },
                 { "store_dir", conf.Dirs.BCML },
-                { "export_dir", $"{conf.Dirs.Cemu}\\graphicPacks\\BreathOfTheWild_BCML" },
+                { "export_dir", $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" },
                 { "export_dir_nx", "" },
                 { "load_reverse", false },
                 { "site_meta", "" },
@@ -36,7 +36,8 @@ namespace BotwInstaller.Lib.Configurations
                 { "last_version", "3.8.0" }
             };
 
-            await File.WriteAllTextAsync($"{Config.AppData}", JsonSerializer.Serialize(jsonObject, new JsonSerializerOptions { WriteIndented = true }));
+            Directory.CreateDirectory($"{Config.AppData}\\bcml");
+            await File.WriteAllTextAsync($"{Config.AppData}\\bcml\\settings.json", JsonSerializer.Serialize(jsonObject, new JsonSerializerOptions { WriteIndented = true }));
         }
     }
 }
