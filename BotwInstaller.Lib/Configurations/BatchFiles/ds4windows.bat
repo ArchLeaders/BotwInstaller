@@ -1,7 +1,7 @@
 ﻿@ECHO OFF
 
-:: Delete DS4Windows
-DEL "$ds4"
+:: Remove DS4Windows
+RMDIR "$ds4" /S /Q
 
 :: Remove Shortcuts
 ECHO Removing shortcuts . . .
@@ -12,6 +12,6 @@ DEL "$start\DS4Windows.lnk" /Q /F
 ECHO Removing registry keys . . .
 REG delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DS4Windows" /F
 
-:: Delete Self
+:: Remove Self
 PAUSE
 DEL "$root\ds4windows.bat" /Q /F
