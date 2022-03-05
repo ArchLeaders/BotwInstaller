@@ -2,9 +2,9 @@
 
 :: Remove BCML Data
 ECHO Removing BCML . . .
-RMDIR "C:\Users\ArchLeaders\AppData\Local\bcml" /s /q
+RMDIR "C:\Users\ArchLeaders\AppData\Local\bcml" /S /Q
 
-:: Remove BCML PyPi
+:: Remove BCML Package
 START "PIP" "$python\Scripts\pip.exe" uninstall -y bcml
 
 :: Remove Shortcuts
