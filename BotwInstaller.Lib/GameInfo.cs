@@ -1,5 +1,4 @@
 ﻿using BotwScripts.Lib.Common;
-using BotwScripts.Lib.Common.IO.FileSystems;
 
 namespace BotwInstaller.Lib
 {
@@ -62,27 +61,18 @@ namespace BotwInstaller.Lib
             foreach (var item in regions)
                 region = end.Replace(item.Key, item.Value);
 
-            switch (format)
+            return format switch
             {
-                case "CF":
-                    return $"{start}\\{end}";
-                case "RE":
-                    return region;
-                case "DF":
-                    return Convert.ToInt64(results, 16).ToString();
-                case "HF":
-                    return results;
-                case "DS":
-                    return Convert.ToInt64(start, 16).ToString();
-                case "HS":
-                    return start;
-                case "DE":
-                    return Convert.ToInt64(end, 16).ToString();
-                case "HE":
-                    return end;
-            }
-
-            return results;
+                "CF" => $"{start}\\{end}",
+                "RE" => region,
+                "DF" => Convert.ToInt64(results, 16).ToString(),
+                "HF" => results,
+                "DS" => Convert.ToInt64(start, 16).ToString(),
+                "HS" => start,
+                "DE" => Convert.ToInt64(end, 16).ToString(),
+                "HE" => end,
+                _ => results,
+            };
         }
 
         /// <summary>
@@ -104,7 +94,7 @@ namespace BotwInstaller.Lib
         /// <param name="cemu">Supposed path to Cemu</param>
         /// <param name="python">Supposed path to Python</param>
         /// <returns></returns>
-        public static async Task<Dictionary<string, object>> GetFiles(string cemu = "::", string python = "::")
+        public static async Task<Dictionary<string, object>> GetFiles(Interface.Notify print, string cemu = "::", string python = "::")
         {
             Dictionary<string, object> paths = new();
 
@@ -112,7 +102,7 @@ namespace BotwInstaller.Lib
 
             tasks.Add(Task.Run(() =>
             {
-                var botw = Search.Botw(Interface.WriteLine);
+                var botw = Search.Botw(print);
 
                 foreach (var item in botw)
                     paths.Add(item.Key, item.Value);
@@ -120,12 +110,12 @@ namespace BotwInstaller.Lib
 
             tasks.Add(Task.Run(() =>
             {
-                paths.Add("Python", Search.Python(Interface.WriteLine, python));
+                paths.Add("Python", Search.Python(print, python));
             }));
 
             tasks.Add(Task.Run(() =>
             {
-                var cemuRt = Search.Cemu(Interface.WriteLine, cemu);
+                var cemuRt = Search.Cemu(print, cemu);
 
                 foreach (var item in cemuRt)
                     paths.Add(item.Key, item.Value);
@@ -139,17 +129,26 @@ namespace BotwInstaller.Lib
         /// <summary>
         /// Returns the game file count (Base, Update, DLC)
         /// </summary>
-        /// <param name="pathToBase"></param>
+        /// <param name="gameFiles"></param>
         /// <returns></returns>
-        public static int[] FileCount(this string pathToBase)
+        public static int FileCount(this string gameFiles)
         {
-            if (GetTitleID(pathToBase) == "00050000101C9500")
-                return new int[] { 18717, 22690, 15927 };
-            else if (GetTitleID(pathToBase) == "00050000101C9400")
-                return new int[] { 15996, 22647, 15219 };
-            else if (GetTitleID(pathToBase) == "00050000101C9300")
-                return new int[] { 14191, 22617, 14747 };
-            else return new int[] { 0 };
+            return GetTitleID(gameFiles) switch
+            {
+                // EU
+                "00050000101C9500" => 18717,
+                "0005000c101C9500" => 22690,
+                "0005000e101C9500" => 15927,
+                // US
+                "00050000101C9400" => 15996,
+                "0005000e101C9400" => 22647,
+                "0005000c101C9400" => 15219,
+                // JP
+                "00050000101C9300" => 14191,
+                "0005000c101C9300" => 22617,
+                "0005000e101C9300" => 14747,
+                _ => 0,
+            };
         }
     }
 }

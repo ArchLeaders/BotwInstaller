@@ -73,9 +73,7 @@ namespace BotwInstaller.Wizard.Views
             SourceInitialized += async (s, e) =>
             {
                 using (HttpClient client = new())
-                {
                     ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(HttpLinks.ModPresetsJson));
-                }
             };
 
             // Assign state changed events
@@ -126,21 +124,6 @@ namespace BotwInstaller.Wizard.Views
         {
             Hyperlink link = (Hyperlink)sender;
             Process.Start("explorer.exe", link.NavigateUri.ToString());
-        }
-
-        private void InstallWiiU_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void InstallCemu_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void InstallSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }

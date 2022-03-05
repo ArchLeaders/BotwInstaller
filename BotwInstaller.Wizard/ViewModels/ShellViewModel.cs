@@ -8,10 +8,12 @@
 using BotwInstaller.Lib;
 using BotwInstaller.Wizard.ViewThemes.App;
 using BotwScripts.Lib.Common;
+using BotwScripts.Lib.Common.Computer;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -47,9 +49,9 @@ namespace BotwInstaller.Wizard.ViewModels
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public List<string> GetModPresets(string mode)
+        public BindableCollection<string> GetModPresets(string mode)
         {
-            List<string> modPresets = new();
+            BindableCollection<string> modPresets = new();
 
             if (mode == "cemu" || mode == "wiiu" || mode == "switch")
                 foreach (var key in ModPresetData[mode.Replace("cemu", "wiiu")].Keys)
@@ -80,7 +82,6 @@ namespace BotwInstaller.Wizard.ViewModels
             }
 
             // Set prefs
-            ModPresets = GetModPresets(mode);
             if (mode == "wiiu")
             {
                 GameMode = mode;
@@ -94,7 +95,7 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 GameMode = mode;
                 GenericPathLabel = "Cemu Installation Directory";
-                GenericPath = new Config().Dirs.Cemu;
+                GenericPath = new Config().Dirs.Dynamic;
                 CemuPrefs_Visibility = Visibility.Visible;
                 WiiuPrefs_Visibility = Visibility.Collapsed;
                 SwitchPrefs_Visibility = Visibility.Collapsed;
@@ -112,6 +113,7 @@ namespace BotwInstaller.Wizard.ViewModels
             // Setup
             if (SetupPageVisibility == Visibility.Hidden)
             {
+                ModPresets = GetModPresets(mode);
                 SetupPageVisibility = Visibility.Visible;
 
                 SplashPageVisibility = Visibility.Hidden;
@@ -119,7 +121,7 @@ namespace BotwInstaller.Wizard.ViewModels
             }
 
             // Installing
-            else if (InstallPageVisibility == Visibility.Hidden && !mode.Contains(";"))
+            else if (InstallPageVisibility == Visibility.Hidden && !mode.Contains(';'))
             {
                 InstallPageVisibility = Visibility.Visible;
 
@@ -139,43 +141,51 @@ namespace BotwInstaller.Wizard.ViewModels
             // Install
             if (mode == "install")
             {
+                Stopwatch watch = new();
+
                 StartAnimation();
+                watch.Start();
+
                 await Task.Run(async () =>
                 {
-                    Config conf = new();
-
                     #region Configure
 
-                    if (DesktopShortcuts)
-                    {
-                        conf.Shortcuts.BCML.Desktop = true;
-                        conf.Shortcuts.BotW.Desktop = true;
-                        conf.Shortcuts.Cemu.Desktop = true;
-                        conf.Shortcuts.DS4Windows.Desktop = true;
-                    }
+                    conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
+                    conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
+                    conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
+                    conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
+                    conf.Dirs.Dynamic = GenericPath;
+                    conf.ModPacks = ModPresetData;
+                    conf.ModPack = ModPreset;
 
                     if (GameMode == "cemu")
                     {
                         conf.UseCemu = true;
                         conf.Install.Cemu = true;
                         conf.Install.Base = CopyBaseGame;
-
-                        if (ControllerApiTranslate[ControllerApi] == "DSUController")
-                            conf.Install.DS4Windows = true;
+                        conf.ControllerApi = ControllerApiTranslate[ControllerApi];
                     }
 
                     #endregion
 
                     if (GameMode == "switch")
                     {
-                        // await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, new(), nx: true);
+                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf, nx: true);
                     }
                     else if (GameMode == "wiiu" || GameMode == "cemu")
                     {
-                        // await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
+                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
                     }
 
+                    // LaunchPageVisibility = Visibility.Visible;
+
+                    // SplashPageVisibility = Visibility.Hidden;
+                    // SetupPageVisibility = Visibility.Hidden;
+                    // InstallPageVisibility = Visibility.Hidden;
                 });
+
+                watch.Stop();
+                InstallTime = $"{watch.ElapsedMilliseconds}";
             }
         }
 
@@ -184,9 +194,12 @@ namespace BotwInstaller.Wizard.ViewModels
         /// </summary>
         public void StartAnimation()
         {
-            // Make timer
+            // Make timer(s)
             DispatcherTimer timer = new();
             timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
+
+            DispatcherTimer updateTimer = new();
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 30);
 
             // Iteration variables
             Dictionary<string, string> installing = new() {
@@ -198,9 +211,18 @@ namespace BotwInstaller.Wizard.ViewModels
             timer.Tick += (s, e) =>
             {
                 InstallingText = installing[InstallingText];
-                Update(GameInstallValue + 12, "game");
-                Update(CemuInstallValue + 2, "cemu");
-                Update(BcmlInstallValue + 13, "bcml");
+            };
+
+            updateTimer.Tick += (s, e) =>
+            {
+                if (UnboundGameInstallValue < GameInstallValue)
+                    GameInstallValue++;
+
+                if (UnboundCemuInstallValue < CemuInstallValue)
+                    CemuInstallValue++;
+
+                if (UnboundBcmlInstallValue < BcmlInstallValue)
+                    BcmlInstallValue++;
             };
 
             timer.Start();
@@ -258,35 +280,40 @@ namespace BotwInstaller.Wizard.ViewModels
         {
             if (id == "game")
             {
-                if (GameInstallValue != 100)
+                if (UnboundGameInstallValue != 100)
                 {
                     if (value - 100 > 0)
-                        GameInstallValue = value - (value - 100);
+                        UnboundGameInstallValue = value - (value - 100);
                     else
-                        GameInstallValue = value;
+                        UnboundGameInstallValue = value;
                 }
                     
             }
             else if (id == "cemu")
             {
-                if (CemuInstallValue != 100)
+                if (UnboundCemuInstallValue != 100)
                 {
                     if (value - 100 > 0)
-                        GameInstallValue = value - (value - 100);
+                        UnboundCemuInstallValue = value - (value - 100);
                     else
-                        CemuInstallValue = value;
+                        UnboundCemuInstallValue = value;
                 }
             }
             else if (id == "bcml")
             {
-                if (BcmlInstallValue != 100)
+                if (UnboundBcmlInstallValue != 100)
                 {
                     if (value - 100 > 0)
-                        BcmlInstallValue = value - (value - 100);
+                        UnboundBcmlInstallValue = value - (value - 100);
                     else
-                        BcmlInstallValue = value;
+                        UnboundBcmlInstallValue = value;
                 }
             }
+        }
+
+        public void LaunchBotw()
+        {
+            _ = HiddenProcess.Start($"{Config.AppData}\\botw\\botw.bat");
         }
 
         #endregion
@@ -337,7 +364,7 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        private string _genericPath = new Config().Dirs.Cemu;
+        private string _genericPath = new Config().Dirs.Dynamic;
         public string GenericPath
         {
             get { return _genericPath; }
@@ -359,19 +386,15 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        private string _modPreset = "none";
-        public string ModPreset
+        private dynamic _modPreset = "None";
+        public dynamic ModPreset
         {
-            get { return _modPreset; }
-            set
-            {
-                _modPreset = value;
-                NotifyPropertyChanged();
-            }
+            get => _modPreset;
+            set => SetAndNotify(ref _modPreset, value);
         }
 
-        private List<string> _modPresets = new();
-        public List<string> ModPresets
+        private BindableCollection<string> _modPresets = new();
+        public BindableCollection<string> ModPresets
         {
             get { return _modPresets; }
             set
@@ -417,6 +440,17 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _scrollUpdater = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _installTime = "00:00";
+        public string InstallTime
+        {
+            get { return _installTime; }
+            set
+            {
+                _installTime = value;
                 NotifyPropertyChanged();
             }
         }
@@ -509,6 +543,17 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
+        private Visibility _launchPageVisibility = Visibility.Hidden;
+        public Visibility LaunchPageVisibility
+        {
+            get { return _launchPageVisibility; }
+            set
+            {
+                _launchPageVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region ToolTips
@@ -518,6 +563,10 @@ namespace BotwInstaller.Wizard.ViewModels
         #endregion
 
         #region Animations
+
+        public double UnboundGameInstallValue { get; set; } = 0.0;
+        public double UnboundCemuInstallValue { get; set; } = 0.0;
+        public double UnboundBcmlInstallValue { get; set; } = 0.0;
 
         private string _installingText = "Installing . . .";
         public string InstallingText
@@ -601,7 +650,9 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
-        public static Dictionary<string, Dictionary<string, List<string>>> ModPresetData { get; set; } = new();
+        public Config conf { get; set; } = new();
+
+        public static Dictionary<string, Dictionary<string, List<string?>>> ModPresetData { get; set; } = new();
 
         private IWindowManager windowManager;
         public ShellViewModel(IWindowManager windowManager)

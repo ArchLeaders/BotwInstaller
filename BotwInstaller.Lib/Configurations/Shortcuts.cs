@@ -15,7 +15,7 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
             Directory.CreateDirectory(Root);
 
             // Download shell process
-            string shell = $"{AppData}\\Temp\\BOTW\\lnk.shell";
+            string shell = $"{AppData}\\Temp\\BOTW\\lnk.sh";
             if (!File.Exists(shell))
                 await Download.FromUrl(DownloadLinks.LnkWriter, shell);
 
@@ -33,8 +33,8 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
 
                 if (lnk.BatchFile.StartsWith("https:"))
                 {
-                    using (HttpClient client = new())
-                        await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", (await client.GetStringAsync(lnk.BatchFile)).EvaluateVariables());
+                    using HttpClient client = new();
+                    await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", (await client.GetStringAsync(lnk.BatchFile)).EvaluateVariables());
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
 
             if (lnk.Desktop)
             {
-                await HiddenProcess.Start(shell, $"/F:\"{StartMenu}\\{lnk.Name}.lnk\" /A:C /T:\"{lnk.Target}\" /P:\"{lnk.Args}\" /I:\"{lnk.IconFile}\" /D:\"{lnk.Description}\"");
+                await HiddenProcess.Start(shell, $"/F:\"{Desktop}\\{lnk.Name}.lnk\" /A:C /T:\"{lnk.Target}\" /P:\"{lnk.Args}\" /I:\"{lnk.IconFile}\" /D:\"{lnk.Description}\"");
             }
         }
 

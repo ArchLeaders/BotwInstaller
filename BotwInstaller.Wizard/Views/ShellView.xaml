@@ -220,7 +220,8 @@
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="1"
                                   FontSize="18"
-                                  ItemsSource="{Binding ModPresets}" />
+                                  ItemsSource="{Binding ModPresets}"
+                                  SelectedItem="{Binding ModPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <ComboBox Grid.Column="3"
                                   Width="280"
                                   Margin="10,0,0,0"
@@ -273,7 +274,8 @@
                               Focusable="{Binding ScrollUpdater}"
                               FocusableChanged="{s:Action ScrollViewerSizeChanged}"
                               FontFamily="Consolas"
-                              FontSize="12" />
+                              FontSize="12"
+                              HorizontalScrollBarVisibility="Auto" />
             </Border>
 
             <Grid Grid.Row="1"
@@ -324,6 +326,31 @@
                              Foreground="{DynamicResource SecondaryHueLightBrush}"
                              Value="{Binding BcmlInstallValue}" />
             </Grid>
+        </Grid>
+
+        <!--  Launch Page  -->
+        <Grid Grid.Row="1"
+              Background="{DynamicResource MaterialDesignPaper}"
+              Visibility="{Binding LaunchPageVisibility}">
+
+            <Image Source="..\ViewResources\Images\background.png" />
+
+            <TextBlock Margin="25,25,0,0"
+                       FontFamily="Artifakt Element"
+                       FontSize="20"
+                       FontWeight="Bold">
+                <Run Text="Install Time: " />
+                <Run Text="{Binding InstallTime}" />
+            </TextBlock>
+            <Button Width="200"
+                    Height="45"
+                    Margin="25"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding LaunchBotw}"
+                    Content="Launch BOTW"
+                    FontSize="25"
+                    FontWeight="Bold" />
         </Grid>
 
         <Grid x:Name="windowChrome" Background="{DynamicResource PrimaryHueDarkBrush}">
