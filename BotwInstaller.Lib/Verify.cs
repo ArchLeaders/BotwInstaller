@@ -52,6 +52,7 @@ namespace BotwInstaller.Lib
         public static void CheckMlc(this string cemu, ref Dictionary<string, object> paths, Interface.Notify print, string func = "[VERIFY.MLC]")
         {
             var mlc = "";
+            paths.Add("mlc", "NOT FOUND");
 
             if (!File.Exists($"{cemu}\\settings.xml"))
                 return;
@@ -68,6 +69,7 @@ namespace BotwInstaller.Lib
                         mlc = $"{cemu}\\{mlc}";
 
                     print($"{func} Mlc found in '{mlc}'");
+                    paths["mlc"] = mlc;
                 }
             }
 

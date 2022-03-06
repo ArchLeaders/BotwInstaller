@@ -16,6 +16,7 @@ using BotwScripts.Lib.Common.Computer;
 using BotwInstaller.Lib.Configurations;
 using BotwScripts.Lib.Common.IO;
 using System.Diagnostics;
+using BotwInstaller.Lib.Remote;
 
 namespace BotwInstaller.Lib
 {
@@ -80,7 +81,7 @@ namespace BotwInstaller.Lib
 
             // Unpack GFX to graphicPacks folder
             print($"{func} Extracting GFX . . .");
-            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\GFX.PACK.res", $"{conf.Dirs.Dynamic}\\graphicPacks\\downloadedGraphicPacks")));
+            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\GFX.PACK.res", $"{conf.Dirs.Dynamic}\\graphicPacks\\downloadedGraphicPacks", true)));
 
             // Unpack CemuHook to the temp folder
             print($"{func} Extracting CemuHook . . .");
@@ -106,23 +107,23 @@ namespace BotwInstaller.Lib
 
                 // Copy sharedFonts
                 foreach (string font in sharedFonts)
-                    File.Copy($"{cemuTemp}\\resources\\sharedFonts\\{font}", $"{conf.Dirs.Dynamic}\\sharedFonts\\{font}");
+                    File.Copy($"{cemuTemp}\\resources\\sharedFonts\\{font}", $"{conf.Dirs.Dynamic}\\sharedFonts\\{font}", true);
 
                 // Copy Cemu files
                 foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
                 {
                     var dir = new FileInfo(file).DirectoryName;
                     Directory.CreateDirectory($"{conf.Dirs.Dynamic}\\{dir.Replace(cemuTemp, "")}");
-                    File.Copy(file, $"{conf.Dirs.Dynamic}\\{file.Replace(cemuTemp, "")}");
+                    File.Copy(file, $"{conf.Dirs.Dynamic}\\{file.Replace(cemuTemp, "")}", true);
                 }
             }));
 
             // Install CemuHook
-            print($"{func} Installing Cemu . . .");
+            print($"{func} Installing CemuHook . . .");
             install.Add(Task.Run(() => {
                 string cemuHookTemp = $"{AppData}\\Temp\\BOTW\\CEMUHOOK";
                 foreach (var file in Directory.EnumerateFiles(cemuHookTemp, "*.*", SearchOption.AllDirectories))
-                    File.Copy(file, $"{conf.Dirs.Dynamic}\\{file.Replace(cemuHookTemp, "")}");
+                    File.Copy(file, $"{conf.Dirs.Dynamic}\\{file.Replace(cemuHookTemp, "")}", true);
             }));
 
             // Configure settings, profiles, and controllers
@@ -133,7 +134,8 @@ namespace BotwInstaller.Lib
                 ControllerProfile.Write(conf, conf.ControllerApi);
 
                 // Create Cemu settings
-                CemuSettings.Write(conf);
+                if (!File.Exists($"{conf.Dirs.Dynamic}\\settings.xml"))
+                    CemuSettings.Write(conf);
 
                 // Write Botw game profile
                 GameProfile.Write(conf);
@@ -157,6 +159,8 @@ namespace BotwInstaller.Lib
             if (!File.Exists($"{conf.Dirs.Python}\\Scripts\\pip.exe"))
             {
                 print($"{func} Installing PIP");
+                await Download.FromUrl(HttpLinks.PipInstaller, $"{AppData}\\botw\\get-pip.py");
+                await HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\python.exe", $"\"{AppData}\\botw\\get-pip.py\"");
                 await HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\python.exe", "-m pip install --upgrade pip");
             }
 
@@ -171,9 +175,11 @@ namespace BotwInstaller.Lib
             pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall cefpython3"));
 
             print($"{func} Installing TK");
+            update(16, "bcml");
             pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall tk"));
 
             print($"{func} Installing Runtimes");
+            update(18, "bcml");
             pip.Add(RuntimeInstallers.VisualCRuntime(print));
 
             print($"{func} Creating Settings");
@@ -229,7 +235,7 @@ namespace BotwInstaller.Lib
                 }
             }
 
-            update(100, "bcml");
+            update(95, "bcml");
         }
 
         public static void Homebrew(Interface.Notify print, Config conf)
