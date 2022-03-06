@@ -49,6 +49,11 @@ namespace BotwInstaller.Lib
         public bool IsNX { get; set; } = false;
 
         /// <summary>
+        /// Use Cemu configurations
+        /// </summary>
+        public bool UseCemu { get; set; } = false;
+
+        /// <summary>
         /// The mod pack to be installed in BCML
         /// </summary>
         public string ModPack { get; set; } = "None";
@@ -116,7 +121,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// Install the Base game in Cemu
             /// </summary>
-            public bool Base { get; set; } = true;
+            public bool Base { get; set; } = false;
 
             /// <summary>
             /// Install Cemu
@@ -131,7 +136,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// Install the update in Cemu
             /// </summary>
-            public bool Update { get; set; } = true;
+            public bool Update { get; set; } = false;
 
             /// <summary>
             /// Install python
@@ -154,8 +159,7 @@ namespace BotwInstaller.Lib
                     return new()
                     {
                         Name = "BCML",
-                        Target = "$python\\python.exe".EvaluateVariables(),
-                        Args = "-m bcml",
+                        Target = "$python\\Scripts\\bcml.exe".EvaluateVariables(),
                         IconFile = HttpLinks.BcmlIconFile,
                         Description = "Breath of the Wild Cross-Platform Mod Loader developed by Caleb Smith and GingerAvalanche",
                         BatchFile = HttpLinks.BcmlBatchFile
