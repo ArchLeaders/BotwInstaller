@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using BotwScripts.Lib.Common.IO.FileSystems;
+using System.Text.Json;
 
 namespace BotwInstaller.Lib.Configurations
 {
@@ -8,21 +9,21 @@ namespace BotwInstaller.Lib.Configurations
         {
             Dictionary<string, object> jsonObject = new()
             {
-                { "cemu_dir", conf.Dirs.Dynamic },
-                { "game_dir", conf.Dirs.Base },
-                { "game_dir_nx", "" },
-                { "update_dir", conf.Dirs.Update },
-                { "dlc_dir", conf.Dirs.DLC },
-                { "dlc_dir_nx", "" },
+                { "cemu_dir", conf.Install.Cemu ? conf.Dirs.Dynamic : "" },
+                { "game_dir", conf.IsNX ? "" : $"{conf.Dirs.Base}\\content" },
+                { "game_dir_nx", conf.IsNX ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\dump\\01007EF00011E000\\romfs" : "" },
+                { "update_dir", conf.IsNX ? "" : $"{conf.Dirs.Update}\\content" },
+                { "dlc_dir", conf.IsNX ? "" : $"{conf.Dirs.DLC}\\content\\0010" },
+                { "dlc_dir_nx", conf.IsNX ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\dump\\01007EF00011F001\\romfs" : "" },
                 { "store_dir", conf.Dirs.BCML },
-                { "export_dir", $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" },
-                { "export_dir_nx", "" },
+                { "export_dir", conf.Install.Cemu ? $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" : conf.Dirs.Dynamic },
+                { "export_dir_nx", conf.Dirs.Dynamic == "" ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\load" : conf.Dirs.Dynamic },
                 { "load_reverse", false },
                 { "site_meta", "" },
                 { "no_guess", false },
                 { "lang", $"{GameInfo.GetTitleID(conf.Dirs.Base, TitleIDFormat.Region)}en" },
-                { "no_cemu", false },
-                { "wiiu", true },
+                { "no_cemu", !conf.Install.Cemu },
+                { "wiiu", !conf.IsNX },
                 { "no_hardlinks", false },
                 { "force_7z", false },
                 { "suppress_update", false },
