@@ -44,11 +44,6 @@ namespace BotwInstaller.Lib
         public string ControllerApi { get; set; } = "XInput";
 
         /// <summary>
-        /// Use Cemu in BCML
-        /// </summary>
-        public bool UseCemu { get; set; } = false;
-
-        /// <summary>
         /// Installing the NX version
         /// </summary>
         public bool IsNX { get; set; } = false;
