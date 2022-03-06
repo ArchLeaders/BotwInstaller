@@ -27,6 +27,8 @@ namespace BotwInstaller.Wizard.ViewModels
 {
     public class ShellViewModel : Screen, INotifyPropertyChanged
     {
+        DispatcherTimer updateTimer = new();
+
         #region Actions
 
         /// <summary>
@@ -58,11 +60,6 @@ namespace BotwInstaller.Wizard.ViewModels
                     modPresets.Add(key);
 
             return modPresets;
-        }
-
-        public void FormatError(string error, ConsoleColor color = ConsoleColor.Black)
-        {
-
         }
 
         /// <summary>
@@ -160,27 +157,33 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     if (GameMode == "cemu")
                     {
-                        conf.Install.Cemu = true;
+                        conf.UseCemu = true;
                         conf.Install.Base = CopyBaseGame;
                         conf.ControllerApi = ControllerApiTranslate[ControllerApi];
                     }
 
-                    #endregion
-
                     if (GameMode == "switch")
                     {
-                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf, nx: true);
+                        conf.IsNX = true;
                     }
-                    else if (GameMode == "wiiu" || GameMode == "cemu")
+
+                    #endregion
+
+                    try
                     {
-                        await Installer.RunInstallerAsync(LogUpdate, Update, FormatError, conf);
+                        await Installer.RunInstallerAsync(LogMessage, Update, conf);
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
+                    }
+                    finally
+                    {
+                        if (Directory.Exists($"{Config.AppData}\\Temp\\BOTW"))
+                            Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
                     }
 
-                    // LaunchPageVisibility = Visibility.Visible;
-
-                    // SplashPageVisibility = Visibility.Hidden;
-                    // SetupPageVisibility = Visibility.Hidden;
-                    // InstallPageVisibility = Visibility.Hidden;
+                    updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
                 });
 
                 watch.Stop();
@@ -196,9 +199,7 @@ namespace BotwInstaller.Wizard.ViewModels
             // Make timer(s)
             DispatcherTimer timer = new();
             timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-
-            DispatcherTimer updateTimer = new();
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 30);
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
 
             // Iteration variables
             Dictionary<string, string> installing = new() {
@@ -214,17 +215,26 @@ namespace BotwInstaller.Wizard.ViewModels
 
             updateTimer.Tick += (s, e) =>
             {
-                if (UnboundGameInstallValue < GameInstallValue)
+                if (UnboundGameInstallValue > GameInstallValue)
                     GameInstallValue++;
 
-                if (UnboundCemuInstallValue < CemuInstallValue)
+                if (UnboundCemuInstallValue > CemuInstallValue)
                     CemuInstallValue++;
 
-                if (UnboundBcmlInstallValue < BcmlInstallValue)
+                if (UnboundBcmlInstallValue > BcmlInstallValue)
                     BcmlInstallValue++;
+
+                if (BcmlInstallValue >= 100)
+                {
+                    LaunchPageVisibility = Visibility.Visible;
+                    SplashPageVisibility = Visibility.Hidden;
+                    SetupPageVisibility = Visibility.Hidden;
+                    InstallPageVisibility = Visibility.Hidden;
+                }
             };
 
             timer.Start();
+            updateTimer.Start();
         }
 
         /// <summary>
@@ -261,7 +271,7 @@ namespace BotwInstaller.Wizard.ViewModels
         /// </summary>
         /// <param name="text"></param>
         /// <param name="color"></param>
-        public void LogUpdate(string text, ConsoleColor color = ConsoleColor.Gray)
+        public void LogMessage(string text, ConsoleColor color = ConsoleColor.Gray)
         {
             InstallLog = $"{InstallLog}\n{text}";
             ScrollUpdater = !ScrollUpdater;
@@ -312,7 +322,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public void LaunchBotw()
         {
-            _ = HiddenProcess.Start($"{Config.AppData}\\botw\\botw.bat");
+            _ = HiddenProcess.Start("cmd.exe", $"/c \"{Config.Root}\\botw.bat\"");
         }
 
         #endregion
