@@ -52,12 +52,14 @@ namespace BotwInstaller.Lib
 
             var start = results;
             var end = results;
-            var region = end;
 
             foreach (var item in starts)
                 end = end.Replace(item, "");
             foreach (var item in ends)
                 start = start.Replace(item, "");
+
+            var region = end;
+
             foreach (var item in regions)
                 region = region.Replace(item.Key, item.Value);
 
@@ -94,31 +96,37 @@ namespace BotwInstaller.Lib
         /// <param name="cemu">Supposed path to Cemu</param>
         /// <param name="python">Supposed path to Python</param>
         /// <returns></returns>
-        public static async Task<Dictionary<string, object>> GetFiles(Interface.Notify print, string cemu = "::", string python = "::")
+        public static async Task<Dictionary<string, object>> GetFiles(Interface.Notify print, string cemu = "::", string python = "::", bool nx = false)
         {
             Dictionary<string, object> paths = new();
 
             List<Task> tasks = new();
 
-            tasks.Add(Task.Run(() =>
+            if (!nx)
             {
-                var botw = Search.Botw(print);
+                tasks.Add(Task.Run(() =>
+                {
+                    var botw = Search.Botw(print);
 
-                foreach (var item in botw)
-                    paths.Add(item.Key, item.Value);
-            }));
+                    foreach (var item in botw)
+                        paths.Add(item.Key, item.Value);
+                }));
+
+                if (cemu != "!ignore")
+                {
+                    tasks.Add(Task.Run(() =>
+                    {
+                        var cemuRt = Search.Cemu(print, cemu);
+
+                        foreach (var item in cemuRt)
+                            paths.Add(item.Key, item.Value);
+                    }));
+                }
+            }
 
             tasks.Add(Task.Run(() =>
             {
                 paths.Add("Python", Search.Python(print, python));
-            }));
-
-            tasks.Add(Task.Run(() =>
-            {
-                var cemuRt = Search.Cemu(print, cemu);
-
-                foreach (var item in cemuRt)
-                    paths.Add(item.Key, item.Value);
             }));
 
             await Task.WhenAll(tasks);
