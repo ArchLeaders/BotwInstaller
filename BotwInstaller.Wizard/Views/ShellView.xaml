@@ -295,36 +295,44 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Game Install Progress —" />
-                <TextBlock Grid.Column="1" Text="{Binding StrGameInstallValue}" />
+                <TextBlock Text="BCML Install Progress —" />
+                <TextBlock Grid.Column="1" Text="{Binding StrBcmlInstallValue}" />
                 <ProgressBar Grid.Row="1"
                              Grid.ColumnSpan="2"
                              Height="15"
                              VerticalAlignment="Top"
                              Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Value="{Binding GameInstallValue}" />
+                             Value="{Binding BcmlInstallValue}" />
 
-                <TextBlock Grid.Row="2" Text="Cemu Install Progress —" />
+                <TextBlock Grid.Row="2"
+                           Text="Game Install Progress —"
+                           Visibility="{Binding CemuPrefs_Visibility}" />
                 <TextBlock Grid.Row="2"
                            Grid.Column="1"
-                           Text="{Binding StrCemuInstallValue}" />
+                           Text="{Binding StrGameInstallValue}"
+                           Visibility="{Binding CemuPrefs_Visibility}" />
                 <ProgressBar Grid.Row="3"
                              Grid.ColumnSpan="2"
                              Height="15"
                              VerticalAlignment="Top"
                              Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Value="{Binding CemuInstallValue}" />
+                             Visibility="{Binding CemuPrefs_Visibility}"
+                             Value="{Binding GameInstallValue}" />
 
-                <TextBlock Grid.Row="4" Text="BCML Install Progress —" />
+                <TextBlock Grid.Row="4"
+                           Text="Cemu Install Progress —"
+                           Visibility="{Binding CemuPrefs_Visibility}" />
                 <TextBlock Grid.Row="4"
                            Grid.Column="1"
-                           Text="{Binding StrBcmlInstallValue}" />
+                           Text="{Binding StrCemuInstallValue}"
+                           Visibility="{Binding CemuPrefs_Visibility}" />
                 <ProgressBar Grid.Row="5"
                              Grid.ColumnSpan="2"
                              Height="15"
                              VerticalAlignment="Top"
                              Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Value="{Binding BcmlInstallValue}" />
+                             Visibility="{Binding CemuPrefs_Visibility}"
+                             Value="{Binding CemuInstallValue}" />
             </Grid>
         </Grid>
 
@@ -333,8 +341,9 @@
               Background="{DynamicResource MaterialDesignPaper}"
               Visibility="{Binding LaunchPageVisibility}">
 
-            <Image Source="..\ViewResources\Images\background.png" />
+            <Image Margin="180,05,0,0" Source="..\ViewResources\Images\background.png" />
 
+            <!--  Install Time  -->
             <TextBlock Margin="25,25,0,0"
                        FontFamily="Artifakt Element"
                        FontSize="20"
@@ -342,15 +351,71 @@
                 <Run Text="Install Time: " />
                 <Run Text="{Binding InstallTime}" />
             </TextBlock>
+
+            <!--  Credits  -->
+            <TextBlock Margin="25,75,0,0"
+                       FontFamily="Artifakt Element"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Text="Credits:" />
+            <TextBlock Margin="30,100,0,0"
+                       FontFamily="Artifakt Element"
+                       FontSize="12"
+                       FontWeight="Bold">
+                <Run Text="Arch Leaders (Programming, Design)" />
+                <LineBreak />
+                <Run Text="a_j_k_arts (Design)" />
+                <LineBreak />
+                <Run Text="reze_ha (Mod Packs)" />
+            </TextBlock>
+
+            <TextBlock Margin="25,0,0,25"
+                       VerticalAlignment="Bottom"
+                       FontFamily="Artifakt Element"
+                       FontSize="12"
+                       FontWeight="Light"
+                       Foreground="{DynamicResource PrimaryHueLightBrush}"
+                       Style="{DynamicResource MaterialDesignBody2TextBlock}"
+                       TextOptions.TextRenderingMode="ClearType">
+                <Hyperlink FontSize="12"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           RequestNavigate="Hyperlink_RequestNavigate"
+                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                    GitHub
+                </Hyperlink>
+                <Run>|</Run>
+                <Hyperlink FontSize="12"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           RequestNavigate="Hyperlink_RequestNavigate"
+                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                    Discord
+                </Hyperlink>
+                <Run>|</Run>
+                <Hyperlink FontSize="12"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           RequestNavigate="Hyperlink_RequestNavigate"
+                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                    GameBanana
+                </Hyperlink>
+            </TextBlock>
+
+            <!--  Launch  -->
             <Button Width="200"
                     Height="45"
                     Margin="25"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Command="{Binding LaunchBotw}"
+                    Command="{s:Action LaunchBotw}"
                     Content="Launch BOTW"
                     FontSize="25"
-                    FontWeight="Bold" />
+                    FontWeight="Bold"
+                    Visibility="{Binding CemuPrefs_Visibility}" />
         </Grid>
 
         <Grid x:Name="windowChrome" Background="{DynamicResource PrimaryHueDarkBrush}">
