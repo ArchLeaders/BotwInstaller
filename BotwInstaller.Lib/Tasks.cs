@@ -15,6 +15,7 @@ using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Computer;
 using BotwInstaller.Lib.Configurations;
 using BotwScripts.Lib.Common.IO;
+using System.Diagnostics;
 
 namespace BotwInstaller.Lib
 {
@@ -54,15 +55,21 @@ namespace BotwInstaller.Lib
             {
                 print($"{func} Downloading DS4Windows . . .");
                 download.Add(Download.FromUrl(await GitHub.GetLatestRelease("Ryochan7;DS4Windows", 2), $"{AppData}\\Temp\\BOTW\\DS4.PACK.res"));
+
+                foreach (var proc in Process.GetProcesses())
+                {
+                    if (proc.ProcessName == "DS4Windows")
+                    {
+                        print($"{func} Found DS4Windows process {proc.Id}");
+                        print($"{func} Killing process {proc.Id}");
+                        proc.Kill();
+                    }
+                }
             }
 
             // Download CemuHook
             print($"{func} Downloading CemuHook . . .");
             download.Add(Download.FromUrl("https://files.sshnuke.net/cemuhook_1262d_0577.zip", $"{AppData}\\Temp\\BOTW\\CEMUHOOK.PACK.res"));
-
-            // Install runtimes
-            print($"{func} Installing runtimes . . .");
-            install.Add(RuntimeInstallers.VisualCRuntime(print));
 
             // Wait for download
             await Task.WhenAll(download); update(45, "cemu");
@@ -166,6 +173,9 @@ namespace BotwInstaller.Lib
             print($"{func} Installing TK");
             pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall tk"));
 
+            print($"{func} Installing Runtimes");
+            pip.Add(RuntimeInstallers.VisualCRuntime(print));
+
             print($"{func} Creating Settings");
             update(20, "bcml");
             pip.Add(BcmlSettings.Write(conf));
@@ -209,7 +219,7 @@ namespace BotwInstaller.Lib
             if (Directory.Exists($"{conf.Dirs.BCML}\\mods\\9999_BCML"))
             {
                 print($"{func} Merging mods . . .");
-                if (conf.UseCemu)
+                if (conf.Install.Cemu)
                 {
                     await Task.Run(() => Batch.CopyDirectory($"{conf.Dirs.BCML}\\mods\\9999_BCML", $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML"));
                 }
