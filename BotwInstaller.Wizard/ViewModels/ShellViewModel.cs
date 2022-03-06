@@ -160,7 +160,6 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     if (GameMode == "cemu")
                     {
-                        conf.UseCemu = true;
                         conf.Install.Cemu = true;
                         conf.Install.Base = CopyBaseGame;
                         conf.ControllerApi = ControllerApiTranslate[ControllerApi];
@@ -408,7 +407,7 @@ namespace BotwInstaller.Wizard.ViewModels
         public Dictionary<string, string> ControllerApiTranslate { get; } = new()
         {
             { "Controller -", "XInput" },
-            { "XBox | XBox Emulated DS4", "XInput" },
+            { "XBox Controller", "XInput" },
             { "Nintendo Switch Joycons", "SDLController-Joycon" },
             { "Nintendo Switch Pro Controller", "SDLController" },
             { "DualShock 4", "DSUController" },

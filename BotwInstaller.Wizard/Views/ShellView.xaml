@@ -234,7 +234,7 @@
                             <ComboBoxItem Content="DualShock 4" />
                             <ComboBoxItem Content="Nintendo Switch Joycons" />
                             <ComboBoxItem Content="Nintendo Switch Pro Controller" />
-                            <ComboBoxItem Content="XBox | XBox Emulated DS4" />
+                            <ComboBoxItem Content="XBox Controller" />
                             <ComboBoxItem Content="Keyboard (Not Recomended)" />
                         </ComboBox>
                     </Grid>
