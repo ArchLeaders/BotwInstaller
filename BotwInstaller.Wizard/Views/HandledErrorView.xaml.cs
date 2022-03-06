@@ -21,10 +21,5 @@ namespace BotwInstaller.Wizard.Views
 
             btnOk.Focus();
         }
-
-        private void Window_OnContentRendered(object sender, EventArgs e)
-        {
-            InvalidateVisual();
-        }
     }
 }

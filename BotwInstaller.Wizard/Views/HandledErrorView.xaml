@@ -9,7 +9,6 @@
         x:Name="parent"
         MaxWidth="{Binding Width}"
         Background="{DynamicResource MaterialDesignBackground}"
-        ContentRendered="Window_OnContentRendered"
         Foreground="{DynamicResource MaterialDesignBody}"
         ResizeMode="NoResize"
         SizeToContent="Height"
