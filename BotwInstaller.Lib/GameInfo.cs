@@ -45,21 +45,21 @@ namespace BotwInstaller.Lib
 
             Dictionary<string, string> regions = new()
             {
-                { "101C9500", "EUen" },
-                { "101C9400", "USen" },
-                { "101C9300", "JPjp" }
+                { "101C9500", "EU" },
+                { "101C9400", "US" },
+                { "101C9300", "JP" }
             };
 
             var start = results;
             var end = results;
-            var region = "";
+            var region = end;
 
             foreach (var item in starts)
                 end = end.Replace(item, "");
             foreach (var item in ends)
                 start = start.Replace(item, "");
             foreach (var item in regions)
-                region = end.Replace(item.Key, item.Value);
+                region = region.Replace(item.Key, item.Value);
 
             return format switch
             {
