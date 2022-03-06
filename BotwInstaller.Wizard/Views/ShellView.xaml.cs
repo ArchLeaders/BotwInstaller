@@ -72,8 +72,8 @@ namespace BotwInstaller.Wizard.Views
             // Load window fix
             SourceInitialized += async (s, e) =>
             {
-                using (HttpClient client = new())
-                    ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(HttpLinks.ModPresetsJson));
+                using HttpClient client = new();
+                ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(HttpLinks.ModPresetsJson));
             };
 
             // Assign state changed events
