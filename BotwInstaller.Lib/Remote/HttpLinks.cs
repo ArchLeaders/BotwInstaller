@@ -12,6 +12,6 @@ namespace BotwInstaller.Lib.Remote
         public static string CemuBatchFile { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/BatchFiles/cemu.bat";
         public static string DS4BatchFile { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/BatchFiles/ds4windows.bat";
         public static string PipInstaller { get; } = "https://bootstrap.pypa.io/get-pip.py";
-        public static string ModInstaller { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Python/python_module.py";
+        public static string ModInstaller { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/python_module.py";
     }
 }
