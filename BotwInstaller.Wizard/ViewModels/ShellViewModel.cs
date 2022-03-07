@@ -1,23 +1,19 @@
 ﻿#pragma warning disable CS0108
-#pragma warning disable CS8600
-#pragma warning disable CS8602
 #pragma warning disable CS8612
 #pragma warning disable CS8618
 #pragma warning disable CS8629
 
 using BotwInstaller.Lib;
-using BotwInstaller.Wizard.ViewThemes.App;
-using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.Computer;
+using BotwScripts.Lib.Common.Web;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,8 +23,6 @@ namespace BotwInstaller.Wizard.ViewModels
 {
     public class ShellViewModel : Screen, INotifyPropertyChanged
     {
-        DispatcherTimer updateTimer = new();
-
         #region Actions
 
         /// <summary>
@@ -133,6 +127,10 @@ namespace BotwInstaller.Wizard.ViewModels
 
                 SetupPageVisibility = Visibility.Hidden;
                 InstallPageVisibility = Visibility.Hidden;
+
+                WiiuPrefs_Visibility = Visibility.Collapsed;
+                CemuPrefs_Visibility = Visibility.Collapsed;
+                SwitchPrefs_Visibility = Visibility.Collapsed;
             }
 
             // Install
@@ -140,54 +138,54 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 Stopwatch watch = new();
 
-                StartAnimation();
-                watch.Start();
-
-                await Task.Run(async () =>
+                try
                 {
-                    #region Configure
+                    StartAnimation();
+                    watch.Start();
 
-                    conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
-                    conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
-                    conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
-                    conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
-                    conf.Dirs.Dynamic = GenericPath;
-                    conf.ModPacks = ModPresetData;
-                    conf.ModPack = ModPreset;
-
-                    if (GameMode == "cemu")
+                    await Task.Run(async () =>
                     {
-                        conf.UseCemu = true;
-                        conf.Install.Base = CopyBaseGame;
-                        conf.ControllerApi = ControllerApiTranslate[ControllerApi];
-                    }
+                        #region Configure
 
-                    if (GameMode == "switch")
-                    {
-                        conf.IsNX = true;
-                    }
+                        conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
+                        conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
+                        conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
+                        conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
+                        conf.Dirs.Dynamic = GenericPath;
+                        conf.ModPacks = ModPresetData;
+                        conf.ModPack = ModPreset;
 
-                    #endregion
+                        if (GameMode == "cemu")
+                        {
+                            conf.UseCemu = true;
+                            conf.Install.Base = CopyBaseGame;
+                            conf.ControllerApi = ControllerApiTranslate[ControllerApi];
+                        }
 
-                    try
-                    {
+                        if (GameMode == "switch")
+                        {
+                            conf.IsNX = true;
+                        }
+
+                        #endregion
                         await Installer.RunInstallerAsync(LogMessage, Update, conf);
-                    }
-                    catch (Exception ex)
-                    {
-                        ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
-                    }
-                    finally
-                    {
-                        if (Directory.Exists($"{Config.AppData}\\Temp\\BOTW"))
-                            Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
-                    }
 
-                    updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-                });
+                        updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
+                }
+                finally
+                {
+                    if (Directory.Exists($"{Config.AppData}\\Temp\\BOTW"))
+                        Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
 
-                watch.Stop();
-                InstallTime = $"{watch.ElapsedMilliseconds}";
+                    watch.Stop();
+                    string time = watch.ElapsedMilliseconds / 1000 >= 60 ? $"{watch.ElapsedMilliseconds / 1000 / 60} Minutes" : $"{watch.ElapsedMilliseconds / 1000} Seconds";
+                    InstallTime = time;
+                }
             }
         }
 
@@ -320,6 +318,9 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
+        /// <summary>
+        /// Launches the botw.bat file created when installing
+        /// </summary>
         public void LaunchBotw()
         {
             _ = HiddenProcess.Start("cmd.exe", $"/c \"{Config.Root}\\botw.bat\"");
@@ -347,28 +348,6 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _copyBaseGame = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _setupAtmosphere = false;
-        public bool SetupAtmosphere
-        {
-            get { return _setupAtmosphere; }
-            set
-            {
-                _setupAtmosphere = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _setupSDCafiine = false;
-        public bool SetupSDCafiine
-        {
-            get { return _setupSDCafiine; }
-            set
-            {
-                _setupSDCafiine = value;
                 NotifyPropertyChanged();
             }
         }
@@ -573,6 +552,8 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #region Animations
 
+        DispatcherTimer updateTimer = new();
+
         public double UnboundGameInstallValue { get; set; } = 0.0;
         public double UnboundCemuInstallValue { get; set; } = 0.0;
         public double UnboundBcmlInstallValue { get; set; } = 0.0;
@@ -655,6 +636,80 @@ namespace BotwInstaller.Wizard.ViewModels
                 StrBcmlInstallValue = $"{Math.Round(value)}%";
                 NotifyPropertyChanged();
             }
+        }
+
+        #endregion
+
+        #region Setup Tools (Actions)
+
+        public async Task InstallHomebrewWiiU()
+        {
+            ShowDialog("Select an empty folder or SDCard to install homebrew in.");
+
+            System.Windows.Forms.FolderBrowserDialog browse = new();
+
+            browse.InitialDirectory = Config.LastDrive;
+            browse.Description = "Browse for your SDCard";
+            browse.UseDescriptionForTitle = true;
+
+            if (browse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (var dir in Directory.EnumerateDirectories(browse.SelectedPath))
+                {
+                    if (dir != null && !dir.EndsWith("System Volume Information"))
+                    {
+                        ShowDialog($"The selected folder was not empty.\n{dir}", "Warning");
+                        return;
+                    }
+                }
+
+                foreach (var file in Directory.EnumerateFiles(browse.SelectedPath))
+                {
+                    if (file != null && !file.EndsWith("System Volume Information"))
+                    {
+                        ShowDialog($"The selected folder was not empty.\n{file}", "Warning");
+                        return;
+                    }
+                }
+
+                await Task.Run(async() =>
+                {
+                    string tiramisu = "https://tiramisu.foryour.cafe/api/download?packages=environmentloader,wiiu-nanddumper-payload,payloadloaderinstaller,tiramisu";
+
+                    // Download tiramisu
+                    await Download.FromUrl(tiramisu, $"{Config.AppData}\\Temp\\TIRAMISU_2022__DATA__UNPACK");
+
+                    // Extract tiramisu
+                    ZipFile.ExtractToDirectory($"{Config.AppData}\\Temp\\TIRAMISU_2022__DATA__UNPACK", browse.SelectedPath);
+
+                    // Create setup directory
+                    Directory.CreateDirectory($"{browse.SelectedPath}\\wiiu\\environments\\tiramisu\\modules\\setup");
+
+                    // Download patches
+                    await Download.FromUrl("https://wiiu.hacks.guide/docs/files/01_sigpatches.rpx", $"{browse.SelectedPath}\\wiiu\\environments\\tiramisu\\modules\\setup\\01_sigpatches.rpx");
+
+                    // Delete tiramisu zip
+                    File.Delete($"{Config.AppData}\\Temp\\TIRAMISU_2022__DATA__UNPACK");
+
+                });
+
+                ShowDialog($"Tiramisu installed successfully");
+            }
+        }
+
+        public void InstallHomebrewSwitch()
+        {
+
+        }
+
+        public void PrepCemu()
+        {
+
+        }
+
+        public void InstallDumpling()
+        {
+
         }
 
         #endregion
