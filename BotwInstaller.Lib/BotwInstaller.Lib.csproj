@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="BotwScripts.Lib.Common">
-      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
-    </Reference>
+    <Folder Include="Configurations\Icons\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\Icons\" />
+    <Reference Include="BotwScripts.Lib.Common">
+      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
