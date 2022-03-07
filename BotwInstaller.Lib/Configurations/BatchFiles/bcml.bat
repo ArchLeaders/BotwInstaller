@@ -5,6 +5,7 @@ ECHO Removing BCML . . .
 RMDIR "C:\Users\ArchLeaders\AppData\Local\bcml" /S /Q
 
 :: Remove BCML Package
+ECHO Removing PIP Package . . .
 START "PIP" "$python\Scripts\pip.exe" uninstall -y bcml
 
 :: Remove Shortcuts
@@ -15,7 +16,7 @@ DEL "$root\bcml.ico" /Q /F
 
 :: Remove Registry Key
 ECHO Removing registry keys . . .
-REG delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\BCML" /F
+REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\BCML" /F
 
 :: Delete Self
 PAUSE

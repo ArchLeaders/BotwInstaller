@@ -7,9 +7,9 @@ FOR %%F IN ("$cemu") DO (
 )
 
 CD /D "$cemu"
-FOR /D /R %%D IN (*.*) DO (
+FOR /D %%D IN (*.*) DO (
 	:: Skip mlc01 folder
-	IF NOT "%%D"=="$cemu\mlc01" (
+	IF NOT %%D==mlc01 (
 		RMDIR %%D /Q /S
 	)
 )
@@ -24,7 +24,7 @@ DEL "$root\botw.ico" /Q /F
 DEL "$root\botw.bat" /Q /F
 
 :: Remove Registry Key
-ECHO "Removing registry keys . . ."
+ECHO Removing registry keys . . .
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Cemu" /F
 
 :: Delete Self
