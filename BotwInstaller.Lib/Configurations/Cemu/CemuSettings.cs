@@ -4,7 +4,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
 {
     public class CemuSettings
     {
-        public static void Write(Config conf)
+        public static void Write(Config conf, bool dummy = false)
         {
             Directory.CreateDirectory(conf.Dirs.Dynamic);
 
@@ -13,73 +13,76 @@ namespace BotwInstaller.Lib.Configurations.Cemu
 
             SettingsConfigFile scf = new();
 
-            scf.GamePaths.Entry = conf.Dirs.Base;
-            scf.GameCache.Entry = new()
+            if (!dummy)
             {
-                TitleId = Convert.ToInt64(GameInfo.GetTitleID(conf.Dirs.Base), 16),
-                Name = "The Legend of Zelda: Breath of the Wild",
-                Version = 208,
-                DlcVersion = 80,
-                Path = $"{conf.Dirs.Base}\\code\\U-King.rpx"
-            };
+                scf.GamePaths.Entry = conf.Dirs.Base;
+                scf.GameCache.Entry = new()
+                {
+                    TitleId = Convert.ToInt64(GameInfo.GetTitleID(conf.Dirs.Base), 16),
+                    Name = "The Legend of Zelda: Breath of the Wild",
+                    Version = 208,
+                    DlcVersion = 80,
+                    Path = $"{conf.Dirs.Base}\\code\\U-King.rpx"
+                };
 
-            scf.GraphicPack.Entry = new EntryElement[] {
-                new() {
-                    Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Graphics\rules.txt",
-                    Preset = new Preset[] {
-                        new() {
-                            Category = "Aspect Ratio", PresetValue = "16:9 (Default)"
-                        },
-                        new() {
-                            Category = "Ultrawide HUD Mode", PresetValue = "Edge HUD (Default)"
-                        },
-                        new() {
-                            Category = "Shadows", PresetValue = "Medium (100%, Default)"
-                        },
-                        new() {
-                            Category = "Anti-Aliasing", PresetValue = "Normal FXAA (Default)"
-                        },
-                        new() {
-                            Category = "Shadow Draw Distance", PresetValue = "Very High (Recommended)"
+                scf.GraphicPack.Entry = new EntryElement[] {
+                    new() {
+                        Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Graphics\rules.txt",
+                        Preset = new Preset[] {
+                            new() {
+                                Category = "Aspect Ratio", PresetValue = "16:9 (Default)"
+                            },
+                            new() {
+                                Category = "Ultrawide HUD Mode", PresetValue = "Edge HUD (Default)"
+                            },
+                            new() {
+                                Category = "Shadows", PresetValue = "Medium (100%, Default)"
+                            },
+                            new() {
+                                Category = "Anti-Aliasing", PresetValue = "Normal FXAA (Default)"
+                            },
+                            new() {
+                                Category = "Shadow Draw Distance", PresetValue = "Very High (Recommended)"
+                            }
                         }
+                    },
+                    new() {
+                        Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Mods\ExtendedMemory\rules.txt"
+                    },
+                    new() {
+                        Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Mods\FPS++\rules.txt",
+                        Preset = new Preset[] {
+                            new() {
+                                Category = "Fence Type", PresetValue = "Performance Fence (Default)"
+                            },
+                            new() {
+                                Category = "Mode", PresetValue = "Advanced Settings"
+                            },
+                            new() {
+                                Category = "FPS Limit", PresetValue = "60FPS Limit (Default)"
+                            },
+                            new() {
+                                Category = "Framerate Limit", PresetValue = "60FPS (ideal for 240/120/60Hz displays)"
+                            },
+                            new() {
+                                Category = "Cutscene FPS Limit", PresetValue = "Automatically Limit In Few Cutscenes (Recommended)"
+                            },
+                            new() {
+                                Category = "Static Mode", PresetValue = "Disabled (Default, dynamically adjust game speed)"
+                            },
+                            new() {
+                                Category = "Debug Options", PresetValue = "Disabled (Default)"
+                            },
+                            new() {
+                                Category = "Frame Average", PresetValue = "8 Frames Averaged (Default)"
+                            },
+                        }
+                    },
+                    new() {
+                        Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Workarounds\GrassWorkaround\rules.txt"
                     }
-                },
-                new() {
-                    Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Mods\ExtendedMemory\rules.txt"
-                },
-                new() {
-                    Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Mods\FPS++\rules.txt",
-                    Preset = new Preset[] {
-                        new() {
-                            Category = "Fence Type", PresetValue = "Performance Fence (Default)"
-                        },
-                        new() {
-                            Category = "Mode", PresetValue = "Advanced Settings"
-                        },
-                        new() {
-                            Category = "FPS Limit", PresetValue = "60FPS Limit (Default)"
-                        },
-                        new() {
-                            Category = "Framerate Limit", PresetValue = "60FPS (ideal for 240/120/60Hz displays)"
-                        },
-                        new() {
-                            Category = "Cutscene FPS Limit", PresetValue = "Automatically Limit In Few Cutscenes (Recommended)"
-                        },
-                        new() {
-                            Category = "Static Mode", PresetValue = "Disabled (Default, dynamically adjust game speed)"
-                        },
-                        new() {
-                            Category = "Debug Options", PresetValue = "Disabled (Default)"
-                        },
-                        new() {
-                            Category = "Frame Average", PresetValue = "8 Frames Averaged (Default)"
-                        },
-                    }
-                },
-                new() {
-                    Filename = @"graphicPacks\downloadedGraphicPacks\BreathOfTheWild\Workarounds\GrassWorkaround\rules.txt"
-                }
-            };
+                };
+            }
 
             XmlSerializer serializer = new XmlSerializer(typeof(SettingsConfigFile));
             FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\settings.xml");
