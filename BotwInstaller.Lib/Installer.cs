@@ -37,6 +37,12 @@ namespace BotwInstaller.Lib
                 conf.Dirs.Update = (string)gameInfo["Update"] == "NOT FOUND" ? "" : (string)gameInfo["Update"];
                 conf.Dirs.DLC = (string)gameInfo["DLC"] == "NOT FOUND" ? "" : (string)gameInfo["DLC"];
 
+                if ((string)gameInfo["Game"] == "NOT FOUND")
+                    return conf;
+
+                if ((string)gameInfo["Update"] == "NOT FOUND")
+                    return conf;
+
                 if (conf.UseCemu)
                 {
                     if (conf.Install.Base)
