@@ -98,36 +98,30 @@ namespace BotwInstaller.Lib
         /// <returns></returns>
         public static async Task<Dictionary<string, object>> GetFiles(Interface.Notify print, string cemu = "::", string python = "::", bool nx = false)
         {
-            Dictionary<string, object> paths = new();
+            Dictionary<string, object> paths = new()
+            {
+                { "Cemu", "NOT FOUND" },
+                { "mlc", "NOT FOUND" },
+                { "Game_IsInstalled", false },
+                { "Update_IsInstalled", false },
+                { "DLC_IsInstalled", false },
+                { "Game", "NOT FOUND" },
+                { "Update", "NOT FOUND" },
+                { "DLC", "NOT FOUND" },
+                { "Python", "NOT FOUND" }
+            };
 
             List<Task> tasks = new();
 
             if (!nx)
             {
-                tasks.Add(Task.Run(() =>
-                {
-                    var botw = Search.Botw(print);
-
-                    foreach (var item in botw)
-                        paths.Add(item.Key, item.Value);
-                }));
+                tasks.Add(Task.Run(() => Search.Botw(ref paths, print)));
 
                 if (cemu != "!ignore")
-                {
-                    tasks.Add(Task.Run(() =>
-                    {
-                        var cemuRt = Search.Cemu(print, cemu);
-
-                        foreach (var item in cemuRt)
-                            paths.Add(item.Key, item.Value);
-                    }));
-                }
+                    tasks.Add(Task.Run(() => Search.Cemu(ref paths, print, cemu)));
             }
 
-            tasks.Add(Task.Run(() =>
-            {
-                paths.Add("Python", Search.Python(print, python));
-            }));
+            tasks.Add(Task.Run(() => paths["Python"] = Search.Python(print, python)));
 
             await Task.WhenAll(tasks);
 
