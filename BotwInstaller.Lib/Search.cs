@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8600
+#pragma warning disable CS8601
 #pragma warning disable CS8602
 #pragma warning disable CS8603
 #pragma warning disable CS8604
@@ -20,13 +21,20 @@ namespace BotwInstaller.Lib
         {
             var func = "[SEARCH.CEMU]";
 
-            Dictionary<string, object> paths = new();
+            Dictionary<string, object> paths = new()
+            {
+                { "Cemu", "NOT FOUND" },
+                { "mlc", "NOT FOUND" },
+                { "Game_IsInstalled", false },
+                { "Update_IsInstalled", false },
+                { "DLC_IsInstalled", false }
+            };
 
             // Check given path
             if (File.Exists($"{path}\\Cemu.exe"))
             {
                 // Add cemu path
-                paths.Add("Cemu", path);
+                paths["Cemu"] = path;
 
                 Verify.CheckMlc(path, ref paths, print, $"{func}[CHECKMLC]");
 
@@ -37,7 +45,7 @@ namespace BotwInstaller.Lib
             // Check root folder
             if (File.Exists($"{Directory.GetCurrentDirectory()}\\Cemu.exe"))
             {
-                paths.Add("Cemu", Directory.GetCurrentDirectory());
+                paths["Cemu"] = Directory.GetCurrentDirectory();
 
                 Verify.CheckMlc(Directory.GetCurrentDirectory(), ref paths, print, $"{func}[CHECKMLC]");
 
@@ -57,7 +65,7 @@ namespace BotwInstaller.Lib
                     {
                         var dir = new FileInfo(file).DirectoryName;
                         print($"{func}[UNSAFE] Cemu found in '{dir}'");
-                        paths.Add("Cemu", dir);
+                        paths["Cemu"] = dir;
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[UNSAFE][CHECKMLC]");
 
@@ -80,7 +88,7 @@ namespace BotwInstaller.Lib
                     {
                         var dir = new FileInfo(file).DirectoryName;
                         print($"{func}[SAFE] Cemu found in '{dir}'");
-                        paths.Add("Cemu", dir);
+                        paths["Cemu"] = dir;
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[SAFE][CHECKMLC]");
 
