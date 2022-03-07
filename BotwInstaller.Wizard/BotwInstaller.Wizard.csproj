@@ -8,6 +8,9 @@
     <UseWindowsForms>False</UseWindowsForms>
     <ApplicationIcon>ViewResources\Images\icon.ico</ApplicationIcon>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+	<PackageLicenseFile>D:\Visual Studio\Projects\- Botw Scripts\BotwInstaller (RE)\BotwInstaller\LICENSE</PackageLicenseFile>
+	<DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,9 +28,9 @@
     <Resource Include="ViewResources\Images\highres_icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Content Include="ViewResources\Images\background.png">
+    <Resource Include="ViewResources\Images\background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
     <Content Include="ViewResources\Images\icon.ico" />
     <Content Include="ViewThemes\Styles\TextEditor\SyntaxHighlighting\XmlDark.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
