@@ -223,7 +223,6 @@
                             <ComboBoxItem Content="Nintendo Switch Joycons" />
                             <ComboBoxItem Content="Nintendo Switch Pro Controller" />
                             <ComboBoxItem Content="XBox Controller" />
-                            <ComboBoxItem Content="Keyboard (Not Recomended)" />
                         </ComboBox>
                     </Grid>
                 </StackPanel>
@@ -623,111 +622,216 @@
                         Margin="5,3,3,3"
                         Padding="0"
                         HorizontalAlignment="Right"
+                        Command="{s:Action InstallHomebrew}"
+                        Visibility="{Binding SetupPageVisibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Setup Homebrew" />
+                    </Button.ToolTip>
+                    <Viewbox>
+                        <Canvas Name="svg5"
+                                Width="32"
+                                Height="32">
+                            <Canvas>
+                                <Ellipse Canvas.Left="1.7"
+                                         Canvas.Top="1.7"
+                                         Width="28.6"
+                                         Height="28.6"
+                                         Fill="{DynamicResource SecondaryHueDarkBrush}"
+                                         StrokeEndLineCap="Round"
+                                         StrokeLineJoin="Round"
+                                         StrokeStartLineCap="Round"
+                                         StrokeThickness="5.1619" />
+                                <Path Fill="{DynamicResource SecondaryHueLightBrush}"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      StrokeStartLineCap="Round"
+                                      StrokeThickness="5.1619">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 30.128906 18.125 C 29.956256 18.214761 29.784801 18.306703 29.613281 18.402344 C 29.439708 18.49913 29.26742 18.598525 29.09375 18.697266 C 28.92008 18.796006 28.745341 18.893631 28.570312 18.990234 C 28.395284 19.086838 28.218666 19.183062 28.041016 19.273438 C 27.863365 19.363813 27.685441 19.44924 27.503906 19.529297 C 27.322372 19.609354 27.137853 19.6824 26.951172 19.748047 C 26.857831 19.78087 26.762833 19.813343 26.667969 19.841797 C 26.573105 19.870251 26.477404 19.896349 26.380859 19.919922 C 26.284314 19.943495 26.188228 19.964241 26.089844 19.982422 C 25.99146 20.000603 25.891396 20.015067 25.791016 20.027344 C 25.636631 20.066388 25.481959 20.10016 25.326172 20.128906 C 25.170385 20.157652 25.014157 20.182508 24.857422 20.201172 C 24.700686 20.219836 24.543949 20.233389 24.386719 20.242188 C 24.229488 20.250986 24.071335 20.254758 23.914062 20.253906 C 23.75679 20.253055 23.60022 20.246613 23.443359 20.236328 C 23.286499 20.226043 23.128651 20.210909 22.972656 20.191406 C 22.816662 20.171904 22.662488 20.147645 22.507812 20.119141 C 22.353137 20.090637 22.197824 20.058774 22.044922 20.021484 C 21.89202 19.984195 21.74052 19.942343 21.589844 19.896484 C 21.439168 19.850625 21.290574 19.800306 21.142578 19.746094 C 20.994582 19.691881 20.847987 19.632662 20.703125 19.570312 C 20.558263 19.507963 20.414712 19.443318 20.273438 19.373047 C 20.132163 19.302776 19.992702 19.228367 19.855469 19.150391 C 19.718235 19.072415 19.583911 18.989762 19.451172 18.904297 C 19.318433 18.818832 19.186385 18.729457 19.058594 18.636719 C 18.930803 18.543981 18.805983 18.447451 18.683594 18.347656 C 18.478955 18.182126 18.278462 18.011771 18.080078 17.837891 C 17.881694 17.66401 17.68536 17.486824 17.490234 17.308594 C 17.099982 16.952133 16.713554 16.592049 16.318359 16.242188 C 16.120762 16.067257 15.922077 15.893843 15.71875 15.726562 C 15.515423 15.559282 15.307756 15.397819 15.095703 15.242188 C 14.989677 15.164372 14.882207 15.087825 14.773438 15.013672 C 14.664668 14.939519 14.555247 14.866866 14.443359 14.796875 C 14.331472 14.726884 14.216942 14.659078 14.101562 14.59375 C 13.986183 14.528422 13.869246 14.466416 13.75 14.40625 C 13.557315 14.312666 13.360389 14.228256 13.160156 14.152344 C 12.959924 14.076432 12.757011 14.009655 12.550781 13.951172 C 12.344552 13.892689 12.134504 13.842079 11.923828 13.800781 C 11.713152 13.759484 11.500681 13.727481 11.287109 13.703125 C 11.073537 13.678769 10.859448 13.661954 10.644531 13.654297 C 10.429614 13.64664 10.214711 13.647452 10 13.65625 C 9.7852886 13.665048 9.5703769 13.682022 9.3574219 13.707031 C 9.1444668 13.732041 8.9323043 13.765663 8.7226562 13.806641 C 8.5620357 13.828981 8.4027301 13.8534 8.2441406 13.882812 C 8.0855512 13.912225 7.9280747 13.946314 7.7714844 13.982422 C 7.6148941 14.01853 7.4593107 14.057182 7.3046875 14.099609 C 7.1500643 14.142037 6.9964382 14.187958 6.84375 14.236328 C 6.6910618 14.284698 6.5394571 14.336689 6.3886719 14.390625 C 6.2378866 14.444561 6.0883674 14.499469 5.9394531 14.558594 C 5.7905388 14.617719 5.6431691 14.680203 5.4960938 14.744141 C 5.3490184 14.808078 5.2019092 14.874986 5.0566406 14.943359 C 4.7661036 15.080107 4.4788144 15.224721 4.1953125 15.376953 C 3.9118106 15.529185 3.6321918 15.688812 3.3554688 15.853516 C 3.0787457 16.01822 2.8053568 16.187165 2.5351562 16.361328 C 2.2768227 16.527843 2.0221318 16.698626 1.7695312 16.871094 A 14.293777 14.293777 0 0 0 16 30.292969 A 14.293777 14.293777 0 0 0 30.128906 18.125 z " FillRule="NonZero" />
+                                    </Path.Data>
+                                </Path>
+                                <Path Fill="{DynamicResource SecondaryHueMidBrush}"
+                                      StrokeEndLineCap="Square"
+                                      StrokeLineJoin="Round"
+                                      StrokeStartLineCap="Square">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 10.279297 13.453125 C 10.06485 13.454139 9.8506175 13.461756 9.6386719 13.476562 A 0.20002 0.20002 0 0 0 9.6367188 13.476562 C 6.7360317 13.704425 4.0882665 15.024958 1.7519531 16.640625 A 14.293777 14.293777 0 0 0 1.7851562 17.103516 L 1.8496094 17.058594 C 4.185533 15.424087 6.8161153 14.099027 9.6679688 13.875 L 9.6660156 13.876953 C 11.296886 13.76301 13.015118 14.059434 14.351562 15.001953 A 0.20002 0.20002 0 0 0 14.365234 15.011719 C 16.649164 16.372412 18.216085 18.882433 20.916016 19.882812 C 23.481901 20.894306 26.468411 20.487549 28.798828 19.091797 L 28.804688 19.089844 C 29.230696 18.851941 29.649075 18.610385 30.072266 18.384766 A 14.293777 14.293777 0 0 0 30.160156 17.882812 L 30.042969 17.943359 C 29.550767 18.19881 29.078316 18.477149 28.603516 18.742188 A 0.20002 0.20002 0 0 0 28.597656 18.746094 C 26.365687 20.084894 23.493892 20.471172 21.058594 19.509766 A 0.20002 0.20002 0 0 0 21.054688 19.507812 C 18.517596 18.567787 16.967612 16.100416 14.574219 14.671875 C 13.319217 13.789655 11.780424 13.446028 10.279297 13.453125 z " FillRule="NonZero" />
+                                    </Path.Data>
+                                </Path>
+                                <Rectangle Canvas.Left="7.5869098"
+                                           Canvas.Top="17.532848"
+                                           Width="1.56353"
+                                           Height="1.56353"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.19946268"
+                                           RadiusY="0.19946268"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.243979" />
+                                <Rectangle Canvas.Left="5.0898504"
+                                           Canvas.Top="18.407852"
+                                           Width="3.2042322"
+                                           Height="3.2042322"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.40877035"
+                                           RadiusY="0.40877035"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Rectangle Canvas.Left="8.6806526"
+                                           Canvas.Top="25.081585"
+                                           Width="0.78321677"
+                                           Height="0.82051283"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.17285919"
+                                           RadiusY="0.17285919"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Rectangle Canvas.Left="15.625576"
+                                           Canvas.Top="22.093378"
+                                           Width="1.2592764"
+                                           Height="1.2856487"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.391608"
+                                           RadiusY="0.391608"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Rectangle Canvas.Left="15.109557"
+                                           Canvas.Top="20.153847"
+                                           Width="0.66666669"
+                                           Height="0.66666669"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.33333334"
+                                           RadiusY="0.33333334"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Rectangle Canvas.Left="22.144522"
+                                           Canvas.Top="23.589745"
+                                           Width="1.8834499"
+                                           Height="1.8461539"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.33333299"
+                                           RadiusY="0.33333299"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Rectangle Canvas.Left="18.993008"
+                                           Canvas.Top="27.748251"
+                                           Width="1.1934732"
+                                           Height="1.2214452"
+                                           Fill="#44FFFFFF"
+                                           RadiusX="0.33333299"
+                                           RadiusY="0.33333299"
+                                           StrokeEndLineCap="Round"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Round"
+                                           StrokeThickness="0.5" />
+                                <Path Fill="#44FFFFFF"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      StrokeMiterLimit="4"
+                                      StrokeStartLineCap="Round"
+                                      StrokeThickness="0.5">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 28.410156 20.552734 C 28.241663 20.569744 28.111328 20.711641 28.111328 20.884766 L 28.111328 21.601562 C 28.111328 21.786229 28.260646 21.933594 28.445312 21.933594 L 29.003906 21.933594 A 14.293777 14.293777 0 0 0 29.470703 20.681641 C 29.40982 20.603241 29.314424 20.552734 29.207031 20.552734 L 28.445312 20.552734 C 28.433771 20.552734 28.421389 20.5516 28.410156 20.552734 z " FillRule="NonZero" />
+                                    </Path.Data>
+                                </Path>
+                                <TextBlock Canvas.Left="10"
+                                           Canvas.Top="5"
+                                           FontFamily="Bahnschrift"
+                                           FontSize="21.3333"
+                                           FontStyle="normal"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource MaterialDesignBody}">
+                                    <Span FontFamily="Bahnschrift"
+                                          FontSize="21.3333"
+                                          FontStyle="normal"
+                                          FontWeight="Bold"
+                                          Foreground="{DynamicResource MaterialDesignBody}">
+                                        h
+                                    </Span>
+                                </TextBlock>
+                                <Path Fill="#44FFFFFF"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      StrokeMiterLimit="4"
+                                      StrokeStartLineCap="Round"
+                                      StrokeThickness="0.984755">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 7.8671875 26.671875 C 7.6785794 26.671875 7.5273438 26.825064 7.5273438 27.013672 L 7.5273438 27.46875 A 14.293777 14.293777 0 0 0 8.7519531 28.287109 C 8.9298793 28.275485 9.0703125 28.128232 9.0703125 27.947266 L 9.0703125 27.013672 C 9.0703125 26.825064 8.9190769 26.671875 8.7304688 26.671875 L 7.8671875 26.671875 z " FillRule="NonZero" />
+                                    </Path.Data>
+                                </Path>
+                            </Canvas>
+                        </Canvas>
+                    </Viewbox>
+
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="5,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
                         Command="{s:Action PrepCemu}"
                         Visibility="{Binding CemuPrefs_Visibility}">
                     <Button.ToolTip>
                         <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Prep Cemu for online access" />
                     </Button.ToolTip>
-                    <Grid>
-                        <Border Width="24"
-                                Height="24"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
-                                BorderThickness="1.5"
-                                CornerRadius="7"
-                                Opacity="1" />
-                        <TextBlock Margin="-1.5,-1,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontFamily="Consolas"
-                                   FontSize="22"
-                                   FontWeight="Medium"
-                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
-                                   Text="C" />
-                    </Grid>
-                </Button>
-                <Button Width="32"
-                        Height="32"
-                        Margin="5,3,3,3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Command="{s:Action InstallDumpling}"
-                        Visibility="{Binding CemuPrefs_Visibility}">
-                    <Button.ToolTip>
-                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Install Dumpling" />
-                    </Button.ToolTip>
-                    <Grid>
-                        <Border Width="24"
-                                Height="24"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
-                                BorderThickness="1.5"
-                                CornerRadius="7"
-                                Opacity="1" />
-                        <TextBlock Margin="0,-1,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
-                                   Text="h" />
-                    </Grid>
-                </Button>
-                <Button Width="32"
-                        Height="32"
-                        Margin="5,3,3,3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Command="{s:Action InstallHomebrewSwitch}"
-                        Visibility="{Binding SwitchPrefs_Visibility}">
-                    <Button.ToolTip>
-                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Install Homebrew" />
-                    </Button.ToolTip>
-                    <Grid>
-                        <Border Width="24"
-                                Height="24"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
-                                BorderThickness="1.5"
-                                CornerRadius="7"
-                                Opacity="1" />
-                        <TextBlock Margin="0,-1,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
-                                   Text="h" />
-                    </Grid>
-                </Button>
-                <Button Width="32"
-                        Height="32"
-                        Margin="5,3,3,3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Command="{s:Action InstallHomebrewWiiU}"
-                        Visibility="{Binding WiiuPrefs_Visibility}">
-                    <Button.ToolTip>
-                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Homebrew install guide" />
-                    </Button.ToolTip>
-                    <Grid>
-                        <Border Width="24"
-                                Height="24"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
-                                BorderThickness="1.5"
-                                CornerRadius="7"
-                                Opacity="1" />
-                        <TextBlock Margin="0,-1,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
-                                   Text="h" />
-                    </Grid>
+                    <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+                        <Canvas Width="32" Height="32">
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="0" Y="0" />
+                            </Canvas.RenderTransform>
+                            <Canvas.Resources />
+                            <!--  Unknown tag: sodipodi:namedview  -->
+                            <Canvas Name="layer1">
+                                <Rectangle Canvas.Left="2.2518623"
+                                           Canvas.Top="2.2876084"
+                                           Width="27.496275"
+                                           Height="27.424786"
+                                           Fill="{DynamicResource SecondaryHueDarkBrush}"
+                                           RadiusX="6.7660036"
+                                           RadiusY="6.7660036"
+                                           Stroke="{DynamicResource SecondaryHueLightBrush}"
+                                           StrokeEndLineCap="Square"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Square"
+                                           StrokeThickness="1.5" />
+                                <TextBlock Canvas.Left="7"
+                                           Canvas.Top="2"
+                                           FontFamily="Arial"
+                                           FontWeight="Normal">
+                                    <Span FontSize="23" Foreground="{DynamicResource MaterialDesignBody}">
+                                        C
+                                    </Span>
+                                </TextBlock>
+                            </Canvas>
+                        </Canvas>
+                    </Viewbox>
                 </Button>
             </StackPanel>
+            <ProgressBar Width="220"
+                         Height="10"
+                         Background="{DynamicResource PrimaryHueDarkBrush}"
+                         BorderThickness="0,1"
+                         Foreground="{DynamicResource SecondaryHueLightBrush}"
+                         Value="{Binding ToolProgressValue}" />
             <TextBlock x:Name="footerBasicErrorReport"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
