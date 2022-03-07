@@ -85,7 +85,7 @@ namespace BotwInstaller.Lib
             /// <summary>
             /// UseCemu is true ? Cemu installation directory : BCML export directory
             /// </summary>
-            public string Dynamic { get; set; } = Drive == "C:" ? $"{User}\\Cemu" : $"{Drive}\\Games\\BotW\\Cemu";
+            public string Dynamic { get; set; } = Drive == "C:" ? $"{User}\\Cemu" : $"{Drive}\\Programs\\Cemu";
 
             /// <summary>
             /// DS4Windows installation directory
