@@ -1,1 +1,0 @@
-python bnp_installer.py "D:\Botw\Mods\Bnp's\AddAmiiboItems - NiceneNerd.bnp" True
