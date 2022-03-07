@@ -9,7 +9,7 @@
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         x:Name="shellView"
-        Title="BotwInstaller.Wizard"
+        Title="Botw Installer"
         Width="600"
         Height="380"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -175,18 +175,6 @@
                               FontSize="18"
                               IsChecked="{Binding DesktopShortcuts}"
                               Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}" />
-
-                    <CheckBox Content="Setup Atmosphere"
-                              FontSize="18"
-                              IsChecked="{Binding SetupAtmosphere}"
-                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
-                              Visibility="{Binding SwitchPrefs_Visibility}" />
-
-                    <CheckBox Content="Setup SDCafiine"
-                              FontSize="18"
-                              IsChecked="{Binding SetupSDCafiine}"
-                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
-                              Visibility="{Binding WiiuPrefs_Visibility}" />
 
                     <CheckBox Content="Copy Base Game Files"
                               FontSize="18"
@@ -380,7 +368,7 @@
                 <Hyperlink FontSize="12"
                            FontWeight="Bold"
                            Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           NavigateUri="https://github.com/ArchLeaders/BotwInstaller-RE"
                            RequestNavigate="Hyperlink_RequestNavigate"
                            Style="{DynamicResource MaterialDesignBody2Hyperlink}">
                     GitHub
@@ -389,7 +377,7 @@
                 <Hyperlink FontSize="12"
                            FontWeight="Bold"
                            Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           NavigateUri="https://discord.gg/cbA3AWwfJj"
                            RequestNavigate="Hyperlink_RequestNavigate"
                            Style="{DynamicResource MaterialDesignBody2Hyperlink}">
                     Discord
@@ -398,7 +386,7 @@
                 <Hyperlink FontSize="12"
                            FontWeight="Bold"
                            Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
+                           NavigateUri="https://gamebanana.com/members/1797815"
                            RequestNavigate="Hyperlink_RequestNavigate"
                            Style="{DynamicResource MaterialDesignBody2Hyperlink}">
                     GameBanana
@@ -628,6 +616,115 @@
                                         Background="{DynamicResource SecondaryHueLightBrush}" />
                             </Grid>
                         </Grid>
+                    </Grid>
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="5,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action PrepCemu}"
+                        Visibility="{Binding CemuPrefs_Visibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Prep Cemu for online access" />
+                    </Button.ToolTip>
+                    <Grid>
+                        <Border Width="24"
+                                Height="24"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="7"
+                                Opacity="1" />
+                        <TextBlock Margin="-1.5,-1,0,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Consolas"
+                                   FontSize="22"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
+                                   Text="C" />
+                    </Grid>
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="5,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action InstallDumpling}"
+                        Visibility="{Binding CemuPrefs_Visibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Install Dumpling" />
+                    </Button.ToolTip>
+                    <Grid>
+                        <Border Width="24"
+                                Height="24"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="7"
+                                Opacity="1" />
+                        <TextBlock Margin="0,-1,0,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
+                                   Text="h" />
+                    </Grid>
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="5,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action InstallHomebrewSwitch}"
+                        Visibility="{Binding SwitchPrefs_Visibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Install Homebrew" />
+                    </Button.ToolTip>
+                    <Grid>
+                        <Border Width="24"
+                                Height="24"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="7"
+                                Opacity="1" />
+                        <TextBlock Margin="0,-1,0,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
+                                   Text="h" />
+                    </Grid>
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="5,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action InstallHomebrewWiiU}"
+                        Visibility="{Binding WiiuPrefs_Visibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Homebrew install guide" />
+                    </Button.ToolTip>
+                    <Grid>
+                        <Border Width="24"
+                                Height="24"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource SecondaryHueLightBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="7"
+                                Opacity="1" />
+                        <TextBlock Margin="0,-1,0,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SecondaryHueLightBrush}"
+                                   Text="h" />
                     </Grid>
                 </Button>
             </StackPanel>
