@@ -97,7 +97,7 @@ namespace BotwInstaller.Lib
                 unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\DS4.PACK.res", AppData, true)));
 
                 print($"{func} Installing Virtual Gamepad Driver . . .");
-                unpack.Add(HiddenProcess.Start("cmd.exe", $"/c {AppData}\\Temp\\BOTW\\VIGEM.msi /quiet & EXIT"));
+                unpack.Add(HiddenProcess.Start("cmd.exe", $"/c \"{AppData}\\Temp\\BOTW\\VIGEM.msi\" /quiet & EXIT"));
 
                 print($"{func} Installing Runtimes . . .");
                 unpack.Add(RuntimeInstallers.Net5(print));
@@ -201,47 +201,42 @@ namespace BotwInstaller.Lib
 
         public static async Task Mods(Interface.Update update, Interface.Notify print, Config conf)
         {
-            List<Task> installTasks = new();
+            List<Task> install = new();
             List<string?> mods = conf.ModPacks["wiiu"][conf.ModPack];
             string func = "[INSTALL.BCML.MODS]";
 
             if (conf.IsNX) mods = conf.ModPacks["switch"][conf.ModPack];
 
-            await Download.FromUrl("https://raw.githubusercontent.com/ArchLeaders/Botw-Installer/master/RE/python_module.py", $"{AppData}\\Temp\\BOTW\\python.sh");
+            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py");
             update(50, "bcml");
 
-            for (int i = 0; i < mods.Count; i++)
+            int i = 1;
+            foreach (var mod in mods)
             {
-                if (mods[i] != null)
+                if (mod != null)
                 {
-                    installTasks.Add(Task.Run(async() =>
+                    install.Add(Task.Run(async() =>
                     {
-                        string last = "false";
+                        string last = mods.Count == i ? "true" : "false";
 
-                        if (mods.Count == i + 1)
-                            last = "true";
-
-                        print($"{func} Installing {mods[i]} . . .");
-                        await Download.FromUrl(mods[i], $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
-                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.sh\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
+                        print($"{func} Installing {mod} . . .");
+                        await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
+                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
+                        i++;
                     }));
                 }
             }
 
-            await Task.WhenAll(installTasks);
+            await Task.WhenAll(install);
             update(80, "bcml");
 
             if (Directory.Exists($"{conf.Dirs.BCML}\\mods\\9999_BCML"))
             {
                 print($"{func} Merging mods . . .");
-                if (conf.Install.Cemu)
-                {
-                    await Task.Run(() => Batch.CopyDirectory($"{conf.Dirs.BCML}\\mods\\9999_BCML", $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML"));
-                }
-                else
-                {
-                    await Task.Run(() => Batch.CopyDirectory($"{conf.Dirs.BCML}\\mods\\9999_BCML", conf.Dirs.Dynamic));
-                }
+
+                await Task.Run(() =>
+                    Batch.CopyDirectory($"{conf.Dirs.BCML}\\mods\\9999_BCML", conf.UseCemu ? $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" : conf.Dirs.Dynamic)
+                );
             }
 
             update(95, "bcml");
