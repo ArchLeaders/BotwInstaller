@@ -4,7 +4,7 @@ namespace BotwInstaller.Lib.Remote
 {
     public class HttpLinks
     {
-        public static string ModPresets { get; } = "https://raw.githubusercontent.com/ArchLeaders/Botw-Installer/master/RE/TempDataFromRE.json";
+        public static string ModPresets { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/ModPresets.json";
         public static string BcmlIconFile { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Lib/Configurations/Icons/bcml.ico";
         public static string BotwIconFile { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Lib/Configurations/Icons/botw.ico";
         public static string BotwBatchFile { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/BatchFiles/botw.bat";
