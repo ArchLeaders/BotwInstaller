@@ -17,18 +17,9 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static Dictionary<string, object> Cemu(Interface.Notify print, string path = "::")
+        public static void Cemu(ref Dictionary<string, object> paths, Interface.Notify print, string path = "::")
         {
             var func = "[SEARCH.CEMU]";
-
-            Dictionary<string, object> paths = new()
-            {
-                { "Cemu", "NOT FOUND" },
-                { "mlc", "NOT FOUND" },
-                { "Game_IsInstalled", false },
-                { "Update_IsInstalled", false },
-                { "DLC_IsInstalled", false }
-            };
 
             // Check given path
             if (File.Exists($"{path}\\Cemu.exe"))
@@ -39,7 +30,7 @@ namespace BotwInstaller.Lib
                 Verify.CheckMlc(path, ref paths, print, $"{func}[CHECKMLC]");
 
                 // Return dict
-                return paths;
+                return;
             }
 
             // Check root folder
@@ -49,7 +40,7 @@ namespace BotwInstaller.Lib
 
                 Verify.CheckMlc(Directory.GetCurrentDirectory(), ref paths, print, $"{func}[CHECKMLC]");
 
-                return paths;
+                return;
             }
 
             // Check PC
@@ -69,7 +60,7 @@ namespace BotwInstaller.Lib
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[UNSAFE][CHECKMLC]");
 
-                        return paths;
+                        return;
                     }
                 }
             }
@@ -78,7 +69,7 @@ namespace BotwInstaller.Lib
                 print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
                 print($"{func} Start Safe");
 
-                if (paths.ContainsKey("Cemu")) return paths;
+                if (paths["Cemu"] != "NOT FOUND") return;
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
@@ -92,23 +83,21 @@ namespace BotwInstaller.Lib
 
                         Verify.CheckMlc(dir, ref paths, print, $"{func}[SAFE][CHECKMLC]");
 
-                        return paths;
+                        return;
                     }
                 }
             }
 
-            return paths;
+            return;
         }
 
         /// <summary>
         /// Searches for BotW and returns a Dictionary with the paths.
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, object> Botw(Interface.Notify print)
+        public static void Botw(ref Dictionary<string, object> paths, Interface.Notify print)
         {
             var func = "[SEARCH.BOTW]";
-
-            Dictionary<string, object> paths = new();
 
             try
             {
@@ -126,7 +115,7 @@ namespace BotwInstaller.Lib
                         while (!Verify.UKing(print, file, ref paths))
                             break;
 
-                        if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
+                        if (paths["Game"] != "NOT FOUND" && paths["Update"] != "NOT FOUND")
                         {
                             _break = true;
                             break;
@@ -153,7 +142,7 @@ namespace BotwInstaller.Lib
                         while (!Verify.UKing(print, file, ref paths))
                             break;
 
-                        if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
+                        if (paths["Game"] != "NOT FOUND" && paths["Update"] != "NOT FOUND")
                         {
                             _break = true;
                             break;
@@ -166,7 +155,7 @@ namespace BotwInstaller.Lib
 
             func = $"{func}[DLC]";
 
-            if (!paths.ContainsKey("DLC"))
+            if (paths["DLC"] == "NOT FOUND")
             {
                 try
                 {
@@ -182,8 +171,8 @@ namespace BotwInstaller.Lib
                             while (!Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW][DLC][VERIFY]"))
                                 break;
 
-                            if (paths.ContainsKey("DLC"))
-                                return paths;
+                            if (paths["DLC"] != "NOT FOUND")
+                                return;
                         }
                     }
                 }
@@ -202,18 +191,12 @@ namespace BotwInstaller.Lib
                             while (!Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW][DLC]"))
                                 break;
 
-                            if (paths.ContainsKey("DLC"))
-                                return paths;
+                            if (paths["DLC"] != "NOT FOUND")
+                                return;
                         }
                     }
                 }
             }
-
-            foreach (var set in Verify.Checks)
-                if (!paths.ContainsKey(set.Key))
-                    paths.Add(set.Key, "NOT FOUND");
-
-            return paths;
         }
 
         /// <summary>

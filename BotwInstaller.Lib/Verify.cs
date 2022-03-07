@@ -78,13 +78,14 @@ namespace BotwInstaller.Lib
                 {
                     var dir = $"{mlc}\\usr\\title\\{IDs[set.Key]}\\{titleId}";
 
-                    if (!paths.ContainsKey($"{set.Key}_IsInstalled"))
+                    if (!(bool)paths[$"{set.Key}_IsInstalled"])
                     {
                         if (File.Exists($"{dir}{set.Value}"))
                         {
                             if (BotwContents(set.Key, dir, print, func))
                             {
                                 paths[$"{set.Key}_IsInstalled"] = true;
+                                paths[set.Key] = dir;
                             }
                         }
                     }
@@ -104,7 +105,7 @@ namespace BotwInstaller.Lib
             if (BotwContents("DLC", rollpict.EditPath(5), print, func))
             {
                 print($"{func} DLC found in '{rollpict.EditPath(5)}'");
-                paths.Add("DLC", rollpict.EditPath(5));
+                paths["DLC"] = rollpict.EditPath(5);
                 return true;
             }
             else return false;
@@ -134,11 +135,11 @@ namespace BotwInstaller.Lib
 
             foreach (var set in Checks)
             {
-                if (File.Exists($"{code.EditPath(3)}{IDs[set.Key]}\\{id}{set.Value}") && !paths.ContainsKey(set.Key))
+                if (File.Exists($"{code.EditPath(3)}{IDs[set.Key]}\\{id}{set.Value}") && paths[set.Key] == "NOT FOUND")
                 {
                     if (BotwContents(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}", print, func))
                     {
-                        paths.Add(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}");
+                        paths[set.Key] = $"{code.EditPath(3)}{IDs[set.Key]}\\{id}";
                         print($"{func}[UKING][CEMU] {set.Key} found in '{code.EditPath(3)}{IDs[set.Key]}\\{id}'");
                     }
                     else return false;
@@ -146,7 +147,7 @@ namespace BotwInstaller.Lib
             }
 
             // If the Game and Update have been found, return
-            if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
+            if (paths["Game"] != "NOT FOUND" && paths["Update"] != "NOT FOUND")
                 return true;
 
             // Loop supposed game directory
@@ -154,16 +155,16 @@ namespace BotwInstaller.Lib
             {
                 foreach (var set in Checks)
                 {
-                    if (File.Exists(folder + set.Value) && !paths.ContainsKey(set.Key))
+                    if (File.Exists(folder + set.Value) && paths[set.Key] == "NOT FOUND")
                     {
                         if (BotwContents(set.Key, folder, print, func))
                         {
-                            paths.Add(set.Key, folder);
+                            paths[set.Key] = folder;
                             print($"{func} {set.Key} found in '{folder}'");
                         }
                         else return false;
 
-                        if (paths.ContainsKey("Game") && paths.ContainsKey("Update"))
+                        if (paths["Game"] != "NOT FOUND" && paths["Update"] != "NOT FOUND")
                             return true;
                     }
                 }
