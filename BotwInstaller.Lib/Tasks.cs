@@ -57,6 +57,9 @@ namespace BotwInstaller.Lib
                 print($"{func} Downloading DS4Windows . . .");
                 download.Add(Download.FromUrl(await GitHub.GetLatestRelease("Ryochan7;DS4Windows", 2), $"{AppData}\\Temp\\BOTW\\DS4.PACK.res"));
 
+                print($"{func} Downloading Virtual Gamepad Driver . . .");
+                download.Add(Download.FromUrl(await GitHub.GetLatestRelease("ViGEm;ViGEmBus"), $"{AppData}\\Temp\\BOTW\\VIGEM.msi"));
+
                 foreach (var proc in Process.GetProcesses())
                 {
                     if (proc.ProcessName == "DS4Windows")
@@ -92,6 +95,12 @@ namespace BotwInstaller.Lib
             {
                 print($"{func} Extracting DS4Windows . . .");
                 unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\DS4.PACK.res", AppData, true)));
+
+                print($"{func} Installing Virtual Gamepad Driver . . .");
+                unpack.Add(HiddenProcess.Start("cmd.exe", $"/c {AppData}\\Temp\\BOTW\\VIGEM.msi /quiet & EXIT"));
+
+                print($"{func} Installing Runtimes . . .");
+                unpack.Add(RuntimeInstallers.Net5(print));
             }
 
             // Wait for unpack
