@@ -16,12 +16,19 @@
   <ItemGroup>
     <None Remove="ViewResources\Images\background.png" />
     <None Remove="ViewResources\Images\highres_icon.png" />
+    <None Remove="ViewResources\Images\homebrew.ico" />
+    <None Remove="ViewResources\Images\homebrew_dark.svg" />
+    <None Remove="ViewResources\Images\homebrew_light.svg" />
     <None Remove="ViewResources\Images\icon.ico" />
     <None Remove="ViewResources\Images\icon.png" />
     <None Remove="ViewThemes\Styles\TextEditor\SyntaxHighlighting\XmlDark.xshd" />
     <None Remove="ViewThemes\Styles\TextEditor\SyntaxHighlighting\XmlLight.xshd" />
     <None Remove="ViewThemes\Styles\TextEditor\SyntaxHighlighting\YamlDark.xshd" />
     <None Remove="ViewThemes\Styles\TextEditor\SyntaxHighlighting\YamlLight.xshd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="ViewResources\Images\homebrew_dark.xaml" />
   </ItemGroup>
 
   <ItemGroup>
