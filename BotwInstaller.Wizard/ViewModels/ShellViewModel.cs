@@ -4,7 +4,10 @@
 #pragma warning disable CS8629
 
 using BotwInstaller.Lib;
+using BotwInstaller.Lib.Configurations.Cemu;
 using BotwScripts.Lib.Common.Computer;
+using BotwScripts.Lib.Common.Computer.Software.Resources;
+using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Web;
 using Stylet;
 using System;
@@ -95,7 +98,7 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 GameMode = mode;
                 GenericPathLabel = "Merged Mods Directory";
-                GenericPath = $"{Config.LastDrive}\\atmosphere\\contents";
+                GenericPath = $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\sdmc\\atmosphere\\contents";
                 SwitchPrefs_Visibility = Visibility.Visible;
                 WiiuPrefs_Visibility = Visibility.Collapsed;
                 CemuPrefs_Visibility = Visibility.Collapsed;
@@ -147,34 +150,43 @@ namespace BotwInstaller.Wizard.ViewModels
                     {
                         #region Configure
 
-                        conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
-                        conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
-                        conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
-                        conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
-                        conf.Dirs.Dynamic = GenericPath;
-                        conf.ModPacks = ModPresetData;
-                        conf.ModPack = ModPreset;
+                        Conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
+                        Conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
+                        Conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
+                        Conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
+                        Conf.Dirs.Dynamic = GenericPath;
+                        Conf.ModPacks = ModPresetData;
+                        Conf.ModPack = ModPreset;
 
                         if (GameMode == "cemu")
                         {
-                            conf.UseCemu = true;
-                            conf.Install.Base = CopyBaseGame;
-                            conf.ControllerApi = ControllerApiTranslate[ControllerApi];
+                            Conf.UseCemu = true;
+                            Conf.Install.Base = CopyBaseGame;
+                            Conf.ControllerApi = ControllerApiTranslate[ControllerApi];
                         }
 
                         if (GameMode == "switch")
                         {
-                            conf.IsNX = true;
+                            Conf.IsNX = true;
                         }
 
                         #endregion
-                        await Installer.RunInstallerAsync(LogMessage, Update, conf);
+                        Conf = await Installer.RunInstallerAsync(LogMessage, Update, Conf);
+
+                        if (Conf.Dirs.Base == "NOT FOUND")
+                            ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+
+                        else if (Conf.Dirs.Update == "NOT FOUND")
+                            ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
 
                         updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
                     });
                 }
                 catch (Exception ex)
                 {
+                    if (Directory.Exists($"{Config.AppData}\\Temp\\BOTW"))
+                        Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
+
                     ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
                 }
                 finally
@@ -183,7 +195,7 @@ namespace BotwInstaller.Wizard.ViewModels
                         Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
 
                     watch.Stop();
-                    string time = watch.ElapsedMilliseconds / 1000 >= 60 ? $"{watch.ElapsedMilliseconds / 1000 / 60} Minutes" : $"{watch.ElapsedMilliseconds / 1000} Seconds";
+                    string time = watch.ElapsedMilliseconds / 1000 >= 60 ? $"{watch.ElapsedMilliseconds / 1000 / 60} Minute(s)" : $"{watch.ElapsedMilliseconds / 1000} Seconds";
                     InstallTime = time;
                 }
             }
@@ -211,28 +223,7 @@ namespace BotwInstaller.Wizard.ViewModels
                 InstallingText = installing[InstallingText];
             };
 
-            updateTimer.Tick += (s, e) =>
-            {
-                if (UnboundGameInstallValue > GameInstallValue)
-                    GameInstallValue++;
-
-                if (UnboundCemuInstallValue > CemuInstallValue)
-                    CemuInstallValue++;
-
-                if (UnboundBcmlInstallValue > BcmlInstallValue)
-                    BcmlInstallValue++;
-
-                if (BcmlInstallValue >= 100)
-                {
-                    LaunchPageVisibility = Visibility.Visible;
-                    SplashPageVisibility = Visibility.Hidden;
-                    SetupPageVisibility = Visibility.Hidden;
-                    InstallPageVisibility = Visibility.Hidden;
-                }
-            };
-
             timer.Start();
-            updateTimer.Start();
         }
 
         /// <summary>
@@ -314,6 +305,16 @@ namespace BotwInstaller.Wizard.ViewModels
                         UnboundBcmlInstallValue = value - (value - 100);
                     else
                         UnboundBcmlInstallValue = value;
+                }
+            }
+            else if (id == "tool")
+            {
+                if (UnboundToolProgressValue != 100)
+                {
+                    if (value - 100 > 0)
+                        UnboundToolProgressValue = value - (value - 100);
+                    else
+                        UnboundToolProgressValue = value;
                 }
             }
         }
@@ -557,6 +558,7 @@ namespace BotwInstaller.Wizard.ViewModels
         public double UnboundGameInstallValue { get; set; } = 0.0;
         public double UnboundCemuInstallValue { get; set; } = 0.0;
         public double UnboundBcmlInstallValue { get; set; } = 0.0;
+        public double UnboundToolProgressValue { get; set; } = 0.0;
 
         private string _installingText = "Installing . . .";
         public string InstallingText
@@ -638,11 +640,23 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
+        private double _toolProgressValue = 0;
+        public double ToolProgressValue
+        {
+            get { return _toolProgressValue; }
+            set
+            {
+                _toolProgressValue = value;
+                StrBcmlInstallValue = $"{Math.Round(value)}%";
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Setup Tools (Actions)
 
-        public async Task InstallHomebrewWiiU()
+        public async Task InstallHomebrew()
         {
             ShowDialog("Select an empty folder or SDCard to install homebrew in.");
 
@@ -697,14 +711,61 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        public void InstallHomebrewSwitch()
+        public async Task PrepCemu()
         {
+            if (File.Exists($"{GenericPath}\\Cemu.exe"))
+            {
+                if (ShowDialog("Cemu already exists in this directory.\nOpen Cemu?", isYesNo: true))
+                    await HiddenProcess.Start($"{GenericPath}\\Cemu.exe");
+                return;
+            }
 
-        }
+            // Create Temp Directory
+            Directory.CreateDirectory($"{Config.AppData}\\Temp\\BOTW");
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            Update(80, "tool");
 
-        public void PrepCemu()
-        {
+            // Download Cemu
+            await Download.FromUrl(DownloadLinks.Cemu, $"{Config.AppData}\\Temp\\BOTW\\CEMU.PACK.res");
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            Update(85, "tool");
 
+            // Extract Cemu
+            await Task.Run(() => ZipFile.ExtractToDirectory($"{Config.AppData}\\Temp\\BOTW\\CEMU.PACK.res", $"{Config.AppData}\\Temp\\BOTW\\CEMU"));
+            Update(90, "tool");
+
+            // Install Cemu
+            await Task.Run(() => {
+
+                // Setup fonders and variables
+                string cemuTemp = $"{Config.AppData}\\Temp\\BOTW\\CEMU".SubFolder();
+
+                // Copy Cemu files
+                foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
+                {
+                    var dir = new FileInfo(file).DirectoryName;
+                    Directory.CreateDirectory($"{GenericPath}\\{dir.Replace(cemuTemp, "")}");
+                    File.Copy(file, $"{GenericPath}\\{file.Replace(cemuTemp, "")}", true);
+                }
+
+            });
+            Update(95, "tool");
+
+            // Create override tag
+            await File.WriteAllTextAsync($"{GenericPath}\\installer.tag", "");
+
+            // Write basic settings
+            Conf.Dirs.Dynamic = GenericPath;
+            Directory.CreateDirectory($"{GenericPath}\\mlc01");
+            CemuSettings.Write(Conf, true);
+
+            // Delete Temp Directory
+            Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
+
+            Update(100, "tool");
+
+            ShowDialog("Cemu Installed successfully.");
+            await HiddenProcess.Start($"{GenericPath}\\Cemu.exe");
         }
 
         public void InstallDumpling()
@@ -714,7 +775,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
-        public Config conf { get; set; } = new();
+        public Config Conf { get; set; } = new();
 
         public static Dictionary<string, Dictionary<string, List<string?>>> ModPresetData { get; set; } = new();
 
@@ -722,6 +783,39 @@ namespace BotwInstaller.Wizard.ViewModels
         public ShellViewModel(IWindowManager windowManager)
         {
             this.windowManager = windowManager;
+
+            // Start updater
+            updateTimer.Start();
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+
+            updateTimer.Tick += async (s, e) =>
+            {
+                if (UnboundGameInstallValue > GameInstallValue)
+                    GameInstallValue++;
+
+                if (UnboundCemuInstallValue > CemuInstallValue)
+                    CemuInstallValue++;
+
+                if (UnboundBcmlInstallValue > BcmlInstallValue)
+                    BcmlInstallValue++;
+
+                if (UnboundToolProgressValue > ToolProgressValue)
+                    ToolProgressValue++;
+
+                if (ToolProgressValue >= 100)
+                {
+                    UnboundToolProgressValue = 0;
+                    ToolProgressValue = 0;
+                }
+
+                if (BcmlInstallValue >= 100)
+                {
+                    LaunchPageVisibility = Visibility.Visible;
+                    SplashPageVisibility = Visibility.Hidden;
+                    SetupPageVisibility = Visibility.Hidden;
+                    InstallPageVisibility = Visibility.Hidden;
+                }
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
