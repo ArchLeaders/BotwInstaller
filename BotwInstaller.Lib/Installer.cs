@@ -48,7 +48,7 @@ namespace BotwInstaller.Lib
 
                 if (File.Exists($"{gameInfo["Game"]}\\content\\System\\BuildTime.txt"))
                 {
-                    conf.Dirs.Base = "PIRATED";
+                    conf.Dirs.Base = $"{gameInfo["Game"]} (PIRATED)";
                     return conf;
                 }
 
