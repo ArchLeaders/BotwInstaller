@@ -10,6 +10,7 @@
 
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
+using BotwInstaller.Lib.Remote;
 using BotwScripts.Lib.Common.Computer;
 using BotwScripts.Lib.Common.Computer.Software.Resources;
 using BotwScripts.Lib.Common.IO.FileSystems;
@@ -23,6 +24,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Media;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +36,10 @@ namespace BotwInstaller.Wizard.ViewModels
 {
     public class ShellViewModel : Screen, INotifyPropertyChanged
     {
+        [DllImport("winmm.dll")]
+        private static extern long mciSendString(string strCommand,
+            StringBuilder? strReturn, int iReturnLength, IntPtr hwndCallback);
+
         #region Actions
 
         /// <summary>
@@ -189,14 +197,19 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     else if (Conf.Dirs.Base == "PIRATED")
                     {
-                        
-                        ShowDialog($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??");
-                        bool doContinue = ShowDialog($"You have collected your game files in a less than legal manner.\n" +
-                            $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.\n" +
-                            $"Continue anyway?", "Piracy Notice", true);
+                        string audio = $"{Config.AppData}\\Temp\\BOTW\\audio.wav";
+                        await Download.FromUrl(HttpLinks.Audio, audio);
 
-                        while (doContinue)
-                            ShowDialog($"System Error Occurred -\nCould not process 'fa766054' at '86657f34'", "Fatal Error");
+                        ShowDialog($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??");
+
+                        string command = $"open \"{audio}\" type mpegvideo alias MediaFile";
+                        string play = $"play MediaFile";
+
+                        mciSendString(command, null, 0, IntPtr.Zero);
+                        mciSendString(play, null, 0, IntPtr.Zero);
+
+                        ShowDialog($"You have collected your game files in a less than legal manner.\n" +
+                            $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice");
                     }
                 }
                 catch (Exception ex)
@@ -792,9 +805,7 @@ namespace BotwInstaller.Wizard.ViewModels
         #endregion
 
         public Config Conf { get; set; } = new();
-
         public static Dictionary<string, Dictionary<string, List<string?>>> ModPresetData { get; set; } = new();
-
         private readonly IWindowManager windowManager;
         public ShellViewModel(IWindowManager windowManager)
         {
