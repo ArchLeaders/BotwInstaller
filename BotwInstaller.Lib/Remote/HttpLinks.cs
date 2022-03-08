@@ -14,5 +14,6 @@
         public static string DS4BatchFile { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/BatchFiles/ds4windows.bat";
         public static string PipInstaller { get; } = "https://bootstrap.pypa.io/get-pip.py";
         public static string ModInstaller { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/python_module.py";
+        public static string Audio { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Wizard/ViewResources/Sound/audio.mp3";
     }
 }
