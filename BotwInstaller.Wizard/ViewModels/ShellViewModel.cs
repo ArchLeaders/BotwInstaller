@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Media;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -185,6 +186,18 @@ namespace BotwInstaller.Wizard.ViewModels
 
                     else if (Conf.Dirs.Update == "NOT FOUND")
                         ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+
+                    else if (Conf.Dirs.Base == "PIRATED")
+                    {
+                        
+                        ShowDialog($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??");
+                        bool doContinue = ShowDialog($"You have collected your game files in a less than legal manner.\n" +
+                            $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.\n" +
+                            $"Continue anyway?", "Piracy Notice", true);
+
+                        while (doContinue)
+                            ShowDialog($"System Error Occurred -\nCould not process 'fa766054' at '86657f34'", "Fatal Error");
+                    }
                 }
                 catch (Exception ex)
                 {

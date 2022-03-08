@@ -46,6 +46,12 @@ namespace BotwInstaller.Lib
                 if ((string)gameInfo["Update"] == "NOT FOUND")
                     return conf;
 
+                if (File.Exists($"{gameInfo["Game"]}\\content\\System\\BuildTime.txt"))
+                {
+                    conf.Dirs.Base = "PIRATED";
+                    return conf;
+                }
+
                 if (conf.UseCemu)
                 {
                     if (conf.Install.Base)
