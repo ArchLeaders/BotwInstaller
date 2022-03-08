@@ -11,10 +11,12 @@
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
 using BotwInstaller.Lib.Remote;
+using BotwInstaller.Wizard.ViewResources;
 using BotwScripts.Lib.Common.Computer;
 using BotwScripts.Lib.Common.Computer.Software.Resources;
 using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Web;
+using Octokit;
 using Stylet;
 using System;
 using System.Collections.Generic;
@@ -22,11 +24,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Media;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,7 +36,7 @@ namespace BotwInstaller.Wizard.ViewModels
 {
     public class ShellViewModel : Screen, INotifyPropertyChanged
     {
-        [DllImport("winmm.dll")]
+        [DllImport("winmm.dll", CharSet = CharSet.Unicode)]
         private static extern long mciSendString(string strCommand,
             StringBuilder? strReturn, int iReturnLength, IntPtr hwndCallback);
 
@@ -195,7 +195,7 @@ namespace BotwInstaller.Wizard.ViewModels
                     else if (Conf.Dirs.Update == "NOT FOUND")
                         ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
 
-                    else if (Conf.Dirs.Base == "PIRATED")
+                    else if (Conf.Dirs.Base.EndsWith("(PIRATED)"))
                     {
                         string audio = $"{Config.AppData}\\Temp\\BOTW\\audio.wav";
                         await Download.FromUrl(HttpLinks.Audio, audio);
@@ -210,6 +210,12 @@ namespace BotwInstaller.Wizard.ViewModels
 
                         ShowDialog($"You have collected your game files in a less than legal manner.\n" +
                             $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice");
+
+                        Title = "Piracy Warning";
+                        Exception = "Piraing the game is illegal and not supported.";
+                        StackTrace = "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
+                            "it from your WiiU. Alternatively you can dump your WiiU online files and download the game legally from Nintendo's server through Cemu.";
+                        ExceptionPageVisibility = Visibility.Visible;
                     }
                 }
                 catch (Exception ex)
@@ -218,6 +224,7 @@ namespace BotwInstaller.Wizard.ViewModels
                         Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
 
                     ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
+                    ThrowException(ex);
                 }
                 finally
                 {
@@ -283,6 +290,18 @@ namespace BotwInstaller.Wizard.ViewModels
         {
             HandledErrorViewModel promptViewModel = new(message, title, isYesNo, exMessage, exColor);
             return !(bool)windowManager.ShowDialog(promptViewModel);
+        }
+
+        /// <summary>
+        /// Shows a new error box window.
+        /// </summary>
+        /// <returns></returns>
+        public void ThrowException(Exception ex, string title = "Exception Thrown")
+        {
+            Title = title;
+            Exception = ex.Message;
+            StackTrace = ex.StackTrace;
+            ExceptionPageVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -573,6 +592,17 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
+        private Visibility _exceptionPageVisibility = Visibility.Hidden;
+        public Visibility ExceptionPageVisibility
+        {
+            get { return _exceptionPageVisibility; }
+            set
+            {
+                _exceptionPageVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region ToolTips
@@ -800,6 +830,96 @@ namespace BotwInstaller.Wizard.ViewModels
         public void InstallDumpling()
         {
 
+        }
+
+        #endregion
+
+        #region Exception Page Bindings
+
+        public string FormattedError
+        {
+            get
+            {
+                return new(
+
+                    $"# {Title}\n\n> {Exception}\n\n```\n{StackTrace}\n```\n\n" +
+                    $"## Config Info:\n" +
+                    $"```yml\n" +
+                    $"{nameof(Conf.ControllerApi)}: {Conf.ControllerApi}\n" +
+                    $"{nameof(Conf.IsNX)}: {Conf.IsNX}\n" +
+                    $"{nameof(Conf.ModPack)}: {Conf.ModPack}\n" +
+                    $"```\n\n" +
+                    $"## Directory Info:\n" +
+                    $"```yml\n" +
+                    $"{nameof(Conf.Dirs.Dynamic)}: {Conf.Dirs.Dynamic}\n" +
+                    $"{nameof(Conf.Dirs.Base)}: {Conf.Dirs.Base}\n" +
+                    $"{nameof(Conf.Dirs.Update)}: {Conf.Dirs.Update}\n" +
+                    $"{nameof(Conf.Dirs.BCML)}: {Conf.Dirs.BCML}\n" +
+                    $"{nameof(Conf.Dirs.MLC01)}: {Conf.Dirs.MLC01}\n" +
+                    $"{nameof(Conf.Dirs.Python)}: {Conf.Dirs.Python}\n" +
+                    $"{nameof(Conf.Dirs.DS4Windows)}: {Conf.Dirs.DS4Windows}\n" +
+                    $"```\n\n" +
+                    $"## Install Info:\n" +
+                    $"```yml\n" +
+                    $"{nameof(Conf.Install.Cemu)}: {Conf.Install.Cemu}\n" +
+                    $"{nameof(Conf.Install.Base)}: {Conf.Install.Base}\n" +
+                    $"{nameof(Conf.Install.Update)}: {Conf.Install.Update}\n" +
+                    $"{nameof(Conf.Install.DLC)}: {Conf.Install.DLC}\n" +
+                    $"{nameof(Conf.Install.Python)}: {Conf.Install.Python}\n" +
+                    $"```"
+
+                );
+            }
+        }
+
+        public void CopyError()
+        {
+            Clipboard.SetText(FormattedError.Replace(Config.User, "C:\\Users\\admin"));
+        }
+
+        public async Task ReportError()
+        {
+            var client = new GitHubClient(new ProductHeaderValue("botw-installer-v3"));
+            client.Credentials = new Credentials(AuthKey.Get);
+
+            Clipboard.SetText(FormattedError.Replace(Config.User, "C:\\Users\\admin"));
+
+            var createIssue = new NewIssue("test this issue creator");
+            var issuesForOctokit = await client.Issue.Create("archleaders", "botwinstaller", createIssue);
+            ShowDialog($"Created issue as {issuesForOctokit.Id}");
+        }
+
+        private string _title = "Exception Thrown";
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _exception = "";
+        public string Exception
+        {
+            get { return _exception; }
+            set
+            {
+                _exception = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string? _stackTrace = "";
+        public string? StackTrace
+        {
+            get { return _stackTrace; }
+            set
+            {
+                _stackTrace = value;
+                NotifyPropertyChanged();
+            }
         }
 
         #endregion
