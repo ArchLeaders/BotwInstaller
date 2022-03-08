@@ -7,9 +7,17 @@ using static BotwInstaller.Lib.Config;
 
 namespace BotwInstaller.Lib.Configurations.Shortcuts
 {
+    /// <summary>
+    /// Static class for LNK file logic
+    /// </summary>
     public static class Shortcuts
     {
-        public static async Task Write(ShortcutClass lnk)
+        /// <summary>
+        /// Writes a set of lnk files using the <paramref name="shortcut"/> data
+        /// </summary>
+        /// <param name="shortcut">Shortcut data class</param>
+        /// <returns></returns>
+        public static async Task Write(ShortcutClass shortcut)
         {
             // Create root directory
             Directory.CreateDirectory(Root);
@@ -19,37 +27,37 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
             if (!File.Exists(shell))
                 await Download.FromUrl(DownloadLinks.LnkWriter, shell);
 
-            if (lnk.Start)
+            if (shortcut.Start)
             {
-                if (lnk.IconFile.StartsWith("https"))
+                if (shortcut.IconFile.StartsWith("https"))
                 {
                     using (HttpClient client = new())
-                        await File.WriteAllBytesAsync($"{Root}\\{lnk.Name.ToLower()}.ico", await client.GetByteArrayAsync(lnk.IconFile));
+                        await File.WriteAllBytesAsync($"{Root}\\{shortcut.Name.ToLower()}.ico", await client.GetByteArrayAsync(shortcut.IconFile));
 
-                    lnk.IconFile = $"{Root}\\{lnk.Name.ToLower()}.ico";
+                    shortcut.IconFile = $"{Root}\\{shortcut.Name.ToLower()}.ico";
                 }
 
-                await HiddenProcess.Start(shell, $"/F:\"{StartMenu}\\{lnk.Name}.lnk\" /A:C /T:\"{lnk.Target}\" /P:\"{lnk.Args}\" /I:\"{lnk.IconFile}\" /D:\"{lnk.Description}\"");
+                await HiddenProcess.Start(shell, $"/F:\"{StartMenu}\\{shortcut.Name}.lnk\" /A:C /T:\"{shortcut.Target}\" /P:\"{shortcut.Args}\" /I:\"{shortcut.IconFile}\" /D:\"{shortcut.Description}\"");
 
-                if (lnk.BatchFile.StartsWith("https:"))
+                if (shortcut.BatchFile.StartsWith("https:"))
                 {
                     using HttpClient client = new();
-                    await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", (await client.GetStringAsync(lnk.BatchFile)).EvaluateVariables());
+                    await File.WriteAllTextAsync($"{Root}\\{shortcut.Name.ToLower()}.bat", (await client.GetStringAsync(shortcut.BatchFile)).EvaluateVariables());
                 }
                 else
                 {
-                    await File.WriteAllTextAsync($"{Root}\\{lnk.Name.ToLower()}.bat", lnk.BatchFile.EvaluateVariables());
+                    await File.WriteAllTextAsync($"{Root}\\{shortcut.Name.ToLower()}.bat", shortcut.BatchFile.EvaluateVariables());
                 }
 
-                if (lnk.HasUninstaller)
+                if (shortcut.HasUninstaller)
                 {
-                    await lnk.AddProgramEntry();
+                    await shortcut.AddProgramEntry();
                 }
             }
 
-            if (lnk.Desktop)
+            if (shortcut.Desktop)
             {
-                await HiddenProcess.Start(shell, $"/F:\"{Desktop}\\{lnk.Name}.lnk\" /A:C /T:\"{lnk.Target}\" /P:\"{lnk.Args}\" /I:\"{lnk.IconFile}\" /D:\"{lnk.Description}\"");
+                await HiddenProcess.Start(shell, $"/F:\"{Desktop}\\{shortcut.Name}.lnk\" /A:C /T:\"{shortcut.Target}\" /P:\"{shortcut.Args}\" /I:\"{shortcut.IconFile}\" /D:\"{shortcut.Description}\"");
             }
         }
 
@@ -107,33 +115,29 @@ namespace BotwInstaller.Lib.Configurations.Shortcuts
         }
 
         /// <summary>
-        /// Adds a program key to the registry
+        /// Adds a program key to the registry with data from the given <paramref name="shortcut"/>
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="version"></param>
-        /// <param name="uninstall"></param>
-        /// <param name="icon"></param>
-        public static async Task AddProgramEntry(this ShortcutClass lnk)
+        /// <param name="shortcut">Shortcut data class</param>
+        public static async Task AddProgramEntry(this ShortcutClass shortcut)
         {
             await Task.Run(() =>
             {
                 Microsoft.Win32.Registry.SetValue(
-                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{lnk.Name}", "DisplayIcon", lnk.IconFile
+                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{shortcut.Name}", "DisplayIcon", shortcut.IconFile
                 );
                 Microsoft.Win32.Registry.SetValue(
-                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{lnk.Name}", "DisplayName", lnk.Name
+                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{shortcut.Name}", "DisplayName", shortcut.Name
                 );
                 Microsoft.Win32.Registry.SetValue(
-                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{lnk.Name}", "NoModify", 1
+                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{shortcut.Name}", "NoModify", 1
                 );
                 Microsoft.Win32.Registry.SetValue(
-                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{lnk.Name}", "UninstallString", $"{Root}\\{lnk.Name.ToLower()}.bat"
+                    @$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{shortcut.Name}", "UninstallString", $"{Root}\\{shortcut.Name.ToLower()}.bat"
                 );
             });
         }
 
         public static Config Conf { get; set; } = new();
-
         public static Dictionary<string, string> Variables { get; set; } = new();
     }
 }

@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS8602
-#pragma warning disable CS8604
 
 using static BotwInstaller.Lib.Config;
 
@@ -10,7 +9,6 @@ using BotwScripts.Lib.Common.Web;
 using BotwScripts.Lib.Common.Web.GitHub;
 using System.IO.Compression;
 using BotwInstaller.Lib.Configurations.Cemu;
-using BotwInstaller.Lib.Configurations.Shortcuts;
 using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Computer;
 using BotwInstaller.Lib.Configurations;
@@ -20,17 +18,17 @@ using BotwInstaller.Lib.Remote;
 
 namespace BotwInstaller.Lib
 {
+    /// <summary>
+    /// Class used for installing various software and configurations
+    /// </summary>
     public class Tasks
     {
         /// <summary>
-        /// Installs and configures Cemu for Botw.
+        /// Installs and configures Cemu for BOTW.
         /// </summary>
-        /// <param name="option"></param>
         /// <param name="update"></param>
         /// <param name="print"></param>
-        /// <param name="installDir"></param>
-        /// <param name="installGfx"></param>
-        /// <param name="installRuntimes"></param>
+        /// <param name="conf"></param>
         /// <returns></returns>
         public static async Task Cemu(Interface.Update update, Interface.Notify print, Config conf)
         {
@@ -160,6 +158,13 @@ namespace BotwInstaller.Lib
             install.Clear();
         }
 
+        /// <summary>
+        /// Installs and configures BCML
+        /// </summary>
+        /// <param name="update"></param>
+        /// <param name="print"></param>
+        /// <param name="conf"></param>
+        /// <returns></returns>
         public static async Task BCML(Interface.Update update, Interface.Notify print, Config conf)
         {
             string func = "[INSTALL.BCML]";
@@ -199,6 +204,13 @@ namespace BotwInstaller.Lib
             update(35, "bcml");
         }
 
+        /// <summary>
+        /// Installs the defined mod preset with BCML
+        /// </summary>
+        /// <param name="update"></param>
+        /// <param name="print"></param>
+        /// <param name="conf"></param>
+        /// <returns></returns>
         public static async Task Mods(Interface.Update update, Interface.Notify print, Config conf)
         {
             List<Task> install = new();
@@ -240,11 +252,6 @@ namespace BotwInstaller.Lib
             }
 
             update(95, "bcml");
-        }
-
-        public static void Homebrew(Interface.Notify print, Config conf)
-        {
-
         }
     }
 }

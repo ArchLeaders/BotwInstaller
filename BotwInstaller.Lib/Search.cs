@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS8600
+﻿#pragma warning disable CS0252
+#pragma warning disable CS8600
 #pragma warning disable CS8601
 #pragma warning disable CS8602
 #pragma warning disable CS8603
@@ -10,12 +11,15 @@ using BotwScripts.Lib.Common.IO.FileSystems;
 
 namespace BotwInstaller.Lib
 {
+    /// <summary>
+    /// Class used for search for game files and related applications
+    /// </summary>
     public class Search
     {
         /// <summary>
         /// Search for Cemu and returns a Dictionary with the path and install details.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">Supposed path to Cemu</param>
         /// <returns></returns>
         public static void Cemu(ref Dictionary<string, object> paths, Interface.Notify print, string path = "::")
         {
@@ -202,7 +206,7 @@ namespace BotwInstaller.Lib
         /// <summary>
         /// Searches for Python and returns a string dictating the path.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">Supposed path to python</param>
         /// <returns></returns>
         public static string Python(Interface.Notify print, string path = "::")
         {

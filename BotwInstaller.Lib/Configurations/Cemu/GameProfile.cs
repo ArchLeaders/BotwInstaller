@@ -2,8 +2,15 @@
 
 namespace BotwInstaller.Lib.Configurations.Cemu
 {
+    /// <summary>
+    /// Cemu Game Profile class
+    /// </summary>
     public class GameProfile
     {
+        /// <summary>
+        /// Writes a Cemu Game profile to "<paramref name="conf"/>.Dirs.Dynamic\gameProfiles\TITLE_ID.ini" overwiting any existing file with the same name.
+        /// </summary>
+        /// <param name="conf">BotwINstaller Config class</param>
         public static void Write(Config conf)
         {
             Directory.CreateDirectory($"{conf.Dirs.Dynamic}\\gameProfiles");
@@ -42,7 +49,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
             },
             {
                 "Controller", new() {
-                    { "controller1", $"{Api}.txt" }
+                    { "controller1", $"{Api}.xml" }
                 }
             },
         };

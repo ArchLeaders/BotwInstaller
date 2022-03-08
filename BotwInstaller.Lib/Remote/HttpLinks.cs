@@ -1,8 +1,9 @@
-﻿using BotwScripts.Lib.Common.Web.GitHub;
-
-namespace BotwInstaller.Lib.Remote
+﻿namespace BotwInstaller.Lib.Remote
 {
-    public class HttpLinks
+    /// <summary>
+    /// Static class holding links to used remote files
+    /// </summary>
+    public static class HttpLinks
     {
         public static string ModPresets { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/ModPresets.json";
         public static string BcmlIconFile { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Lib/Configurations/Icons/bcml.ico";

@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS8600
+﻿#pragma warning disable CS0252
+#pragma warning disable CS8600
 #pragma warning disable CS8604
 
 using BotwScripts.Lib.CheckSum;
@@ -8,16 +9,15 @@ using System.Xml.Linq;
 
 namespace BotwInstaller.Lib
 {
-    public class XmlContent
-    {
-        public Dictionary<dynamic, dynamic> content = new();
-    }
+    /// <summary>
+    /// Static class used for verifying game files and software data
+    /// </summary>
     public static class Verify
     {
         /// <summary>
         /// Set of BotW Check files
         /// </summary>
-        public static Dictionary<string, string> Checks = new()
+        private static Dictionary<string, string> Checks { get; } = new()
         {
             { "Game", "\\content\\Movie\\Demo101_0.mp4" },
             { "Update", "\\content\\Actor\\Pack\\TwnObj_TempleOfTime_A_01.sbactorpack" },
@@ -27,7 +27,7 @@ namespace BotwInstaller.Lib
         /// <summary>
         /// Set of BotW IDs
         /// </summary>
-        public static Dictionary<string, string> IDs = new()
+        private static Dictionary<string, string> IDs { get; } = new()
         {
             { "Game", "00050000" },
             { "Update", "0005000E" },
@@ -37,7 +37,7 @@ namespace BotwInstaller.Lib
         /// <summary>
         /// Set of BotW Title IDs
         /// </summary>
-        public static Dictionary<string, string> TitleIds = new()
+        private static Dictionary<string, string> TitleIds { get; } = new()
         {
             { "EU", "101C9500" },
             { "US", "101C9400" },
@@ -124,23 +124,23 @@ namespace BotwInstaller.Lib
             string code = new FileInfo(uking).DirectoryName;
 
             // Check for content folder
-            if (!Directory.Exists($"{code.EditPath()}content"))
+            if (!Directory.Exists($"{code.EditPath()}\\content"))
             {
                 print($"{func}[UKING] UKing '{new FileInfo(uking).Directory}\\U-King.rpx' was invalid.", ConsoleColor.DarkYellow);
                 return false;
             }
 
             // Check for cemu structure
-            var id = code.EditPath().GetTitleID(TitleIDFormat.HexEnd);
+            var id = code.EditPath().GetTitleID(ITitleIDFormat.HexEnd);
 
             foreach (var set in Checks)
             {
-                if (File.Exists($"{code.EditPath(3)}{IDs[set.Key]}\\{id}{set.Value}") && paths[set.Key] == "NOT FOUND")
+                if (File.Exists($"{code.EditPath(3)}\\{IDs[set.Key]}\\{id}{set.Value}") && paths[set.Key] == "NOT FOUND")
                 {
-                    if (BotwContents(set.Key, $"{code.EditPath(3)}{IDs[set.Key]}\\{id}", print, func))
+                    if (BotwContents(set.Key, $"{code.EditPath(3)}\\{IDs[set.Key]}\\{id}", print, func))
                     {
-                        paths[set.Key] = $"{code.EditPath(3)}{IDs[set.Key]}\\{id}";
-                        print($"{func}[UKING][CEMU] {set.Key} found in '{code.EditPath(3)}{IDs[set.Key]}\\{id}'");
+                        paths[set.Key] = $"{code.EditPath(3)}\\{IDs[set.Key]}\\{id}";
+                        print($"{func}[UKING][CEMU] {set.Key} found in '{code.EditPath(3)}\\{IDs[set.Key]}\\{id}'");
                     }
                     else return false;
                 }
@@ -189,7 +189,7 @@ namespace BotwInstaller.Lib
             {
                 foreach (var item in diff)
                 {
-                    Interface.WriteLine($"[{key.ToUpper()} MISSING] '{item}'", ConsoleColor.Red);
+                    print($"[{key.ToUpper()} MISSING] '{item}'", ConsoleColor.Red);
                 }
 
                 return false;

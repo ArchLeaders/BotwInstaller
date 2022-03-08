@@ -1,14 +1,13 @@
-﻿using BotwInstaller.Lib.Configurations.Shortcuts;
+﻿#pragma warning disable CA1822
+
+using BotwInstaller.Lib.Configurations.Shortcuts;
 using BotwInstaller.Lib.Remote;
-using BotwScripts.Lib.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotwInstaller.Lib
 {
+    /// <summary>
+    /// BotwInstaller Config class
+    /// </summary>
     public class Config
     {
         public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -16,8 +15,8 @@ namespace BotwInstaller.Lib
         public static string StartMenu { get; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\\Programs";
         public static string Root { get; } = $"{AppData}\\botw";
         public static string User { get; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        public static string Drive { get; } = DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name.Replace("\\", "");
-        public static string LastDrive { get; } = DriveInfo.GetDrives()[^1].Name.Replace("\\", "");
+        public static string Drive { get; } = DriveInfo.GetDrives().Length > 1 ? DriveInfo.GetDrives()[DriveInfo.GetDrives().Length - 1 - (DriveInfo.GetDrives().Length - 2)].Name.Replace("\\", "") : "C:";
+        public static string LastDrive { get; } = DriveInfo.GetDrives().Last().Name.Replace("\\", "");
 
         /// <summary>
         /// Directory list

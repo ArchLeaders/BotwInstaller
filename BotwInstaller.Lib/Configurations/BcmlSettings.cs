@@ -3,8 +3,16 @@ using System.Text.Json;
 
 namespace BotwInstaller.Lib.Configurations
 {
+    /// <summary>
+    /// BCML Settings class
+    /// </summary>
     public class BcmlSettings
     {
+        /// <summary>
+        /// Write a BCML settings file to "%localappdata%\bcml\settings.json" overwriting any file with the same name.
+        /// </summary>
+        /// <param name="conf">BotwInstaller Config class</param>
+        /// <returns></returns>
         public static async Task Write(Config conf)
         {
             Dictionary<string, object> jsonObject = new()
@@ -21,7 +29,7 @@ namespace BotwInstaller.Lib.Configurations
                 { "load_reverse", false },
                 { "site_meta", "" },
                 { "no_guess", false },
-                { "lang", conf.IsNX ? "USen" : $"{GameInfo.GetTitleID(conf.Dirs.Base, TitleIDFormat.Region)}en" },
+                { "lang", conf.IsNX ? "USen" : $"{GameInfo.GetTitleID(conf.Dirs.Base, ITitleIDFormat.Region)}en" },
                 { "no_cemu", !conf.UseCemu },
                 { "wiiu", !conf.IsNX },
                 { "no_hardlinks", false },

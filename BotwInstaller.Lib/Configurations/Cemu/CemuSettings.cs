@@ -2,8 +2,16 @@
 
 namespace BotwInstaller.Lib.Configurations.Cemu
 {
+    /// <summary>
+    /// Cemu settings class.
+    /// </summary>
     public class CemuSettings
     {
+        /// <summary>
+        /// Writes a Cemu Settings file to "<paramref name="conf"/>.Dirs.Dynamic\settings.xml" overwriting any existing file with the same name.
+        /// </summary>
+        /// <param name="conf">BotwInstaller Config class</param>
+        /// <param name="dummy">Write the file withough setting the GFX or GameCache entries</param>
         public static void Write(Config conf, bool dummy = false)
         {
             Directory.CreateDirectory(conf.Dirs.Dynamic);
@@ -84,7 +92,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
                 };
             }
 
-            XmlSerializer serializer = new XmlSerializer(typeof(SettingsConfigFile));
+            XmlSerializer serializer = new(typeof(SettingsConfigFile));
             FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\settings.xml");
 
             serializer.Serialize(stream, scf, xmlns);
@@ -756,7 +764,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
         {
             get;
             set;
-        } = new EntryElement[0];
+        } = Array.Empty<EntryElement>();
     }
 
     public partial class EntryElement

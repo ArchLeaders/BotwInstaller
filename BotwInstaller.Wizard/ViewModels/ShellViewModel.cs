@@ -1,7 +1,12 @@
-﻿#pragma warning disable CS0108
+﻿#pragma warning disable CA1822
+#pragma warning disable CS0108
+#pragma warning disable CS8602
 #pragma warning disable CS8612
 #pragma warning disable CS8618
 #pragma warning disable CS8629
+
+#pragma warning disable IDE0044
+#pragma warning disable IDE0060
 
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
@@ -70,7 +75,7 @@ namespace BotwInstaller.Wizard.ViewModels
             if (ControllerApi == "Controller -" && mode == "install" && GameMode == "cemu")
             {
                 if (ShowDialog("No controller is selected.\nWould you like to use the default API? (XInput)", "Warning", true) == true)
-                    ControllerApi = "XBox | XBox Emulated DS4";
+                    ControllerApi = "XBox Controller";
                 else
                     return;
             }
@@ -173,14 +178,13 @@ namespace BotwInstaller.Wizard.ViewModels
                         #endregion
                         Conf = await Installer.RunInstallerAsync(LogMessage, Update, Conf);
 
-                        if (Conf.Dirs.Base == "NOT FOUND")
-                            ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
-
-                        else if (Conf.Dirs.Update == "NOT FOUND")
-                            ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
-
-                        updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+                        UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
                     });
+                    if (Conf.Dirs.Base == "NOT FOUND")
+                        ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+
+                    else if (Conf.Dirs.Update == "NOT FOUND")
+                        ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
                 }
                 catch (Exception ex)
                 {
@@ -209,7 +213,7 @@ namespace BotwInstaller.Wizard.ViewModels
             // Make timer(s)
             DispatcherTimer timer = new();
             timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
 
             // Iteration variables
             Dictionary<string, string> installing = new() {
@@ -553,8 +557,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #region Animations
 
-        DispatcherTimer updateTimer = new();
-
+        DispatcherTimer UpdateTimer { get; } = new();
         public double UnboundGameInstallValue { get; set; } = 0.0;
         public double UnboundCemuInstallValue { get; set; } = 0.0;
         public double UnboundBcmlInstallValue { get; set; } = 0.0;
@@ -722,12 +725,12 @@ namespace BotwInstaller.Wizard.ViewModels
 
             // Create Temp Directory
             Directory.CreateDirectory($"{Config.AppData}\\Temp\\BOTW");
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
             Update(80, "tool");
 
             // Download Cemu
             await Download.FromUrl(DownloadLinks.Cemu, $"{Config.AppData}\\Temp\\BOTW\\CEMU.PACK.res");
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             Update(85, "tool");
 
             // Extract Cemu
@@ -779,16 +782,16 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public static Dictionary<string, Dictionary<string, List<string?>>> ModPresetData { get; set; } = new();
 
-        private IWindowManager windowManager;
+        private readonly IWindowManager windowManager;
         public ShellViewModel(IWindowManager windowManager)
         {
             this.windowManager = windowManager;
 
             // Start updater
-            updateTimer.Start();
-            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            UpdateTimer.Start();
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
 
-            updateTimer.Tick += async (s, e) =>
+            UpdateTimer.Tick += (s, e) =>
             {
                 if (UnboundGameInstallValue > GameInstallValue)
                     GameInstallValue++;

@@ -2,7 +2,10 @@
 
 namespace BotwInstaller.Lib
 {
-    public interface TitleIDFormat
+    /// <summary>
+    /// Basic interface for TitleID format modes
+    /// </summary>
+    public interface ITitleIDFormat
     {
         public static string CemuFolder { get; } = "CF";
         public static string Region { get; } = "RE";
@@ -14,6 +17,9 @@ namespace BotwInstaller.Lib
         public static string HexEnd { get; } = "HE";
     }
 
+    /// <summary>
+    /// Static class holding logic to get/set BOTW information
+    /// </summary>
     public static class GameInfo
     {
         /// <summary>

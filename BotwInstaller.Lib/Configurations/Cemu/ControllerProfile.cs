@@ -1,12 +1,19 @@
-﻿#pragma warning disable CS8602
+﻿#pragma warning disable IDE1006
 
 using System.Xml.Serialization;
 
 namespace BotwInstaller.Lib.Configurations.Cemu
 {
-
+    /// <summary>
+    /// Cemu Controller Profile class
+    /// </summary>
     public class ControllerProfile
     {
+        /// <summary>
+        /// Writes a cemu controller profile to "<paramref name="conf"/>.Dirs.Dynamic\controllerProfiles\<paramref name="name"/>.xml" overwriting any existing file with the same name.
+        /// </summary>
+        /// <param name="conf">BotwInstaller Config class</param>
+        /// <param name="name">Name of the controller profile</param>
         public static void Write(Config conf, string name = "XInput")
         {
             Directory.CreateDirectory($"{conf.Dirs.Dynamic}\\controllerProfiles");
@@ -20,7 +27,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
 
             if (conf.ControllerApi.StartsWith("SDLController"))
             {
-                List<MappingClass> SetMapping(SortedDictionary<int, int> mapping)
+                static List<MappingClass> SetMapping(SortedDictionary<int, int> mapping)
                 {
                     List<MappingClass> mappings = new();
 
@@ -99,7 +106,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
                 }
             }
 
-            XmlSerializer serializer = new XmlSerializer(typeof(EmulatedControllerClass));
+            XmlSerializer serializer = new(typeof(EmulatedControllerClass));
             FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\controllerProfiles\\{name}.xml");
 
             serializer.Serialize(stream, ecc, xmlns);
@@ -108,10 +115,10 @@ namespace BotwInstaller.Lib.Configurations.Cemu
 
         public EmulatedControllerClass emulated_controller { get; set; } = new();
         public static string Api { get; set; } = "XInput";
-        public static int A { get { return int.Parse(Api.Replace("XInput", "13").Replace("DSUController", $"13")); } }
-        public static int B { get { return int.Parse(Api.Replace("XInput", "12").Replace("DSUController", $"14")); } }
-        public static int X { get { return int.Parse(Api.Replace("XInput", "15").Replace("DSUController", $"12")); } }
-        public static int Y { get { return int.Parse(Api.Replace("XInput", "14").Replace("DSUController", $"15")); } }
+        public static int A { get => Api == "XInput" ? 13 : 13; }
+        public static int B { get => Api == "XInput" ? 12 : 14; }
+        public static int X { get => Api == "XInput" ? 15 : 12; }
+        public static int Y { get => Api == "XInput" ? 14 : 15; }
 
         [XmlRoot(Namespace = null, ElementName = "emulated_controller")]
         public class EmulatedControllerClass
@@ -123,6 +130,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
             public List<ControllerClass> controller { get; set; } = new() { new ControllerClass() };
 
         }
+
         public class ControllerClass
         {
             public string api { get; set; } = Api;
@@ -163,6 +171,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
                 new() { mapping = 24, button = 40 },
             };
         }
+
         public class RangeClass
         {
             public double deadzone { get; set; } = 0.25;

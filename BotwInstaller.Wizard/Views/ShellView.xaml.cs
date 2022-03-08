@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8601
 #pragma warning disable CS8604
+#pragma warning disable CS0649
 
 using BotwInstaller.Lib.Remote;
 using BotwInstaller.Wizard.ViewModels;
@@ -10,24 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml;
 
 namespace BotwInstaller.Wizard.Views
 {
@@ -36,13 +26,13 @@ namespace BotwInstaller.Wizard.Views
     /// </summary>
     public partial class ShellView : Window
     {
-        private IWindowManager windowManager;
+        private readonly IWindowManager WindowManager;
         public ShellView()
         {
             #region Template Setters
 
             InitializeComponent();
-            DataContext = new ShellViewModel(windowManager);
+            DataContext = new ShellViewModel(WindowManager);
 
             if (File.Exists(ShellViewTheme.ThemeFile))
             {
@@ -73,7 +63,7 @@ namespace BotwInstaller.Wizard.Views
             SourceInitialized += async (s, e) =>
             {
                 using HttpClient client = new();
-                ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(await client.GetStringAsync(HttpLinks.ModPresets));
+                ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string?>>>>(await client.GetStringAsync(HttpLinks.ModPresets));
             };
 
             // Assign state changed events

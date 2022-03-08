@@ -1,19 +1,22 @@
 ﻿using BotwInstaller.Lib.Configurations.Shortcuts;
 using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.Computer.Software;
-using BotwScripts.Lib.Common.Computer.Software.Resources;
 using BotwScripts.Lib.Common.IO;
-using BotwScripts.Lib.Common.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotwInstaller.Lib
 {
+    /// <summary>
+    /// BotwInstaller core install logic
+    /// </summary>
     public class Installer
     {
+        /// <summary>
+        /// Install BOTW asynchronously
+        /// </summary>
+        /// <param name="print">Notifier delegate</param>
+        /// <param name="update">Updater delegate</param>
+        /// <param name="conf">BotwInstaller Config class</param>
+        /// <returns></returns>
         public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Config conf)
         {
             // Get system information
@@ -33,8 +36,8 @@ namespace BotwInstaller.Lib
                 // Set dictionary values to static parameters
                 conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
 
-                conf.Dirs.Base = (string)gameInfo["Game"] == "NOT FOUND" ? "" : (string)gameInfo["Game"];
-                conf.Dirs.Update = (string)gameInfo["Update"] == "NOT FOUND" ? "" : (string)gameInfo["Update"];
+                conf.Dirs.Base = (string)gameInfo["Game"];
+                conf.Dirs.Update = (string)gameInfo["Update"];
                 conf.Dirs.DLC = (string)gameInfo["DLC"] == "NOT FOUND" ? "" : (string)gameInfo["DLC"];
 
                 if ((string)gameInfo["Game"] == "NOT FOUND")
@@ -81,7 +84,7 @@ namespace BotwInstaller.Lib
                 {
                     t2.Add(
                         Batch.CopyDirectoryWithUpdate(update, print, 30, conf.Dirs.Base.FileCount(), "./install_log.txt", conf.Dirs.Base,
-                            $"{mlc01}\\usr\\title\\00050000\\{GameInfo.GetTitleID(conf.Dirs.Base, TitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\00050000\\{GameInfo.GetTitleID(conf.Dirs.Base, ITitleIDFormat.HexEnd)}"
                         )
                     );
                 }
@@ -92,7 +95,7 @@ namespace BotwInstaller.Lib
                     t2.Add(
                         Batch.CopyDirectoryWithUpdate(
                             update, print, 30, conf.Dirs.Update.FileCount(), "./install_log.txt", conf.Dirs.Update,
-                            $"{mlc01}\\usr\\title\\0005000e\\{GameInfo.GetTitleID(conf.Dirs.Update, TitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\0005000e\\{GameInfo.GetTitleID(conf.Dirs.Update, ITitleIDFormat.HexEnd)}"
                         )
                     );
                 }
@@ -103,7 +106,7 @@ namespace BotwInstaller.Lib
                     t2.Add(
                         Batch.CopyDirectoryWithUpdate(
                             update, print, 30, conf.Dirs.DLC.FileCount(), "./install_log.txt", conf.Dirs.DLC,
-                            $"{mlc01}\\usr\\title\\0005000c\\{GameInfo.GetTitleID(conf.Dirs.DLC, TitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\0005000c\\{GameInfo.GetTitleID(conf.Dirs.DLC, ITitleIDFormat.HexEnd)}"
                         )
                     );
                 }
