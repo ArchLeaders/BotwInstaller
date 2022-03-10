@@ -6,7 +6,6 @@
 #pragma warning disable CS8629
 
 #pragma warning disable IDE0044
-#pragma warning disable IDE0060
 
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
@@ -185,22 +184,25 @@ namespace BotwInstaller.Wizard.ViewModels
                         }
 
                         #endregion
-                        Conf = await Installer.RunInstallerAsync(LogMessage, Update, Conf);
+
+                        Conf = await Installer.RunInstallerAsync(LogMessage, Update, SetSpeed, Conf);
 
                         UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+                        GenericPath = Conf.Dirs.Dynamic;
                     });
+
                     if (Conf.Dirs.Base == "NOT FOUND")
-                        ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+                        ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
 
                     else if (Conf.Dirs.Update == "NOT FOUND")
-                        ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+                        ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
 
                     else if (Conf.Dirs.Base.EndsWith("(PIRATED)"))
                     {
                         string audio = $"{Config.AppData}\\Temp\\BOTW\\audio.wav";
                         await Download.FromUrl(HttpLinks.Audio, audio);
 
-                        ShowDialog($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??");
+                        ShowDialog($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??", width: 260);
 
                         string command = $"open \"{audio}\" type mpegvideo alias MediaFile";
                         string play = $"play MediaFile";
@@ -209,12 +211,18 @@ namespace BotwInstaller.Wizard.ViewModels
                         mciSendString(play, null, 0, IntPtr.Zero);
 
                         ShowDialog($"You have collected your game files in a less than legal manner.\n" +
-                            $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice");
+                            $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice", width: 420);
 
+                        ReportIsEnabled = false;
                         Title = "Piracy Warning";
-                        Exception = "Piraing the game is illegal and not supported.";
-                        StackTrace = "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
-                            "it from your WiiU. Alternatively you can dump your WiiU online files and download the game legally from Nintendo's server through Cemu.";
+                        Exception = "Pirating the game is illegal and not supported.";
+                        StackTrace =
+                            "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
+                            "it from your WiiU. Alternatively you can dump your WiiU online files and download" +
+                            "the game legally from Nintendo's server through Cemu.\n\n" +
+                            "WiiU Homebrew Guide: https://wiiu.hacks.guide/#/ \n" +
+                            "Dumping Video: https://www.youtube.com/watch?v=bFTgv5mzSg8&t=300s \n" +
+                            "Discord Help Server: https://discord.gg/cbA3AWwfJj";
                         ExceptionPageVisibility = Visibility.Visible;
                     }
                 }
@@ -223,8 +231,17 @@ namespace BotwInstaller.Wizard.ViewModels
                     if (Directory.Exists($"{Config.AppData}\\Temp\\BOTW"))
                         Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
 
-                    ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Exception", false, "#E84639");
-                    ThrowException(ex);
+                    if (ex.Message.StartsWith("The request was canceled due to the configured HttpClient.Timeout of "))
+                    {
+                        ShowError("The server took too long to respond.", $"Check your network connection and retry.\nIf the issue persists report the error.", "Network Error");
+                        ThrowOwnException("The server took too long to respond.", "Network Error", $"Check your network connection and retry.\n" +
+                            $"If the issue persists report the error.\n\n[Error Details]\n{ex.Message}\n{ex.StackTrace}");
+                    }
+                    else
+                    {
+                        ShowError(ex.Message, $"{ex.Message}\n{ex.StackTrace}", "Unhandled Exception", false, "#E84639");
+                        ThrowException(ex);
+                    }
                 }
                 finally
                 {
@@ -246,7 +263,6 @@ namespace BotwInstaller.Wizard.ViewModels
             // Make timer(s)
             DispatcherTimer timer = new();
             timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
 
             // Iteration variables
             Dictionary<string, string> installing = new() {
@@ -271,9 +287,9 @@ namespace BotwInstaller.Wizard.ViewModels
         /// <param name="isYesNo"></param>
         /// <param name="exColor"></param>
         /// <returns></returns>
-        public bool ShowDialog(string message, string title = "Notice", bool isYesNo = false, string? exColor = null)
+        public bool ShowDialog(string message, string title = "Notice", bool isYesNo = false, string? exColor = null, double width = 220)
         {
-            MessageViewModel promptViewModel = new(message, title, isYesNo, exColor);
+            MessageViewModel promptViewModel = new(message, title, isYesNo, exColor, width);
             return !(bool)windowManager.ShowDialog(promptViewModel);
         }
 
@@ -305,6 +321,18 @@ namespace BotwInstaller.Wizard.ViewModels
         }
 
         /// <summary>
+        /// Shows a new error box window.
+        /// </summary>
+        /// <returns></returns>
+        public void ThrowOwnException(string exception, string title = "Exception Thrown", string detailedMessage = "")
+        {
+            Title = title;
+            Exception = exception;
+            StackTrace = detailedMessage;
+            ExceptionPageVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
         /// Writes a message to the app log.
         /// </summary>
         /// <param name="text"></param>
@@ -327,12 +355,18 @@ namespace BotwInstaller.Wizard.ViewModels
         {
             if (id == "game")
             {
+                if (value == -1)
+                    UnboundGameInstallValue = 100;
+
+                if (value == -2)
+                    GameInstallValue = 100;
+
                 if (UnboundGameInstallValue != 100)
                 {
-                    if (value - 100 > 0)
-                        UnboundGameInstallValue = value - (value - 100);
+                    if (UnboundGameInstallValue + value - 100 > 0)
+                        UnboundGameInstallValue = UnboundGameInstallValue + value - (value - 100);
                     else
-                        UnboundGameInstallValue = value;
+                        UnboundGameInstallValue = UnboundGameInstallValue + value;
                 }
                     
             }
@@ -366,6 +400,11 @@ namespace BotwInstaller.Wizard.ViewModels
                         UnboundToolProgressValue = value;
                 }
             }
+        }
+
+        public void SetSpeed(double value, string id = "placeholder")
+        {
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)Math.Round(value));
         }
 
         /// <summary>
@@ -608,6 +647,13 @@ namespace BotwInstaller.Wizard.ViewModels
         #region ToolTips
 
         public string CopyBaseGameFiles_ToolTip { get; } = "Copies the base game files into Cemu's mlc01 directory.\n(Recomended if your files are on an SDCard)";
+        public string ReportError_Tooltip
+        {
+            get => "Reporting an error will upload system information such as file paths to a private or public GitHub Repository.\n" +
+                "Your username is hidden; however, any other names or information in file/folder paths will be uploaded.\n" +
+                "Please regard this before proceeding.\n\n" +
+                "Auto reporting will expire on 12/31/2022 or sooner to maintain security.\n";
+        }
 
         #endregion
 
@@ -706,7 +752,6 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _toolProgressValue = value;
-                StrBcmlInstallValue = $"{Math.Round(value)}%";
                 NotifyPropertyChanged();
             }
         }
@@ -780,24 +825,24 @@ namespace BotwInstaller.Wizard.ViewModels
             }
 
             // Create Temp Directory
-            Directory.CreateDirectory($"{Config.AppData}\\Temp\\BOTW");
+            Directory.CreateDirectory($"{Config.AppData}\\Temp\\CEMU");
             UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
             Update(80, "tool");
 
             // Download Cemu
-            await Download.FromUrl(DownloadLinks.Cemu, $"{Config.AppData}\\Temp\\BOTW\\CEMU.PACK.res");
+            await Download.FromUrl(DownloadLinks.Cemu, $"{Config.AppData}\\Temp\\CEMU\\CEMU.PACK.res");
             UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             Update(85, "tool");
 
             // Extract Cemu
-            await Task.Run(() => ZipFile.ExtractToDirectory($"{Config.AppData}\\Temp\\BOTW\\CEMU.PACK.res", $"{Config.AppData}\\Temp\\BOTW\\CEMU"));
+            await Task.Run(() => ZipFile.ExtractToDirectory($"{Config.AppData}\\Temp\\CEMU\\CEMU.PACK.res", $"{Config.AppData}\\Temp\\CEMU\\CEMU"));
             Update(90, "tool");
 
             // Install Cemu
             await Task.Run(() => {
 
                 // Setup fonders and variables
-                string cemuTemp = $"{Config.AppData}\\Temp\\BOTW\\CEMU".SubFolder();
+                string cemuTemp = $"{Config.AppData}\\Temp\\CEMU\\CEMU".SubFolder();
 
                 // Copy Cemu files
                 foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
@@ -811,7 +856,8 @@ namespace BotwInstaller.Wizard.ViewModels
             Update(95, "tool");
 
             // Create override tag
-            await File.WriteAllTextAsync($"{GenericPath}\\installer.tag", "");
+            Directory.CreateDirectory($"{Config.AppData}\\Temp\\BOTW");
+            await File.WriteAllTextAsync($"{Config.AppData}\\Temp\\BOTW\\OVERRIDE", "");
 
             // Write basic settings
             Conf.Dirs.Dynamic = GenericPath;
@@ -819,7 +865,7 @@ namespace BotwInstaller.Wizard.ViewModels
             CemuSettings.Write(Conf, true);
 
             // Delete Temp Directory
-            Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
+            Directory.Delete($"{Config.AppData}\\Temp\\CEMU", true);
 
             Update(100, "tool");
 
@@ -879,14 +925,43 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public async Task ReportError()
         {
+            if (!ShowDialog($"{ReportError_Tooltip}\n\nContinue anyway?", "Privacy Warning", true, width: 500))
+                return;
+
+            bool isPublic = ShowDialog("Would you like to upload to the public GitHub repository?\n\n" +
+                "https://github.com/ArchLeaders/BotwInstaller", "", true, width: 300);
+
+            string repo = isPublic ? "botwinstaller" : "botwinstaller-issues";
+
+            ReportIsEnabled = false;
+
+            // Create client
             var client = new GitHubClient(new ProductHeaderValue("botw-installer-v3"));
             client.Credentials = new Credentials(AuthKey.Get);
 
-            Clipboard.SetText(FormattedError.Replace(Config.User, "C:\\Users\\admin"));
+            // Get issues
+            var issues = await client.Issue.GetAllForRepository("archleaders", repo);
 
-            var createIssue = new NewIssue("test this issue creator");
-            var issuesForOctokit = await client.Issue.Create("archleaders", "botwinstaller", createIssue);
-            ShowDialog($"Created issue as {issuesForOctokit.Id}");
+            // Update issue if it exists
+            foreach (var issue in issues)
+            {
+                if (issue.Title == Exception)
+                {
+                    IssueUpdate issueUpdate = new();
+                    issueUpdate.Body = $"{issue.Body}\n\n---\n\n{FormattedError.Replace(Config.User, "C:\\Users\\admin")}";
+
+                    await client.Issue.Update("archleaders", repo, issue.Number, issueUpdate);
+                    ShowDialog($"Updated issue: {issue.Id}");
+                    return;
+                }
+            }
+
+            // Create new issue
+            var issueNew = await client.Issue.Create("archleaders", repo, new NewIssue(Exception) {
+                Body = FormattedError.Replace(Config.User, "C:\\Users\\admin")
+            });
+
+            ShowDialog($"Created issue: {issueNew.Id}");
         }
 
         private string _title = "Exception Thrown";
@@ -918,6 +993,17 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _stackTrace = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _reportIsEnabled = true;
+        public bool ReportIsEnabled
+        {
+            get { return _reportIsEnabled; }
+            set
+            {
+                _reportIsEnabled = value;
                 NotifyPropertyChanged();
             }
         }
