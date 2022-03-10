@@ -7,11 +7,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="https://github.com/canton7/Stylet"
         x:Name="parent"
-        MaxWidth="{Binding Width}"
+        Width="400"
+        Height="200"
+        MinWidth="240"
+        MinHeight="300"
         Background="{DynamicResource MaterialDesignBackground}"
         Foreground="{DynamicResource MaterialDesignBody}"
-        ResizeMode="NoResize"
-        SizeToContent="Height"
+        ResizeMode="CanResizeWithGrip"
         Style="{StaticResource MaterialDesignWindow}"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
@@ -90,7 +92,6 @@
                     Background="{DynamicResource SecondaryHueLightBrush}" />
 
             <RichTextBox Grid.Row="2"
-                         Height="{Binding DetailHeight}"
                          Margin="10"
                          FontFamily="Consolas"
                          FontSize="15"

@@ -14,6 +14,7 @@ namespace BotwInstaller.Wizard.Views
         {
             InitializeComponent();
             DataContext = new HandledErrorViewModel("No details were provided.");
+
             SourceInitialized += (s, a) =>
             {
                 Dispatcher.Invoke(InvalidateVisual, DispatcherPriority.Input);

@@ -109,28 +109,6 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        private double _detailHeight = 10.0;
-        public double DetailHeight
-        {
-            get { return _detailHeight; }
-            set
-            {
-                _detailHeight = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private double _width = 220.0;
-        public double Width
-        {
-            get { return _width; }
-            set
-            {
-                _width = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         private string _okMode = "Ok";
         public string OkMode
         {
@@ -176,8 +154,6 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 DetailVisibility = Visibility.Visible;
                 ExtendedMessage = extendedMessage;
-                DetailHeight = 140;
-                Width = 300;
 
                 if (extendedMessageColor != null)
                     Foreground = (Brush)new BrushConverter().ConvertFromString(extendedMessageColor);
