@@ -120,13 +120,25 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
+        private double _width = 220;
+        public double Width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
 
-        public MessageViewModel(string message, string title = "Notice", bool isYesNo = false, string? messageColor = null)
+        public MessageViewModel(string message, string title = "Notice", bool isYesNo = false, string? messageColor = null, double width = 220)
         {
             Message = message;
             Title = title;
             IsYesNo = isYesNo;
+            Width = width;
 
             if (messageColor != null)
                 Foreground = (Brush)new BrushConverter().ConvertFromString(messageColor);

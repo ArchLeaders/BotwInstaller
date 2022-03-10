@@ -7,7 +7,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="https://github.com/canton7/Stylet"
         x:Name="parent"
-        Width="220"
+        Width="{Binding Width}"
+        MinWidth="{Binding Width}"
+        MaxWidth="{Binding Width}"
         Background="{DynamicResource MaterialDesignBackground}"
         Foreground="{DynamicResource MaterialDesignBody}"
         ResizeMode="NoResize"
@@ -20,9 +22,7 @@
         <WindowChrome CaptionHeight="30" />
     </WindowChrome.WindowChrome>
 
-    <Border Background="{DynamicResource MaterialDesignBackground}"
-            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-            BorderThickness="1">
+    <Border BorderBrush="{DynamicResource PrimaryHueMidBrush}" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
