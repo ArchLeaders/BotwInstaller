@@ -31,9 +31,20 @@ namespace BotwInstaller.Lib
         public static string GetTitleID(this string gameFiles, string format = "HF")
         {
             string results = "";
-            foreach (string line in File.ReadAllLines($"{gameFiles}\\meta\\meta.xml"))
-                if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
-                    results = line.Split('>')[1].Replace("</title_id", "");
+
+            if (File.Exists($"{gameFiles}\\code\\app.xml"))
+            {
+                foreach (string line in File.ReadAllLines($"{gameFiles}\\code\\app.xml"))
+                    if (line.StartsWith("  <os_version type=\"hexBinary\" length=\"8\">"))
+                        results = line.Split('>')[1].Replace("</os_version", "");
+            }
+            else
+            {
+                foreach (string line in File.ReadAllLines($"{gameFiles}\\meta\\meta.xml"))
+                    if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
+                        results = line.Split('>')[1].Replace("</title_id", "");
+            }
+
 
             string[] starts = new[]
             {
@@ -145,16 +156,16 @@ namespace BotwInstaller.Lib
             {
                 // EU
                 "00050000101C9500" => 18717,
-                "0005000c101C9500" => 22690,
-                "0005000e101C9500" => 15927,
+                "0005000E101C9500" => 22690,
+                "0005000C101C9500" => 15927,
                 // US
                 "00050000101C9400" => 15996,
-                "0005000e101C9400" => 22647,
-                "0005000c101C9400" => 15219,
+                "0005000E101C9400" => 22647,
+                "0005000C101C9400" => 15219,
                 // JP
                 "00050000101C9300" => 14191,
-                "0005000c101C9300" => 22617,
-                "0005000e101C9300" => 14747,
+                "0005000E101C9300" => 22617,
+                "0005000C101C9300" => 14747,
                 _ => 0,
             };
         }
