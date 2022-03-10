@@ -183,7 +183,6 @@
                               Visibility="{Binding CemuPrefs_Visibility}">
                         <CheckBox.ToolTip>
                             <TextBlock FontSize="13"
-                                       FontWeight="Bold"
                                        Foreground="{DynamicResource MaterialDesignBody}"
                                        Text="{Binding CopyBaseGameFiles_ToolTip}" />
                         </CheckBox.ToolTip>
@@ -466,21 +465,43 @@
                                Foreground="{DynamicResource SecondaryHueMidBrush}"
                                NavigateUri="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose"
                                RequestNavigate="{s:Action CopyError}"
-                               Style="{DynamicResource MaterialDesignBody2Hyperlink}"
-                               ToolTip="Copy the error details to the clipboard.">
+                               Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                        <Hyperlink.ToolTip>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}">
+                                <Run>Copies the exception details to the clipboard.</Run>
+                            </TextBlock>
+                        </Hyperlink.ToolTip>
                         Copy Error Details
                     </Hyperlink>
                     <Run Foreground="{DynamicResource PrimaryHueMidBrush}" Text=" | " />
                     <Hyperlink FontSize="12"
                                FontWeight="Bold"
                                Foreground="{DynamicResource SecondaryHueMidBrush}"
+                               IsEnabled="{Binding ReportIsEnabled}"
                                NavigateUri="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose"
                                RequestNavigate="{s:Action ReportError}"
-                               Style="{DynamicResource MaterialDesignBody2Hyperlink}"
-                               ToolTip="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose">
+                               Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                        <Hyperlink.ToolTip>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}">
+                                <Run>Makes a new GitHub issue with the exception details.</Run>
+                                <LineBreak />
+                                <LineBreak />
+                                <Run FontWeight="Bold">Warning</Run>
+                                <LineBreak />
+                                <Run Text="{Binding ReportError_Tooltip, Mode=OneWay}" />
+                            </TextBlock>
+                        </Hyperlink.ToolTip>
                         Report Error
                     </Hyperlink>
                 </TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="3"
+                        Margin="0,-2.5,10,0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <TextBlock Text="Contact Info" Margin="0,5,10,0" FontSize="12"/>
+                <TextBox Height="24" FontSize="12" Width="250"/>
             </StackPanel>
         </Grid>
 
@@ -698,7 +719,50 @@
                 </Button>
                 <Button Width="32"
                         Height="32"
-                        Margin="5,3,3,3"
+                        Margin="3,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action PrepCemu}"
+                        Visibility="{Binding CemuPrefs_Visibility}">
+                    <Button.ToolTip>
+                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Prep Cemu for online access" />
+                    </Button.ToolTip>
+                    <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+                        <Canvas Width="32" Height="32">
+                            <Canvas.RenderTransform>
+                                <TranslateTransform X="0" Y="0" />
+                            </Canvas.RenderTransform>
+                            <Canvas.Resources />
+                            <!--  Unknown tag: sodipodi:namedview  -->
+                            <Canvas Name="layer1">
+                                <Rectangle Canvas.Left="2.2518623"
+                                           Canvas.Top="2.2876084"
+                                           Width="27.496275"
+                                           Height="27.424786"
+                                           Fill="{DynamicResource SecondaryHueDarkBrush}"
+                                           RadiusX="6.7660036"
+                                           RadiusY="6.7660036"
+                                           Stroke="{DynamicResource SecondaryHueLightBrush}"
+                                           StrokeEndLineCap="Square"
+                                           StrokeLineJoin="Round"
+                                           StrokeMiterLimit="4"
+                                           StrokeStartLineCap="Square"
+                                           StrokeThickness="1.5" />
+                                <TextBlock Canvas.Left="7"
+                                           Canvas.Top="2"
+                                           FontFamily="Arial"
+                                           FontWeight="Normal">
+                                    <Span FontSize="23" Foreground="{DynamicResource MaterialDesignBody}">
+                                        C
+                                    </Span>
+                                </TextBlock>
+                            </Canvas>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="3,3,3,3"
                         Padding="0"
                         HorizontalAlignment="Right"
                         Command="{s:Action InstallHomebrew}"
@@ -860,49 +924,6 @@
                         </Canvas>
                     </Viewbox>
 
-                </Button>
-                <Button Width="32"
-                        Height="32"
-                        Margin="5,3,3,3"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        Command="{s:Action PrepCemu}"
-                        Visibility="{Binding CemuPrefs_Visibility}">
-                    <Button.ToolTip>
-                        <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Prep Cemu for online access" />
-                    </Button.ToolTip>
-                    <Viewbox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
-                        <Canvas Width="32" Height="32">
-                            <Canvas.RenderTransform>
-                                <TranslateTransform X="0" Y="0" />
-                            </Canvas.RenderTransform>
-                            <Canvas.Resources />
-                            <!--  Unknown tag: sodipodi:namedview  -->
-                            <Canvas Name="layer1">
-                                <Rectangle Canvas.Left="2.2518623"
-                                           Canvas.Top="2.2876084"
-                                           Width="27.496275"
-                                           Height="27.424786"
-                                           Fill="{DynamicResource SecondaryHueDarkBrush}"
-                                           RadiusX="6.7660036"
-                                           RadiusY="6.7660036"
-                                           Stroke="{DynamicResource SecondaryHueLightBrush}"
-                                           StrokeEndLineCap="Square"
-                                           StrokeLineJoin="Round"
-                                           StrokeMiterLimit="4"
-                                           StrokeStartLineCap="Square"
-                                           StrokeThickness="1.5" />
-                                <TextBlock Canvas.Left="7"
-                                           Canvas.Top="2"
-                                           FontFamily="Arial"
-                                           FontWeight="Normal">
-                                    <Span FontSize="23" Foreground="{DynamicResource MaterialDesignBody}">
-                                        C
-                                    </Span>
-                                </TextBlock>
-                            </Canvas>
-                        </Canvas>
-                    </Viewbox>
                 </Button>
             </StackPanel>
             <ProgressBar Width="220"
