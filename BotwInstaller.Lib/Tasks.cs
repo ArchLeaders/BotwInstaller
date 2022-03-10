@@ -141,7 +141,7 @@ namespace BotwInstaller.Lib
                 ControllerProfile.Write(conf, conf.ControllerApi);
 
                 // Create Cemu settings
-                if (!File.Exists($"{conf.Dirs.Dynamic}\\settings.xml"))
+                if (File.Exists($"{conf.Dirs.Dynamic}\\settings.xml") || File.Exists($"{AppData}\\Temp\\BOTW\\OVERRIDE"))
                     CemuSettings.Write(conf);
 
                 // Write Botw game profile
@@ -252,6 +252,43 @@ namespace BotwInstaller.Lib
             }
 
             update(95, "bcml");
+        }
+
+        public static async Task CopyFolderAsync(Interface.Notify print, Interface.Update update, int updateValue, int fileCount, string inputDir, string outputDir)
+        {
+            List<Task> ops = new();
+
+            print($"Copying {fileCount} files . . .");
+
+            double inc = updateValue/(fileCount/500.0);
+            int index = 0;
+
+            foreach (var file in Directory.EnumerateFiles(inputDir, "*.*", SearchOption.AllDirectories))
+            {
+                ops.Add(Task.Run(() =>
+                {
+                    // Collect the DirectoryInfo & FileInfo
+                    FileInfo fileInfo = new(file);
+                    DirectoryInfo directoryInfo = new(fileInfo.DirectoryName);
+
+                    // Create the parent directory
+                    Directory.CreateDirectory(directoryInfo.FullName.Replace(inputDir, outputDir));
+
+                    // Copy the file
+                    File.Copy(file, file.Replace(inputDir, outputDir), true);
+
+                    index++;
+
+                    if (index == 1000)
+                    {
+                        update(inc, "game");
+                        index = 0;
+                    }
+
+                }));
+            }
+
+            await Task.WhenAll(ops);
         }
     }
 }
