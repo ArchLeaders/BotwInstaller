@@ -17,11 +17,17 @@ namespace BotwInstaller.Lib
         /// <param name="update">Updater delegate</param>
         /// <param name="conf">BotwInstaller Config class</param>
         /// <returns></returns>
-        public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Config conf)
+        public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Interface.Update setSpeed, Config conf)
         {
+            // Start search updater
+            setSpeed(30 * DriveInfo.GetDrives().Length);
+            update(95, "tool");
+
             // Get system information
             Dictionary<string, object> gameInfo = await GameInfo.GetFiles(print, conf.UseCemu ? conf.Dirs.Dynamic : "!ignore", conf.Dirs.Python, conf.IsNX);
+            update(100, "tool");
 
+            setSpeed(80);
             if (conf.IsNX)
             {
                 conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
@@ -78,6 +84,10 @@ namespace BotwInstaller.Lib
             if (conf.Install.Python)
                 t1.Add(RuntimeInstallers.Python(print, conf.Dirs.Python));
 
+            // Dummy install game
+            if (!conf.Install.Base && !conf.Install.Update && (!conf.Install.DLC || conf.Dirs.DLC == ""))
+                update(-2, "game");
+
             // Install Cemu
             if (conf.UseCemu)
             {
@@ -89,7 +99,7 @@ namespace BotwInstaller.Lib
                 if (conf.Install.Base)
                 {
                     t2.Add(
-                        Batch.CopyDirectoryWithUpdate(update, print, 30, conf.Dirs.Base.FileCount(), "./install_log.txt", conf.Dirs.Base,
+                        Tasks.CopyFolderAsync(print, update, 30, conf.Dirs.Base.FileCount(), conf.Dirs.Base,
                             $"{mlc01}\\usr\\title\\00050000\\{GameInfo.GetTitleID(conf.Dirs.Base, ITitleIDFormat.HexEnd)}"
                         )
                     );
@@ -99,8 +109,7 @@ namespace BotwInstaller.Lib
                 if (conf.Install.Update)
                 {
                     t2.Add(
-                        Batch.CopyDirectoryWithUpdate(
-                            update, print, 30, conf.Dirs.Update.FileCount(), "./install_log.txt", conf.Dirs.Update,
+                        Tasks.CopyFolderAsync(print, update, 50, conf.Dirs.Update.FileCount(), conf.Dirs.Update,
                             $"{mlc01}\\usr\\title\\0005000e\\{GameInfo.GetTitleID(conf.Dirs.Update, ITitleIDFormat.HexEnd)}"
                         )
                     );
@@ -110,8 +119,7 @@ namespace BotwInstaller.Lib
                 if (conf.Install.DLC && conf.Dirs.DLC != "")
                 {
                     t2.Add(
-                        Batch.CopyDirectoryWithUpdate(
-                            update, print, 30, conf.Dirs.DLC.FileCount(), "./install_log.txt", conf.Dirs.DLC,
+                        Tasks.CopyFolderAsync(print, update, 20, conf.Dirs.DLC.FileCount(), conf.Dirs.DLC,
                             $"{mlc01}\\usr\\title\\0005000c\\{GameInfo.GetTitleID(conf.Dirs.DLC, ITitleIDFormat.HexEnd)}"
                         )
                     );
@@ -125,7 +133,10 @@ namespace BotwInstaller.Lib
 
             t2.Add(Tasks.BCML(update, print, conf));
 
+            // Update timer speed
             await Task.WhenAll(t2);
+            update(-1, "game");
+            setSpeed(40);
 
             // Install mods
             await Tasks.Mods(update, print, conf);
