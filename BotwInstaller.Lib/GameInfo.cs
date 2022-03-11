@@ -169,5 +169,19 @@ namespace BotwInstaller.Lib
                 _ => 0,
             };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public static List<string> GetModPresets(string mode)
+        {
+            if (ModPresetData == null)
+                return new();
+
+            return new(ModPresetData[mode.Replace("cemu", "wiiu")].Keys);
+        }
+        public static dynamic? ModPresetData { get; set; }
     }
 }
