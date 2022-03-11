@@ -254,11 +254,11 @@ namespace BotwInstaller.Lib
             update(95, "bcml");
         }
 
-        public static async Task CopyFolderAsync(Interface.Notify print, Interface.Update update, int updateValue, int fileCount, string inputDir, string outputDir)
+        public static async Task CopyFolderAsync(Interface.Notify print, Interface.Update update, int updateValue, int fileCount, string inputDir, string outputDir, string func = "[INSTALL.BOTW]")
         {
             List<Task> ops = new();
 
-            print($"Copying {fileCount} files . . .");
+            print($"{func} Copying {fileCount} files . . .");
 
             double inc = updateValue/(fileCount/500.0);
             int index = 0;
@@ -289,6 +289,8 @@ namespace BotwInstaller.Lib
             }
 
             await Task.WhenAll(ops);
+
+            print($"{func} Copied {fileCount} files");
         }
     }
 }
