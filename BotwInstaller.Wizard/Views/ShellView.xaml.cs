@@ -2,6 +2,7 @@
 #pragma warning disable CS8604
 #pragma warning disable CS0649
 
+using BotwInstaller.Lib;
 using BotwInstaller.Lib.Remote;
 using BotwInstaller.Wizard.ViewModels;
 using BotwInstaller.Wizard.ViewThemes.App;
@@ -59,11 +60,10 @@ namespace BotwInstaller.Wizard.Views
                     WindowState = WindowState.Normal;
             };
 
-            // Load window fix
             SourceInitialized += async (s, e) =>
             {
                 using HttpClient client = new();
-                ShellViewModel.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string?>>>>(await client.GetStringAsync(HttpLinks.ModPresets));
+                GameInfo.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string?>>>>(await client.GetStringAsync(HttpLinks.ModPresets));
             };
 
             // Assign state changed events

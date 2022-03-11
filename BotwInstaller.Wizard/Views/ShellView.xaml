@@ -142,90 +142,8 @@
         </Grid>
 
         <!--  Setup Page  -->
-        <Grid Grid.Row="1"
-              Margin="15"
-              Visibility="{Binding SetupPageVisibility}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <Border Grid.RowSpan="2"
-                    Margin="0,20,0,0"
-                    BorderBrush="{DynamicResource PrimaryHueLightBrush}"
-                    BorderThickness="2"
-                    CornerRadius="15" />
-
-            <Label Width="130"
-                   Margin="10,0,0,0"
-                   HorizontalAlignment="Left"
-                   Background="{DynamicResource MaterialDesignPaper}"
-                   Content="Preferences"
-                   FontSize="25"
-                   FontWeight="Light" />
-
-            <Grid Grid.Row="1" Margin="25,10,0,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
-
-                    <CheckBox Content="Create Desktop Shortcuts"
-                              FontSize="18"
-                              IsChecked="{Binding DesktopShortcuts}"
-                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}" />
-
-                    <CheckBox Content="Copy Base Game Files"
-                              FontSize="18"
-                              IsChecked="{Binding CopyBaseGame}"
-                              Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
-                              Visibility="{Binding CemuPrefs_Visibility}">
-                        <CheckBox.ToolTip>
-                            <TextBlock FontSize="13"
-                                       Foreground="{DynamicResource MaterialDesignBody}"
-                                       Text="{Binding CopyBaseGameFiles_ToolTip}" />
-                        </CheckBox.ToolTip>
-                    </CheckBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Margin="0,10,0,0">
-                    <Label Content="{Binding GenericPathLabel}" />
-                    <StackPanel Margin="15,5,35,0" Orientation="Horizontal">
-                        <TextBox Width="400" Text="{Binding GenericPath}" />
-                        <Button Width="80"
-                                Margin="10,0,0,0"
-                                Command="{s:Action BrowseGenericPath}"
-                                Content="Browse" />
-                    </StackPanel>
-
-                    <Label Margin="0,10,0,0" Content="Mod Pack" />
-                    <Grid Margin="0,5,40,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="15" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="1"
-                                  FontSize="18"
-                                  ItemsSource="{Binding ModPresets}"
-                                  SelectedItem="{Binding ModPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <ComboBox Grid.Column="3"
-                                  Width="280"
-                                  Margin="10,0,0,0"
-                                  FontSize="18"
-                                  Text="{Binding ControllerApi, NotifyOnSourceUpdated=True}"
-                                  Visibility="{Binding CemuPrefs_Visibility}">
-                            <ComboBoxItem Content="Controller -"
-                                          IsEnabled="False"
-                                          IsSelected="True" />
-                            <ComboBoxItem Content="DualShock 4" />
-                            <ComboBoxItem Content="Nintendo Switch Joycons" />
-                            <ComboBoxItem Content="Nintendo Switch Pro Controller" />
-                            <ComboBoxItem Content="XBox Controller" />
-                        </ComboBox>
-                    </Grid>
-                </StackPanel>
-            </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding SetupPageVisibility}">
+            <ContentControl s:View.Model="{Binding SetupViewModel}" />
         </Grid>
 
         <!--  Install Page  -->
@@ -497,11 +415,15 @@
             </StackPanel>
             <StackPanel Grid.Row="3"
                         Margin="0,-2.5,10,0"
-                        VerticalAlignment="Top"
                         HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
                         Orientation="Horizontal">
-                <TextBlock Text="Contact Info" Margin="0,5,10,0" FontSize="12"/>
-                <TextBox Height="24" FontSize="12" Width="250"/>
+                <TextBlock Margin="0,5,10,0"
+                           FontSize="12"
+                           Text="Contact Info" />
+                <TextBox Width="250"
+                         Height="24"
+                         FontSize="12" />
             </StackPanel>
         </Grid>
 

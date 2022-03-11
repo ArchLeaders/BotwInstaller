@@ -14,6 +14,7 @@ using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
 using BotwInstaller.Lib.Remote;
 using BotwInstaller.Wizard.ViewResources;
+using BotwInstaller.Wizard.ViewResources.Data;
 using BotwScripts.Lib.Common.Computer;
 using BotwScripts.Lib.Common.Computer.Software.Resources;
 using BotwScripts.Lib.Common.IO.FileSystems;
@@ -45,37 +46,6 @@ namespace BotwInstaller.Wizard.ViewModels
         #region Actions
 
         /// <summary>
-        /// Browse logic for opening system folders.
-        /// </summary>
-        public void BrowseGenericPath()
-        {
-            System.Windows.Forms.FolderBrowserDialog browse = new();
-            browse.Description = GenericPathLabel;
-            browse.UseDescriptionForTitle = true;
-            browse.AutoUpgradeEnabled = true;
-            browse.InitialDirectory = GenericPath;
-
-            if (browse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                GenericPath = browse.SelectedPath;
-        }
-
-        /// <summary>
-        /// Loads the mod presets.
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        public BindableCollection<string> GetModPresets(string mode)
-        {
-            BindableCollection<string> modPresets = new();
-
-            if (mode == "cemu" || mode == "wiiu" || mode == "switch")
-                foreach (var key in ModPresetData[mode.Replace("cemu", "wiiu")].Keys)
-                    modPresets.Add(key);
-
-            return modPresets;
-        }
-
-        /// <summary>
         /// Shows the next page and executes any related functions.
         /// </summary>
         /// <param name="mode"></param>
@@ -83,10 +53,10 @@ namespace BotwInstaller.Wizard.ViewModels
         public async Task NextPage(string mode)
         {
             // Check Contoller
-            if (ControllerApi == "Controller -" && mode == "install" && GameMode == "cemu")
+            if (SetupViewModel.ControllerApi == "Controller -" && mode == "install" && GameMode == "cemu")
             {
                 if (ShowDialog("No controller is selected.\nWould you like to use the default API? (XInput)", "Warning", true) == true)
-                    ControllerApi = "XBox Controller";
+                    SetupViewModel.ControllerApi = "XBox Controller";
                 else
                     return;
             }
@@ -95,8 +65,8 @@ namespace BotwInstaller.Wizard.ViewModels
             if (mode == "wiiu")
             {
                 GameMode = mode;
-                GenericPathLabel = "Merged Mods Directory";
-                GenericPath = $"{Config.LastDrive}\\sdcafiine\\00050000101C9400\\MergedMods";
+                SetupViewModel.GenericPathLabel = "Merged Mods Directory";
+                SetupViewModel.GenericPath = $"{Config.LastDrive}\\sdcafiine\\00050000101C9400\\MergedMods";
                 WiiuPrefs_Visibility = Visibility.Visible;
                 CemuPrefs_Visibility = Visibility.Collapsed;
                 SwitchPrefs_Visibility = Visibility.Collapsed;
@@ -104,8 +74,8 @@ namespace BotwInstaller.Wizard.ViewModels
             else if (mode == "cemu")
             {
                 GameMode = mode;
-                GenericPathLabel = "Cemu Installation Directory";
-                GenericPath = new Config().Dirs.Dynamic;
+                SetupViewModel.GenericPathLabel = "Cemu Installation Directory";
+                SetupViewModel.GenericPath = new Config().Dirs.Dynamic;
                 CemuPrefs_Visibility = Visibility.Visible;
                 WiiuPrefs_Visibility = Visibility.Collapsed;
                 SwitchPrefs_Visibility = Visibility.Collapsed;
@@ -113,8 +83,8 @@ namespace BotwInstaller.Wizard.ViewModels
             else if (mode == "switch")
             {
                 GameMode = mode;
-                GenericPathLabel = "Merged Mods Directory";
-                GenericPath = $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\sdmc\\atmosphere\\contents";
+                SetupViewModel.GenericPathLabel = "Merged Mods Directory";
+                SetupViewModel.GenericPath = $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\sdmc\\atmosphere\\contents";
                 SwitchPrefs_Visibility = Visibility.Visible;
                 WiiuPrefs_Visibility = Visibility.Collapsed;
                 CemuPrefs_Visibility = Visibility.Collapsed;
@@ -123,7 +93,7 @@ namespace BotwInstaller.Wizard.ViewModels
             // Setup
             if (SetupPageVisibility == Visibility.Hidden)
             {
-                ModPresets = GetModPresets(mode);
+                SetupViewModel.ModPresets = GameInfo.GetModPresets(mode);
                 SetupPageVisibility = Visibility.Visible;
 
                 SplashPageVisibility = Visibility.Hidden;
@@ -166,19 +136,19 @@ namespace BotwInstaller.Wizard.ViewModels
                     {
                         #region Configure
 
-                        Conf.Shortcuts.BCML.Desktop = DesktopShortcuts;
-                        Conf.Shortcuts.BotW.Desktop = DesktopShortcuts;
-                        Conf.Shortcuts.Cemu.Desktop = DesktopShortcuts;
-                        Conf.Shortcuts.DS4Windows.Desktop = DesktopShortcuts;
-                        Conf.Dirs.Dynamic = GenericPath;
-                        Conf.ModPacks = ModPresetData;
-                        Conf.ModPack = ModPreset;
+                        Conf.Shortcuts.BCML.Desktop = SetupViewModel.DesktopShortcuts;
+                        Conf.Shortcuts.BotW.Desktop = SetupViewModel.DesktopShortcuts;
+                        Conf.Shortcuts.Cemu.Desktop = SetupViewModel.DesktopShortcuts;
+                        Conf.Shortcuts.DS4Windows.Desktop = SetupViewModel.DesktopShortcuts;
+                        Conf.Dirs.Dynamic = SetupViewModel.GenericPath;
+                        Conf.ModPacks = GameInfo.ModPresetData;
+                        Conf.ModPack = SetupViewModel.ModPreset;
 
                         if (GameMode == "cemu")
                         {
                             Conf.UseCemu = true;
-                            Conf.Install.Base = CopyBaseGame;
-                            Conf.ControllerApi = ControllerApiTranslate[ControllerApi];
+                            Conf.Install.Base = SetupViewModel.CopyGameFiles;
+                            Conf.ControllerApi = SetupViewModel.ControllerApiTranslate[SetupViewModel.ControllerApi];
                         }
 
                         if (GameMode == "switch")
@@ -191,7 +161,7 @@ namespace BotwInstaller.Wizard.ViewModels
                         Conf = await Installer.RunInstallerAsync(LogMessage, Update, SetSpeed, Conf);
 
                         UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-                        GenericPath = Conf.Dirs.Dynamic;
+                        SetupViewModel.GenericPath = Conf.Dirs.Dynamic;
                     });
 
                     if (Conf.Dirs.Base == "NOT FOUND" || Conf.Dirs.Update == "NOT FOUND")
@@ -424,39 +394,6 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #region Props
 
-        private bool _desktopShortcuts = true;
-        public bool DesktopShortcuts
-        {
-            get { return _desktopShortcuts; }
-            set
-            {
-                _desktopShortcuts = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _copyBaseGame = false;
-        public bool CopyBaseGame
-        {
-            get { return _copyBaseGame; }
-            set
-            {
-                _copyBaseGame = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _genericPath = new Config().Dirs.Dynamic;
-        public string GenericPath
-        {
-            get { return _genericPath; }
-            set
-            {
-                _genericPath = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         private string _gameMode = "cemu";
         public string GameMode
         {
@@ -464,44 +401,6 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _gameMode = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private dynamic _modPreset = "None";
-        public dynamic ModPreset
-        {
-            get => _modPreset;
-            set => SetAndNotify(ref _modPreset, value);
-        }
-
-        private BindableCollection<string> _modPresets = new();
-        public BindableCollection<string> ModPresets
-        {
-            get { return _modPresets; }
-            set
-            {
-                _modPresets = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _controllerApi = "Controller -";
-        public Dictionary<string, string> ControllerApiTranslate { get; } = new()
-        {
-            { "Controller -", "XInput" },
-            { "XBox Controller", "XInput" },
-            { "Nintendo Switch Joycons", "SDLController-Joycon" },
-            { "Nintendo Switch Pro Controller", "SDLController" },
-            { "DualShock 4", "DSUController" },
-            { "Keyboard (Not Recomended)", "Keyboard" },
-        };
-        public string ControllerApi
-        {
-            get { return _controllerApi; }
-            set
-            {
-                _controllerApi = value;
                 NotifyPropertyChanged();
             }
         }
@@ -544,17 +443,6 @@ namespace BotwInstaller.Wizard.ViewModels
             set
             {
                 _installLog = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _genericPathLabel = "Merged Mods Directory";
-        public string GenericPathLabel
-        {
-            get { return _genericPathLabel; }
-            set
-            {
-                _genericPathLabel = value;
                 NotifyPropertyChanged();
             }
         }
@@ -645,19 +533,6 @@ namespace BotwInstaller.Wizard.ViewModels
                 _exceptionPageVisibility = value;
                 NotifyPropertyChanged();
             }
-        }
-
-        #endregion
-
-        #region ToolTips
-
-        public string CopyBaseGameFiles_ToolTip { get; } = "Copies the base game files into Cemu's mlc01 directory.\n(Recomended if your files are on an SDCard)";
-        public string ReportError_Tooltip
-        {
-            get => "Reporting an error will upload system information such as file paths to a private or public GitHub Repository.\n" +
-                "Your username is hidden; however, any other names or information in file/folder paths will be uploaded.\n" +
-                "Please regard this before proceeding.\n\n" +
-                "Auto reporting will expire on 12/31/2022 or sooner to maintain security.\n";
         }
 
         #endregion
@@ -822,10 +697,10 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public async Task PrepCemu()
         {
-            if (File.Exists($"{GenericPath}\\Cemu.exe"))
+            if (File.Exists($"{SetupViewModel.GenericPath}\\Cemu.exe"))
             {
                 if (ShowDialog("Cemu already exists in this directory.\nOpen Cemu?", isYesNo: true))
-                    await HiddenProcess.Start($"{GenericPath}\\Cemu.exe");
+                    await HiddenProcess.Start($"{SetupViewModel.GenericPath}\\Cemu.exe");
                 return;
             }
 
@@ -853,8 +728,8 @@ namespace BotwInstaller.Wizard.ViewModels
                 foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
                 {
                     var dir = new FileInfo(file).DirectoryName;
-                    Directory.CreateDirectory($"{GenericPath}\\{dir.Replace(cemuTemp, "")}");
-                    File.Copy(file, $"{GenericPath}\\{file.Replace(cemuTemp, "")}", true);
+                    Directory.CreateDirectory($"{SetupViewModel.GenericPath}\\{dir.Replace(cemuTemp, "")}");
+                    File.Copy(file, $"{SetupViewModel.GenericPath}\\{file.Replace(cemuTemp, "")}", true);
                 }
 
             });
@@ -865,8 +740,8 @@ namespace BotwInstaller.Wizard.ViewModels
             await File.WriteAllTextAsync($"{Config.AppData}\\Temp\\BOTW\\OVERRIDE", "");
 
             // Write basic settings
-            Conf.Dirs.Dynamic = GenericPath;
-            Directory.CreateDirectory($"{GenericPath}\\mlc01");
+            Conf.Dirs.Dynamic = SetupViewModel.GenericPath;
+            Directory.CreateDirectory($"{SetupViewModel.GenericPath}\\mlc01");
             CemuSettings.Write(Conf, true);
 
             // Delete Temp Directory
@@ -875,7 +750,7 @@ namespace BotwInstaller.Wizard.ViewModels
             Update(100, "tool");
 
             ShowDialog("Cemu Installed successfully.");
-            await HiddenProcess.Start($"{GenericPath}\\Cemu.exe");
+            await HiddenProcess.Start($"{SetupViewModel.GenericPath}\\Cemu.exe");
         }
 
         public void InstallDumpling()
@@ -930,7 +805,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public async Task ReportError()
         {
-            if (!ShowDialog($"{ReportError_Tooltip}\n\nContinue anyway?", "Privacy Warning", true, width: 500))
+            if (!ShowDialog($"{ToolTips.ReportError}\n\nContinue anyway?", "Privacy Warning", true, width: 500))
                 return;
 
             bool isPublic = ShowDialog("Would you like to upload to the public GitHub repository?\n\n" +
@@ -1016,7 +891,9 @@ namespace BotwInstaller.Wizard.ViewModels
         #endregion
 
         public Config Conf { get; set; } = new();
-        public static Dictionary<string, Dictionary<string, List<string?>>> ModPresetData { get; set; } = new();
+
+        public SetupViewModel SetupViewModel { get; private set; } = new();
+
         private readonly IWindowManager windowManager;
         public ShellViewModel(IWindowManager windowManager)
         {
