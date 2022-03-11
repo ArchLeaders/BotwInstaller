@@ -183,14 +183,12 @@ namespace BotwInstaller.Lib
         public static bool BotwContents(this string key, string folder, Interface.Notify print, string func = "[VERIFY.BOTW]")
         {
             var checkSum = folder.GetCheckSum(print, func);
-            var diff = checkSum[key].Except(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
+            var diff = checkSum.Except(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
 
             if (diff.Any())
             {
                 foreach (var item in diff)
-                {
-                    print($"[{key.ToUpper()} MISSING] '{item}'", ConsoleColor.Red);
-                }
+                    Interface.Log($"[{key.ToUpper()} MISSING] '{item}'", ".\\Missing Files.txt");
 
                 return false;
             }
@@ -202,46 +200,29 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="gameFiles"></param>
         /// <returns></returns>
-        public static Dictionary<string, List<string>> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]")
+        public static List<string> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]")
         {
-            var ID = GameInfo.GetTitleID(gameFiles);
+            string ID = GameInfo.GetTitleID(gameFiles);
+            string region = GameInfo.GetTitleID(gameFiles, ITitleIDFormat.Region);
 
             gameFiles = gameFiles.EndsWith("\\") ? gameFiles : $"{gameFiles}\\";
+            print($"{func} Returning {region} data check as '{ID}'");
 
-            if (ID == "00050000101C9500" || ID == "0005000C101C9500" || ID == "0005000E101C9500")
+            return ID switch
             {
-                print($"{func} Returning EU data check as '{ID}'");
-                return new()
-                {
-                    { "Game", BaseEU.Set(gameFiles) },
-                    { "Update", UpdateEU.Set(gameFiles) },
-                    { "DLC", DlcEU.Set(gameFiles) }
-                };
-            }
-            else if (ID == "00050000101C9400" || ID == "0005000C101C9400" || ID == "0005000E101C9400")
-            {
-                print($"{func} Returning US data check as '{ID}'");
-                return new()
-                {
-                    { "Game", BaseUS.Set(gameFiles) },
-                    { "Update", UpdateUS.Set(gameFiles) },
-                    { "DLC", DlcUS.Set(gameFiles) }
-                };
-            }
-            else if (ID == "00050000101C9300" || ID == "0005000C101C9300" || ID == "0005000E101C9300")
-            {
-                print($"{func} Returning JP data check as '{ID}'");
-                return new()
-                {
-                    { "Game", BaseJP.Set(gameFiles) },
-                    { "Update", UpdateJP.Set(gameFiles) },
-                    { "DLC", DlcJP.Set(gameFiles) }
-                };
-            }
-            else
-            {
-                return new();
-            }
+                "00050000101C9500" => BaseEU.Set(gameFiles),
+                "0005000E101C9500" => UpdateEU.Set(gameFiles),
+                "0005000C101C9500" => DlcEU.Set(gameFiles),
+
+                "00050000101C9400" => BaseUS.Set(gameFiles),
+                "0005000E101C9400" => UpdateUS.Set(gameFiles),
+                "0005000C101C9400" => DlcUS.Set(gameFiles),
+
+                "00050000101C9300" => BaseJP.Set(gameFiles),
+                "0005000E101C9300" => UpdateJP.Set(gameFiles),
+                "0005000C101C9300" => DlcJP.Set(gameFiles),
+                _ => new()
+            };
         }
     }
 }
