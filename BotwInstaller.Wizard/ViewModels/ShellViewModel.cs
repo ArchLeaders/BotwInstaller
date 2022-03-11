@@ -1,4 +1,7 @@
-﻿#pragma warning disable CA1822
+﻿// This file is waaaay to clutered
+// clean it up!
+
+#pragma warning disable CA1822
 #pragma warning disable CS0108
 #pragma warning disable CS8602
 #pragma warning disable CS8612
@@ -191,12 +194,14 @@ namespace BotwInstaller.Wizard.ViewModels
                         GenericPath = Conf.Dirs.Dynamic;
                     });
 
-                    if (Conf.Dirs.Base == "NOT FOUND")
-                        ShowDialog("The BOTW Game files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
-
-                    else if (Conf.Dirs.Update == "NOT FOUND")
-                        ShowDialog($"The BOTW Update files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
-
+                    if (Conf.Dirs.Base == "NOT FOUND" || Conf.Dirs.Update == "NOT FOUND")
+                    {
+                        var name = Conf.Dirs.Update == "NOT FOUND" ? nameof(Conf.Dirs.Update) : nameof(Conf.Dirs.Base);
+                        ShowDialog($"The BOTW Game {name} files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
+                        ThrowOwnException("Game files not found", "Search Unsuccessful",
+                            $"The BOTW Game {name} files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/");
+                        ReportIsEnabled = false;
+                    }
                     else if (Conf.Dirs.Base.EndsWith("(PIRATED)"))
                     {
                         string audio = $"{Config.AppData}\\Temp\\BOTW\\audio.wav";
