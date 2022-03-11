@@ -35,8 +35,8 @@ namespace BotwInstaller.Lib
             if (File.Exists($"{gameFiles}\\code\\app.xml"))
             {
                 foreach (string line in File.ReadAllLines($"{gameFiles}\\code\\app.xml"))
-                    if (line.StartsWith("  <os_version type=\"hexBinary\" length=\"8\">"))
-                        results = line.Split('>')[1].Replace("</os_version", "");
+                    if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
+                        results = line.Split('>')[1].Replace("</title_id", "");
             }
             else
             {
