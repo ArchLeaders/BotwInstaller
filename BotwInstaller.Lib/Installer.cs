@@ -20,7 +20,7 @@ namespace BotwInstaller.Lib
         public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Interface.Update setSpeed, Config conf)
         {
             // Start search updater
-            setSpeed(30 * DriveInfo.GetDrives().Length);
+            setSpeed(100 * DriveInfo.GetDrives().Length);
             update(95, "tool");
 
             // Get system information
