@@ -65,7 +65,6 @@ namespace BotwInstaller.Wizard.ViewThemes.App
                 theme.Body = "#B0B0B0".Color();
                 theme.FlatButtonRipple = "#E04343".Color();
                 theme.Background = "#0A0A0A".Color();
-                theme.ToolTipBackground = "#0A0A0A".Color();
             }
 
             helper.SetTheme(theme);
