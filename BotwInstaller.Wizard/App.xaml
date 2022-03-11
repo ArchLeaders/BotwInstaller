@@ -29,7 +29,6 @@
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ScrollViewer/DefaultScrollViewer.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/TextBoxes/DefaultTextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/TextEditor/FloatingTextEditor.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ToolTips/DefaultToolTip.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
