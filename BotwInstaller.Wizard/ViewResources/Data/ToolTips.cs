@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using MaterialDesignThemes.Wpf;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewResources.Data
 {
-    public class ToolTips
+    public static class ToolTips
     {
         public static string CopyBaseGameFiles
         {
             get => "Copies the base game files into Cemu's mlc01 directory.\n" +
                 "(Recomended if your files are on an SDCard)";
         }
+
         public static string ReportError
         {
             get => "Reporting an error will upload system information such as file paths to a private or public GitHub Repository.\n" +
