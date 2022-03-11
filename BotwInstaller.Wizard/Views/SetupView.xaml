@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="BotwInstaller.Wizard.Views.SetupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:data="clr-namespace:BotwInstaller.Wizard.ViewResources.Data"
+             xmlns:local="clr-namespace:BotwInstaller.Wizard.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             d:DesignHeight="310"
+             d:DesignWidth="600"
+             Background="{DynamicResource MaterialDesignPaper}"
+             IsEnabled="True"
+             mc:Ignorable="d">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Border Grid.RowSpan="2"
+                Margin="0,20,0,0"
+                BorderBrush="{DynamicResource PrimaryHueLightBrush}"
+                BorderThickness="2"
+                CornerRadius="15" />
+
+        <Label Width="130"
+               Margin="10,0,0,0"
+               HorizontalAlignment="Left"
+               Background="{DynamicResource MaterialDesignPaper}"
+               Content="Preferences"
+               FontSize="25"
+               FontWeight="Light" />
+
+        <Grid Grid.Row="1" Margin="25,10,0,10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+
+                <CheckBox Content="Create Desktop Shortcuts"
+                          FontSize="18"
+                          IsChecked="{Binding DesktopShortcuts}"
+                          Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}" />
+
+                <CheckBox Content="Copy Base Game Files"
+                          FontSize="18"
+                          IsChecked="{Binding CopyBaseGame}"
+                          Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                          ToolTip="{x:Static data:ToolTips.CopyBaseGameFiles}"
+                          Visibility="{Binding CemuPrefs_Visibility}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="0,10,0,0">
+
+                <!--  Generic Path  -->
+                <Label Content="{Binding GenericPathLabel}" />
+                <StackPanel Margin="15,5,35,0" Orientation="Horizontal">
+                    <TextBox Width="400" Text="{Binding GenericPath}" />
+                    <Button Width="80"
+                            Margin="10,0,0,0"
+                            Command="{s:Action BrowseGenericPath}"
+                            Content="Browse" />
+                </StackPanel>
+
+                <!--  Mod Pack  -->
+                <Label Margin="0,10,0,0" Content="Mod Pack" />
+                <Grid Margin="0,5,40,0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="15" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="1"
+                              FontSize="18"
+                              ItemsSource="{Binding ModPresets}"
+                              SelectedItem="{Binding ModPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ComboBox Grid.Column="3"
+                              Width="280"
+                              Margin="10,0,0,0"
+                              FontSize="18"
+                              Text="{Binding ControllerApi}"
+                              Visibility="{Binding ControllerApiVisibility}">
+                        <ComboBoxItem Content="Controller -" IsEnabled="False" />
+                        <ComboBoxItem Content="DualShock 4" />
+                        <ComboBoxItem Content="Nintendo Switch Joycons" />
+                        <ComboBoxItem Content="Nintendo Switch Pro Controller" />
+                        <ComboBoxItem Content="XBox Controller" />
+                    </ComboBox>
+
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
