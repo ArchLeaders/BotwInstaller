@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="BotwInstaller.Wizard.Views.InstallView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:BotwInstaller.Wizard.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DesignHeight="310"
+             d:DesignWidth="600"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="Calibri"
+             FontSize="18"
+             FontWeight="Medium"
+             Foreground="{DynamicResource MaterialDesignBody}"
+             mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.8*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <ProgressBar Margin="10,0,10,0"
+                         Foreground="{DynamicResource SecondaryHueLightBrush}"
+                         IsIndeterminate="True"
+                         Style="{DynamicResource MaterialDesignCircularProgressBar}" />
+            <TextBlock FontSize="20" Text="{Binding Title}" />
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Margin="5"
+                Padding="5"
+                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                BorderThickness="1"
+                CornerRadius="5">
+            <ScrollViewer Content="{Binding Log}"
+                          Focusable="{Binding ScrollUpdater}"
+                          FocusableChanged="{s:Action ScrollViewerSizeChanged}"
+                          FontFamily="Consolas"
+                          FontSize="12"
+                          HorizontalScrollBarVisibility="Auto" />
+        </Border>
+
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+                <RowDefinition />
+                <RowDefinition Height="25" />
+                <RowDefinition />
+                <RowDefinition Height="25" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="BCML Install Progress —" />
+            <TextBlock Grid.Column="1" Text="{Binding StrBcmlValue}" />
+            <ProgressBar Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Height="15"
+                         VerticalAlignment="Top"
+                         Foreground="{DynamicResource SecondaryHueLightBrush}"
+                         Value="{Binding BcmlValue}" />
+
+            <TextBlock Grid.Row="2"
+                       Text="Cemu Install Progress —"
+                       Visibility="{Binding IsCemuMode}" />
+            <TextBlock Grid.Row="2"
+                       Grid.Column="1"
+                       Text="{Binding StrCemuValue}"
+                       Visibility="{Binding IsCemuMode}" />
+            <ProgressBar Grid.Row="3"
+                         Grid.ColumnSpan="2"
+                         Height="15"
+                         VerticalAlignment="Top"
+                         Foreground="{DynamicResource SecondaryHueLightBrush}"
+                         Visibility="{Binding IsCemuMode}"
+                         Value="{Binding CemuValue}" />
+
+            <TextBlock Grid.Row="4"
+                       Text="Game Install Progress —"
+                       Visibility="{Binding IsCemuMode}" />
+            <TextBlock Grid.Row="4"
+                       Grid.Column="1"
+                       Text="{Binding StrGameValue}"
+                       Visibility="{Binding IsCemuMode}" />
+            <ProgressBar Grid.Row="5"
+                         Grid.ColumnSpan="2"
+                         Height="15"
+                         VerticalAlignment="Top"
+                         Foreground="{DynamicResource SecondaryHueLightBrush}"
+                         Visibility="{Binding IsCemuMode}"
+                         Value="{Binding GameValue}" />
+        </Grid>
+    </Grid>
+</UserControl>
