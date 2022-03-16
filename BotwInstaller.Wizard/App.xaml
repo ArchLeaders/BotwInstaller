@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Buttons/WindowChromeSimple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Buttons/DefaultButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ContextMenus/DefaultContextMenu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Hyperlinks/DefaultHyperlink.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ComboBoxes/DefaultComboBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/CheckBoxes/DefaultCheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ScrollViewer/DefaultScrollBar.xaml" />

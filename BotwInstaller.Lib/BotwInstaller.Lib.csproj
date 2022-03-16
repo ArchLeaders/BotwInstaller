@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Configurations\Icons\" />
+    <Folder Include="Configurations\Homebrew\" />
   </ItemGroup>
 
   <ItemGroup>
