@@ -4,11 +4,16 @@
 #pragma warning disable CS8612
 #pragma warning disable CS8618
 
+using BotwInstaller.Wizard.Helpers;
+using BotwInstaller.Wizard.ViewResources.Data;
 using MaterialDesignThemes.Wpf;
 using Stylet;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewModels
@@ -23,6 +28,11 @@ namespace BotwInstaller.Wizard.ViewModels
         }
 
         public void No()
+        {
+            RequestClose(true);
+        }
+
+        public void Copy()
         {
             RequestClose(true);
         }
@@ -54,7 +64,6 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-
         private string _title = "Notice";
         public string Title
         {
@@ -66,8 +75,8 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        private string _message = "No details were provided.";
-        public string Message
+        private TextBlock _message = new() { Text = "~No details were provided.~" };
+        public TextBlock Message
         {
             get { return _message; }
             set
@@ -133,9 +142,9 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
-        public MessageViewModel(string message, string title = "Notice", bool isYesNo = false, string? messageColor = null, double width = 220)
+        public MessageViewModel(string message, string title = "Notice", bool isYesNo = false, string? messageColor = null, double width = 220, bool render = true)
         {
-            Message = message;
+            Message = message.RenderMarkdown();
             Title = title;
             IsYesNo = isYesNo;
             Width = width;

@@ -73,12 +73,13 @@
                 </Grid>
             </Border>
 
-            <TextBlock Grid.Row="1"
-                       Height="Auto"
-                       Margin="10,10,10,25"
-                       FontSize="16"
-                       Text="{Binding Message}"
-                       TextWrapping="WrapWithOverflow" />
+            <ScrollViewer Grid.Row="1"
+                          Height="Auto"
+                          Margin="10,10,10,25"
+                          Content="{Binding Message}"
+                          FontSize="16"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto" />
 
             <StackPanel Grid.Row="3"
                         HorizontalAlignment="Right"
