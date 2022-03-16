@@ -17,17 +17,17 @@ namespace BotwInstaller.Lib
         /// <param name="update">Updater delegate</param>
         /// <param name="conf">BotwInstaller Config class</param>
         /// <returns></returns>
-        public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Interface.Update setSpeed, Config conf)
+        public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Config conf)
         {
             // Start search updater
-            setSpeed(100 * DriveInfo.GetDrives().Length);
+            update(100, "rate");
             update(95, "tool");
 
             // Get system information
             Dictionary<string, object> gameInfo = await GameInfo.GetFiles(print, conf.UseCemu ? conf.Dirs.Dynamic : "!ignore", conf.Dirs.Python, conf.IsNX);
             update(100, "tool");
 
-            setSpeed(80);
+            update(80, "rate");
             if (conf.IsNX)
             {
                 conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
@@ -136,7 +136,7 @@ namespace BotwInstaller.Lib
             // Update timer speed
             await Task.WhenAll(t2);
             update(-1, "game");
-            setSpeed(40);
+            update(40, "rate");
 
             // Install mods
             await Tasks.Mods(update, print, conf);
