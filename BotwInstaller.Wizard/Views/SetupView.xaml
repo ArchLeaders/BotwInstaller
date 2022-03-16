@@ -10,7 +10,10 @@
              d:DesignHeight="310"
              d:DesignWidth="600"
              Background="{DynamicResource MaterialDesignPaper}"
-             IsEnabled="True"
+             FontFamily="Calibri"
+             FontSize="18"
+             FontWeight="Medium"
+             Foreground="{DynamicResource MaterialDesignBody}"
              mc:Ignorable="d">
     <Grid Margin="15">
         <Grid.RowDefinitions>
@@ -51,7 +54,7 @@
                           IsChecked="{Binding CopyBaseGame}"
                           Style="{DynamicResource MaterialDesignFilterChipAccentOutlineCheckBox}"
                           ToolTip="{x:Static data:ToolTips.CopyBaseGameFiles}"
-                          Visibility="{Binding CemuPrefs_Visibility}" />
+                          Visibility="{Binding ControllerApiVisibility}" />
             </StackPanel>
 
             <StackPanel Grid.Row="1" Margin="0,10,0,0">

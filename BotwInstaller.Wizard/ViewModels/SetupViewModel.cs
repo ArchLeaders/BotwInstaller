@@ -44,7 +44,7 @@ namespace BotwInstaller.Wizard.ViewModels
             set => SetAndNotify(ref _controllerApi, value);
         }
 
-        private Visibility _controllerApiVisibility;
+        private Visibility _controllerApiVisibility = Visibility.Collapsed;
         public Visibility ControllerApiVisibility
         {
             get => _controllerApiVisibility;
