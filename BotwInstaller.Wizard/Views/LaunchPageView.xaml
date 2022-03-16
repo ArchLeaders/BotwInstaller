@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="BotwInstaller.Wizard.Views.LaunchPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:helper="clr-namespace:BotwInstaller.Wizard.Helpers"
+             xmlns:local="clr-namespace:BotwInstaller.Wizard.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DesignHeight="310"
+             d:DesignWidth="600"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="Calibri"
+             FontSize="18"
+             FontWeight="Medium"
+             Foreground="{DynamicResource MaterialDesignBody}"
+             TextOptions.TextFormattingMode="Display"
+             mc:Ignorable="d">
+    <Grid>
+        <Image Margin="180,05,0,0" Source="..\ViewResources\Images\background.png" />
+
+        <!--  Install Time  -->
+        <TextBlock Margin="25,25,0,0"
+                   FontFamily="Artifakt Element"
+                   FontSize="20"
+                   FontWeight="Bold">
+            <Run Text="Install Time: " />
+            <Run Text="{Binding Time}" />
+        </TextBlock>
+
+        <!--  Credits  -->
+        <TextBlock Margin="25,75,0,0"
+                   FontFamily="Artifakt Element"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="Credits:" />
+        <TextBlock Margin="30,100,0,0"
+                   FontFamily="Artifakt Element"
+                   FontSize="12"
+                   FontWeight="Bold">
+            <Run Text="Arch Leaders (Programming, Design)" />
+            <LineBreak />
+            <Run Text="a_j_k_arts (Design)" />
+            <LineBreak />
+            <Run Text="reze_ha (Mod Packs)" />
+        </TextBlock>
+
+        <TextBlock Margin="25,0,0,25"
+                   VerticalAlignment="Bottom"
+                   FontFamily="Artifakt Element"
+                   FontSize="12"
+                   FontWeight="Light"
+                   Foreground="{DynamicResource PrimaryHueLightBrush}"
+                   Style="{DynamicResource MaterialDesignBody2TextBlock}"
+                   TextOptions.TextRenderingMode="ClearType">
+            <Hyperlink FontSize="12"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                       NavigateUri="https://github.com/ArchLeaders/BotwInstaller-RE"
+                       RequestNavigate="{s:Action OpenUrl,
+                                                  Target={x:Type helper:Actions}}"
+                       Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                GitHub
+            </Hyperlink>
+            <Run>|</Run>
+            <Hyperlink FontSize="12"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                       NavigateUri="https://discord.gg/cbA3AWwfJj"
+                       RequestNavigate="{s:Action OpenUrl,
+                                                  Target={x:Type helper:Actions}}"
+                       Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                Discord
+            </Hyperlink>
+            <Run>|</Run>
+            <Hyperlink FontSize="12"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SecondaryHueDarkBrush}"
+                       NavigateUri="https://gamebanana.com/members/1797815"
+                       RequestNavigate="{s:Action OpenUrl,
+                                                  Target={x:Type helper:Actions}}"
+                       Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                GameBanana
+            </Hyperlink>
+        </TextBlock>
+
+        <!--  Launch  -->
+        <Button Width="200"
+                Height="45"
+                Margin="25"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{s:Action LaunchBotw}"
+                Content="Launch BOTW"
+                FontSize="25"
+                FontWeight="Bold"
+                Visibility="{Binding SetupViewModel.ControllerApiVisibility}" />
+    </Grid>
+</UserControl>
