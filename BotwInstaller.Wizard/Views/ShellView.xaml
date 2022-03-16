@@ -32,113 +32,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="content"
-              Grid.Row="1"
-              Margin="15"
-              Visibility="{Binding SplashPageVisibility}">
-            <StackPanel Orientation="Horizontal">
-
-                <!--  Botw Installer V3 logo  -->
-                <Image Width="140"
-                       Height="140"
-                       Margin="0,0,15,0"
-                       VerticalAlignment="Top"
-                       Source="../ViewResources/Images/highres_icon.png">
-                    <Image.Effect>
-                        <DropShadowEffect BlurRadius="15"
-                                          Opacity="0.5"
-                                          ShadowDepth="3" />
-                    </Image.Effect>
-                </Image>
-
-                <!--  Botw Installer Texts  -->
-                <StackPanel Margin="0,-10,0,0">
-                    <TextBlock FontFamily="{DynamicResource Signika}"
-                               FontSize="32"
-                               FontWeight="Bold"
-                               Text="Breath of the Wild Installer"
-                               TextOptions.TextRenderingMode="ClearType" />
-                    <TextBlock FontFamily="{DynamicResource Signika}"
-                               FontSize="26"
-                               FontWeight="Light"
-                               Text="Setup mods without the pain."
-                               TextOptions.TextRenderingMode="ClearType" />
-                    <TextBlock Margin="0,38,0,0"
-                               FontFamily="{DynamicResource Signika}"
-                               FontSize="12"
-                               FontStyle="Italic"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource PrimaryHueLightBrush}"
-                               Style="{DynamicResource MaterialDesignBody2TextBlock}"
-                               TextOptions.TextRenderingMode="ClearType">
-                        <Run>*Disclaimer - This tool does NOT include, use, or download any part of</Run>
-                        <LineBreak />
-                        <Run FontWeight="Bold">The Legend of Zelda: Breath of the Wild. ——</Run>
-                        <Hyperlink FontSize="12"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                                   NavigateUri="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md"
-                                   RequestNavigate="Hyperlink_RequestNavigate"
-                                   Style="{DynamicResource MaterialDesignBody2Hyperlink}"
-                                   ToolTip="https://github.com/ArchLeaders/Botw-Installer/blob/master/README.md">
-                            Full Disclaimer
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-            </StackPanel>
-
-            <!--  Botw Installer Actions  -->
-            <StackPanel Margin="0,0,0,15" VerticalAlignment="Bottom">
-                <Grid Margin="0,0,0,3">
-                    <Line Stroke="{DynamicResource SecondaryHueLightBrush}"
-                          StrokeThickness="2"
-                          X1="0"
-                          X2="600"
-                          Y1="15"
-                          Y2="15" />
-                    <Label Padding="15,0"
-                           HorizontalAlignment="Center"
-                           Background="{DynamicResource MaterialDesignPaper}"
-                           Content="Select an Option"
-                           FontSize="22" />
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="15" />
-                        <ColumnDefinition Width="1.8*" />
-                        <ColumnDefinition Width="15" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <Button Grid.Column="0"
-                            Height="45"
-                            Margin="0,10"
-                            Command="{s:Action NextPage}"
-                            CommandParameter="cemu"
-                            Content="Cemu"
-                            FontSize="25"
-                            FontWeight="Bold" />
-
-                    <Button Grid.Column="2"
-                            Height="45"
-                            Margin="0,10"
-                            Command="{s:Action NextPage}"
-                            CommandParameter="switch"
-                            Content="Switch | Yuzu"
-                            FontSize="25"
-                            FontWeight="Bold" />
-
-                    <Button Grid.Column="4"
-                            Height="45"
-                            Margin="0,10"
-                            Command="{s:Action NextPage}"
-                            CommandParameter="wiiu"
-                            Content="WiiU"
-                            FontSize="25"
-                            FontWeight="Bold" />
-                </Grid>
-            </StackPanel>
+        <Grid Grid.Row="1" Visibility="{Binding SplashPageVisibility}">
+            <ContentControl s:View.Model="{Binding SplashViewModel}" />
         </Grid>
 
         <!--  Setup Page  -->
@@ -147,284 +42,18 @@
         </Grid>
 
         <!--  Install Page  -->
-        <Grid Grid.Row="1"
-              Margin="10"
-              Visibility="{Binding InstallPageVisibility}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.8*" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Horizontal">
-                <ProgressBar Margin="10,0,10,0"
-                             Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             IsIndeterminate="True"
-                             Style="{DynamicResource MaterialDesignCircularProgressBar}" />
-                <TextBlock FontSize="20" Text="{Binding InstallingText}" />
-            </StackPanel>
-
-            <Border Grid.Row="1"
-                    Margin="5"
-                    Padding="10,5,5,5"
-                    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                    BorderThickness="1"
-                    CornerRadius="5">
-                <ScrollViewer Content="{Binding InstallLog}"
-                              Focusable="{Binding ScrollUpdater}"
-                              FocusableChanged="{s:Action ScrollViewerSizeChanged}"
-                              FontFamily="Consolas"
-                              FontSize="12"
-                              HorizontalScrollBarVisibility="Auto" />
-            </Border>
-
-            <Grid Grid.Row="1"
-                  Grid.Column="1"
-                  Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25" />
-                    <RowDefinition />
-                    <RowDefinition Height="25" />
-                    <RowDefinition />
-                    <RowDefinition Height="25" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.5*" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Text="BCML Install Progress —" />
-                <TextBlock Grid.Column="1" Text="{Binding StrBcmlInstallValue}" />
-                <ProgressBar Grid.Row="1"
-                             Grid.ColumnSpan="2"
-                             Height="15"
-                             VerticalAlignment="Top"
-                             Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Value="{Binding BcmlInstallValue}" />
-
-                <TextBlock Grid.Row="2"
-                           Text="Game Install Progress —"
-                           Visibility="{Binding CemuPrefs_Visibility}" />
-                <TextBlock Grid.Row="2"
-                           Grid.Column="1"
-                           Text="{Binding StrGameInstallValue}"
-                           Visibility="{Binding CemuPrefs_Visibility}" />
-                <ProgressBar Grid.Row="3"
-                             Grid.ColumnSpan="2"
-                             Height="15"
-                             VerticalAlignment="Top"
-                             Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Visibility="{Binding CemuPrefs_Visibility}"
-                             Value="{Binding GameInstallValue}" />
-
-                <TextBlock Grid.Row="4"
-                           Text="Cemu Install Progress —"
-                           Visibility="{Binding CemuPrefs_Visibility}" />
-                <TextBlock Grid.Row="4"
-                           Grid.Column="1"
-                           Text="{Binding StrCemuInstallValue}"
-                           Visibility="{Binding CemuPrefs_Visibility}" />
-                <ProgressBar Grid.Row="5"
-                             Grid.ColumnSpan="2"
-                             Height="15"
-                             VerticalAlignment="Top"
-                             Foreground="{DynamicResource SecondaryHueLightBrush}"
-                             Visibility="{Binding CemuPrefs_Visibility}"
-                             Value="{Binding CemuInstallValue}" />
-            </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding InstallPageVisibility}">
+            <ContentControl s:View.Model="{Binding InstallViewModel}" />
         </Grid>
 
         <!--  Launch Page  -->
-        <Grid Grid.Row="1"
-              Background="{DynamicResource MaterialDesignPaper}"
-              Visibility="{Binding LaunchPageVisibility}">
-
-            <Image Margin="180,05,0,0" Source="..\ViewResources\Images\background.png" />
-
-            <!--  Install Time  -->
-            <TextBlock Margin="25,25,0,0"
-                       FontFamily="Artifakt Element"
-                       FontSize="20"
-                       FontWeight="Bold">
-                <Run Text="Install Time: " />
-                <Run Text="{Binding InstallTime}" />
-            </TextBlock>
-
-            <!--  Credits  -->
-            <TextBlock Margin="25,75,0,0"
-                       FontFamily="Artifakt Element"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Text="Credits:" />
-            <TextBlock Margin="30,100,0,0"
-                       FontFamily="Artifakt Element"
-                       FontSize="12"
-                       FontWeight="Bold">
-                <Run Text="Arch Leaders (Programming, Design)" />
-                <LineBreak />
-                <Run Text="a_j_k_arts (Design)" />
-                <LineBreak />
-                <Run Text="reze_ha (Mod Packs)" />
-            </TextBlock>
-
-            <TextBlock Margin="25,0,0,25"
-                       VerticalAlignment="Bottom"
-                       FontFamily="Artifakt Element"
-                       FontSize="12"
-                       FontWeight="Light"
-                       Foreground="{DynamicResource PrimaryHueLightBrush}"
-                       Style="{DynamicResource MaterialDesignBody2TextBlock}"
-                       TextOptions.TextRenderingMode="ClearType">
-                <Hyperlink FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://github.com/ArchLeaders/BotwInstaller-RE"
-                           RequestNavigate="Hyperlink_RequestNavigate"
-                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
-                    GitHub
-                </Hyperlink>
-                <Run>|</Run>
-                <Hyperlink FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://discord.gg/cbA3AWwfJj"
-                           RequestNavigate="Hyperlink_RequestNavigate"
-                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
-                    Discord
-                </Hyperlink>
-                <Run>|</Run>
-                <Hyperlink FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource SecondaryHueDarkBrush}"
-                           NavigateUri="https://gamebanana.com/members/1797815"
-                           RequestNavigate="Hyperlink_RequestNavigate"
-                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
-                    GameBanana
-                </Hyperlink>
-            </TextBlock>
-
-            <!--  Launch  -->
-            <Button Width="200"
-                    Height="45"
-                    Margin="25"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{s:Action LaunchBotw}"
-                    Content="Launch BOTW"
-                    FontSize="25"
-                    FontWeight="Bold"
-                    Visibility="{Binding CemuPrefs_Visibility}" />
+        <Grid Grid.Row="1" Visibility="{Binding LaunchPageVisibility}">
+            <ContentControl s:View.Model="{Binding LaunchPageViewModel}" />
         </Grid>
 
         <!--  Exception Page  -->
-        <Grid Grid.Row="1"
-              Background="{DynamicResource MaterialDesignPaper}"
-              Visibility="{Binding ExceptionPageVisibility}">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="30" />
-            </Grid.RowDefinitions>
-
-            <TextBlock Margin="15"
-                       FontSize="32"
-                       Text="{Binding Title}" />
-            <TextBlock Grid.Row="1"
-                       Margin="15,-5,15,0"
-                       FontSize="22"
-                       FontWeight="Light"
-                       Text="{Binding Exception}"
-                       TextWrapping="WrapWithOverflow" />
-            <Border Grid.Row="2"
-                    Margin="10"
-                    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                    BorderThickness="2"
-                    CornerRadius="5" />
-
-            <RichTextBox Grid.Row="2"
-                         Margin="0"
-                         Padding="20"
-                         FontFamily="Consolas"
-                         FontSize="14"
-                         IsReadOnly="True"
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         SelectionBrush="{DynamicResource SecondaryHueLightBrush}">
-                <RichTextBox.Resources>
-                    <Style TargetType="{x:Type Paragraph}">
-                        <Setter Property="Margin" Value="1" />
-                    </Style>
-                </RichTextBox.Resources>
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text="{Binding StackTrace}" />
-                    </Paragraph>
-                </FlowDocument>
-            </RichTextBox>
-            <Border Grid.Row="2"
-                    Height="2"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource MaterialDesignPaper}" />
-            <StackPanel Grid.Row="3"
-                        Margin="15,-2.5,0,0"
-                        VerticalAlignment="Top"
-                        Orientation="Horizontal">
-                <TextBlock>
-                    <Hyperlink FontSize="12"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource SecondaryHueMidBrush}"
-                               NavigateUri="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose"
-                               RequestNavigate="{s:Action CopyError}"
-                               Style="{DynamicResource MaterialDesignBody2Hyperlink}">
-                        <Hyperlink.ToolTip>
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}">
-                                <Run>Copies the exception details to the clipboard.</Run>
-                            </TextBlock>
-                        </Hyperlink.ToolTip>
-                        Copy Error Details
-                    </Hyperlink>
-                    <Run Foreground="{DynamicResource PrimaryHueMidBrush}" Text=" | " />
-                    <Hyperlink FontSize="12"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource SecondaryHueMidBrush}"
-                               IsEnabled="{Binding ReportIsEnabled}"
-                               NavigateUri="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose"
-                               RequestNavigate="{s:Action ReportError}"
-                               Style="{DynamicResource MaterialDesignBody2Hyperlink}">
-                        <Hyperlink.ToolTip>
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}">
-                                <Run>Makes a new GitHub issue with the exception details.</Run>
-                                <LineBreak />
-                                <LineBreak />
-                                <Run FontWeight="Bold">Warning</Run>
-                                <LineBreak />
-                                <Run Text="{Binding ReportError_Tooltip, Mode=OneWay}" />
-                            </TextBlock>
-                        </Hyperlink.ToolTip>
-                        Report Error
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
-            <StackPanel Grid.Row="3"
-                        Margin="0,-2.5,10,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Orientation="Horizontal">
-                <TextBlock Margin="0,5,10,0"
-                           FontSize="12"
-                           Text="Contact Info" />
-                <TextBox Width="250"
-                         Height="24"
-                         FontSize="12" />
-            </StackPanel>
+        <Grid Grid.Row="1" Visibility="{Binding ExceptionPageVisibility}">
+            <ContentControl s:View.Model="{Binding ExceptionViewModel}" />
         </Grid>
 
         <Grid x:Name="windowChrome" Background="{DynamicResource PrimaryHueDarkBrush}">
@@ -521,16 +150,14 @@
                 <Button Width="70"
                         Height="30"
                         Margin="3,3,7,3"
-                        Command="{s:Action NextPage}"
-                        CommandParameter="install;"
+                        Command="{s:Action GoBack}"
                         Content="Back"
                         FontSize="18"
                         Visibility="{Binding SetupPageVisibility}" />
                 <Button Width="70"
                         Height="30"
                         Margin="3,3,7,3"
-                        Command="{s:Action NextPage}"
-                        CommandParameter="install"
+                        Command="{s:Action Install}"
                         Content="Install"
                         FontSize="18"
                         Visibility="{Binding SetupPageVisibility}" />
@@ -645,7 +272,7 @@
                         Padding="0"
                         HorizontalAlignment="Right"
                         Command="{s:Action PrepCemu}"
-                        Visibility="{Binding CemuPrefs_Visibility}">
+                        Visibility="{Binding SetupViewModel.ControllerApiVisibility}">
                     <Button.ToolTip>
                         <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Text="Prep Cemu for online access" />
                     </Button.ToolTip>
