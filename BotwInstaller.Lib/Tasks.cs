@@ -182,7 +182,7 @@ namespace BotwInstaller.Lib
 
             print($"{func} Installing BCML");
             update(8, "bcml");
-            pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall bcml==3.8.0")); // hardcoded version until utils is fixed
+            pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall bcml"));
 
             print($"{func} Installing CEF");
             update(14, "bcml");
