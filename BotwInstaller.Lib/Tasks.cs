@@ -182,7 +182,7 @@ namespace BotwInstaller.Lib
 
             print($"{func} Installing BCML");
             update(8, "bcml");
-            pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall bcml"));
+            pip.Add(HiddenProcess.Start($"{conf.Dirs.Python}\\Scripts\\pip.exe", "install --force-reinstall bcml==3.8.0")); // hardcoded version until utils is fixed
 
             print($"{func} Installing CEF");
             update(14, "bcml");
@@ -219,7 +219,7 @@ namespace BotwInstaller.Lib
 
             if (conf.IsNX) mods = conf.ModPacks["switch"][conf.ModPack];
 
-            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py");
+            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py"); // skip this; run directly in the python interpreter
             update(50, "bcml");
 
             int i = 1;
@@ -229,11 +229,15 @@ namespace BotwInstaller.Lib
                 {
                     install.Add(Task.Run(async() =>
                     {
-                        string last = mods.Count == i ? "true" : "false";
+                        string last = mods.Count == i ? "True" : "False";
+
+                        print($"{func} Downloading {mod} . . .");
+                        await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
 
                         print($"{func} Installing {mod} . . .");
-                        await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
-                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
+                        await HiddenProcess.Start( $"{conf.Dirs.Python}\\python.exe",
+                            $"from bcml import install; from pathlib import Path; install.install_mod(Path('{AppData}\\Temp\\BOTW\\MOD__{i}.bnp'), merge_now={last})");
+
                         i++;
                     }));
                 }
