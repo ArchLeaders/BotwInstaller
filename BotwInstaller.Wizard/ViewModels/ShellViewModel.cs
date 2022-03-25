@@ -2,9 +2,11 @@
 #pragma warning disable CS8601
 
 using BotwInstaller.Lib;
+using BotwInstaller.Lib.Remote;
 using BotwInstaller.Wizard.Helpers;
 using BotwInstaller.Wizard.ViewResources.Data;
 using BotwScripts.Lib.Common.IO.FileSystems;
+using BotwScripts.Lib.Common.Web;
 using Stylet;
 using System;
 using System.ComponentModel;
@@ -64,14 +66,58 @@ namespace BotwInstaller.Wizard.ViewModels
 
             try
             {
-                await Installer.RunInstallerAsync(InstallViewModel.LogMessage, InstallViewModel.Update, Conf);
+                Conf = await Installer.RunInstallerAsync(InstallViewModel.LogMessage, InstallViewModel.Update, Conf);
+
+                if (Conf.Dirs.Base == "NOT FOUND" || Conf.Dirs.Update == "NOT FOUND")
+                {
+                    var name = Conf.Dirs.Update == "NOT FOUND" ? nameof(Conf.Dirs.Update) : nameof(Conf.Dirs.Base);
+                    WindowManager.Show($"The BOTW Game {name} files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/", width: 400);
+                    ReportError(new()
+                    {
+                        Message = "Game files not found",
+                        Exception = "System Search Unsuccessful",
+                        ExtendedMessage = "The BOTW Game {name} files could not be found and/or verified.\nPlease dump BOTW from your WiiU console.\n\nhttps://wiiu.hacks.guide/#/"
+                    }, "Game files not found", false);
+                }
+                else if (Conf.Dirs.Base.EndsWith("(PIRATED)"))
+                {
+                    string audio = $"{Config.AppData}\\Temp\\BOTW\\audio.mp3";
+                    await Download.FromUrl(HttpLinks.Audio, audio);
+
+                    WindowManager.Show($"Hmm, you seem to have some... interesting files in your game dump.", "What's this??", width: 260);
+
+                    string command = $"open \"{audio}\" type mpegvideo alias MediaFile";
+                    string play = $"play MediaFile";
+
+                    mciSendString(command, null, 0, IntPtr.Zero);
+                    mciSendString(play, null, 0, IntPtr.Zero);
+
+                    WindowManager.Show($"You have collected your game files in a less than legal manner.\n" +
+                        $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice", width: 420);
+
+                    ReportError(new()
+                    {
+                        Message = "Pirating the game is illegal and not supported.",
+                        ExtendedMessage =
+                            "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
+                            "it from your WiiU. Alternatively you can dump your WiiU online files and download" +
+                            "the game legally from Nintendo's server through Cemu.\n\n" +
+                            "WiiU Homebrew Guide: https://wiiu.hacks.guide/#/ \n" +
+                            "Dumping Video: https://www.youtube.com/watch?v=bFTgv5mzSg8&t=300s \n" +
+                            "Discord Help Server: https://discord.gg/cbA3AWwfJj"
+
+                    }, "Piracy Warning", false, false);
+                }
             }
             catch (Exception ex)
             {
                 foreach (var handled in Texts.HandledExceptions)
                 {
                     if (ex.Message.StartsWith(handled.Value.Exception))
+                    {
                         ReportError(handled.Value, handled.Key);
+                        return;
+                    }
                 }
 
                 ReportError(new() { Message = ex.Message, ExtendedMessage = ex.StackTrace }, "Unhandled Exception");
@@ -92,16 +138,18 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        public void ReportError(HandledException ex, string title)
+        public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true)
         {
-            WindowManager.Error(ex.Message, ex.ExtendedMessage, title);
+            if (showDialog) WindowManager.Error(ex.Message, ex.ExtendedMessage, title);
 
-            ExceptionPageVisibility = Visibility.Visible;
             ExceptionViewModel = new() {
                 Title = title,
                 Message = ex.Message,
-                ExtendedMessage = ex.ExtendedMessage
+                ExtendedMessage = ex.ExtendedMessage,
+                IsReportable = isReportable,
+                ShellViewModel = this
             };
+            ExceptionPageVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -238,9 +286,17 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
+        // Private backers
         public readonly IWindowManager WindowManager;
-
+        private ExceptionViewModel _exceptionViewModel = new();
         private LaunchPageViewModel _launchPageViewModel = new(new());
+
+        // View models
+        public ExceptionViewModel ExceptionViewModel
+        {
+            get => _exceptionViewModel;
+            set => SetAndNotify(ref _exceptionViewModel, value);
+        }
         public LaunchPageViewModel LaunchPageViewModel
         {
             get => _launchPageViewModel;
@@ -249,7 +305,6 @@ namespace BotwInstaller.Wizard.ViewModels
         public SplashViewModel SplashViewModel { get; private set; }
         public SetupViewModel SetupViewModel { get; private set; } = new();
         public InstallViewModel InstallViewModel { get; private set; } = new();
-        public ExceptionViewModel ExceptionViewModel { get; private set; } = new();
         public Config Conf { get; set; } = new();
 
         public ShellViewModel(IWindowManager windowManager)
