@@ -30,38 +30,13 @@ namespace BotwInstaller.Wizard.Helpers
             }
         }
 
-        private static string GetSystemDefaultBrowser()
-        {
-            string? name = string.Empty;
-            RegistryKey? regKey = null;
-
-            try
-            {
-                regKey = Registry.ClassesRoot.OpenSubKey("HTTP\\shell\\open\\command", false);
-                name = regKey.GetValue(null).ToString().ToLower().Replace("" + (char)34, "");
-
-                if (!name.EndsWith("exe"))
-                    name = name.Substring(0, name.LastIndexOf(".exe") + 4);
-            }
-            catch (Exception ex)
-            {
-                name = $"{ex.Message}\n{ex.StackTrace}";
-            }
-            finally
-            {
-                if (regKey != null) regKey.Close();
-            }
-
-            return name;
-        }
-
         public static async Task ViewReportAsHtml(this ShellViewModel shell)
         {
             IWindowManager win = shell.WindowManager;
             ExceptionViewModel exView = shell.ExceptionViewModel;
 
             string htmlFile = $"{Config.AppData}\\Temp\\{new Random().Next(1000, 9999)}-{new Random().Next(1000, 9999)} - {exView.Message} - index.htm";
-            string fullReport = FormatReportAsHtml(exView, shell.Conf)
+            string fullReport = FormatReportAsHtml(exView, shell.Conf, shell.InstallViewModel.Log.Replace("\n", "<br>"))
                 .Replace(Config.User, "C:\\Users\\admin");
 
             await File.WriteAllTextAsync(htmlFile, fullReport);
@@ -73,7 +48,7 @@ namespace BotwInstaller.Wizard.Helpers
             // Get shell info
             IWindowManager win = shell.WindowManager;
             ExceptionViewModel exView = shell.ExceptionViewModel;
-            string fullReport = FormatReportAsMarkdown(exView, shell.Conf);
+            string fullReport = FormatReportAsMarkdown(exView, shell.Conf, shell.InstallViewModel.Log);
 
             // Get repo
             if (!win.Show($"{ToolTips.ReportError}\n\nContinue anyway?", "Privacy Warning", true, width: 500)) return;
@@ -167,19 +142,24 @@ namespace BotwInstaller.Wizard.Helpers
             return strData;
         }
 
-        public static string FormatReportAsMarkdown(ExceptionViewModel ex, Config conf)
+        public static string FormatReportAsMarkdown(ExceptionViewModel ex, Config conf, string log)
         {
             return new(
                 $"# {ex.Title}\n\n" +
                 $"> {ex.Message}\n\n" +
                 $"```\n" +
-                $"{ex.ExtendedMessage}\n" +
+                $"{ex.ExtendedMessageStr}\n" +
+                $"```\n\n<br>\n" +
+                $"## Install Log\n\n" +
+                $"```\n" +
+                $"{log}\n" +
                 $"```\n\n" +
+                $"" +
                 $"{GetErrorData(conf)}"
             );
         }
 
-        public static string FormatReportAsHtml(ExceptionViewModel ex, Config conf)
+        public static string FormatReportAsHtml(ExceptionViewModel ex, Config conf, string log)
         {
             #region HTML Meta-data/CSS
 
@@ -205,7 +185,7 @@ namespace BotwInstaller.Wizard.Helpers
                 "#contact {" +
                 "    padding-top: 15px;" +
                 "    padding-bottom: 0px;" +
-                "    font-size: 40px;" +
+                "    font-size: 20px;" +
                 "    padding-left: 30px;" +
                 "}" +
                 "h3 {" +
@@ -261,7 +241,9 @@ namespace BotwInstaller.Wizard.Helpers
                 $"<h1>{ex.Title}</h1>" +
                 $"<label id=\"contact\">{ex.ContactInfo}<label><hr>" +
                 $"<p>{ex.Message}</p>" +
-                $"<code>{ex.ExtendedMessage}</code><br>" +
+                $"<code>{ex.ExtendedMessageStr}</code><br><br>" +
+                $"<h3>Install Log</h3>" +
+                $"<code>{log}</code><br>" +
                 $"{GetErrorData(conf, "HTML")}"
             );
 

@@ -42,6 +42,7 @@
                      Padding="20"
                      FontFamily="Consolas"
                      FontSize="14"
+                     IsDocumentEnabled="True"
                      IsReadOnly="True"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -53,7 +54,7 @@
             </RichTextBox.Resources>
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="{Binding ExtendedMessage}" />
+                    <ContentControl Content="{Binding ExtendedMessage}" />
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>

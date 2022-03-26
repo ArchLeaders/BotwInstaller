@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BotwInstaller.Wizard.Helpers;
+using System.Windows.Controls;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
@@ -36,8 +37,9 @@ namespace BotwInstaller.Wizard.ViewModels
             set => SetAndNotify(ref _message, value);
         }
 
-        private string _extendedMessage = "No details were provided.";
-        public string ExtendedMessage
+        private TextBlock _extendedMessage = new() { Text = "No details were provided." };
+        public string ExtendedMessageStr { get; set; } = "";
+        public TextBlock ExtendedMessage
         {
             get => _extendedMessage;
             set => SetAndNotify(ref _extendedMessage, value);
