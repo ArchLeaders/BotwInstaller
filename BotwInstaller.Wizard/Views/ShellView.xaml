@@ -474,6 +474,19 @@
                     </Viewbox>
 
                 </Button>
+                <Button Width="32"
+                        Height="32"
+                        Margin="3,3,3,3"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Command="{s:Action Home}"
+                        Visibility="{Binding LaunchPageVisibility}">
+                    <wpf:PackIcon Width="24"
+                                  Height="24"
+                                  Foreground="{DynamicResource SecondaryHueLightBrush}"
+                                  Kind="House"
+                                  ToolTip="Go to the splash screen." />
+                </Button>
             </StackPanel>
             <ProgressBar Width="220"
                          Height="10"
@@ -481,14 +494,6 @@
                          BorderThickness="0,1"
                          Foreground="{DynamicResource SecondaryHueLightBrush}"
                          Value="{Binding ToolProgressValue}" />
-            <TextBlock x:Name="footerBasicErrorReport"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontFamily="Consolas"
-                       FontSize="18"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource MaterialDesignFlatButtonRipple}"
-                       Text="" />
         </Grid>
 
     </Grid>

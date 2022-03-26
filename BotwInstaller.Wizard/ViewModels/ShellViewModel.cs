@@ -33,6 +33,15 @@ namespace BotwInstaller.Wizard.ViewModels
             SplashPageVisibility = Visibility.Visible;
         }
 
+        public void Home()
+        {
+            ExceptionPageVisibility = Visibility.Collapsed;
+            LaunchPageVisibility = Visibility.Collapsed;
+            InstallPageVisibility = Visibility.Collapsed;
+            SetupPageVisibility = Visibility.Collapsed;
+            SplashPageVisibility = Visibility.Visible;
+        }
+
         public async Task Install()
         {
             Stopwatch watch = new();
@@ -98,14 +107,7 @@ namespace BotwInstaller.Wizard.ViewModels
                     ReportError(new()
                     {
                         Message = "Pirating the game is illegal and not supported.",
-                        ExtendedMessage =
-                            "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
-                            "it from your WiiU. Alternatively you can dump your WiiU online files and download" +
-                            "the game legally from Nintendo's server through Cemu.\n\n" +
-                            "WiiU Homebrew Guide: https://wiiu.hacks.guide/#/ \n" +
-                            "Dumping Video: https://www.youtube.com/watch?v=bFTgv5mzSg8&t=300s \n" +
-                            "Discord Help Server: https://discord.gg/cbA3AWwfJj"
-
+                        ExtendedMessage = Texts.PiracyWarning
                     }, "Piracy Warning", false, false);
                 }
             }
@@ -140,15 +142,19 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true)
         {
+            InstallViewModel.LogMessage($"---\nFailed - {ex.Message}\n---\n");
+
             if (showDialog) WindowManager.Error(ex.Message, ex.ExtendedMessage, title);
 
             ExceptionViewModel = new() {
                 Title = title,
                 Message = ex.Message,
-                ExtendedMessage = ex.ExtendedMessage,
+                ExtendedMessage = ex.ExtendedMessage.RenderMarkdown(),
+                ExtendedMessageStr = ex.ExtendedMessage,
                 IsReportable = isReportable,
                 ShellViewModel = this
             };
+            LaunchPageVisibility = Visibility.Visible;
             ExceptionPageVisibility = Visibility.Visible;
         }
 

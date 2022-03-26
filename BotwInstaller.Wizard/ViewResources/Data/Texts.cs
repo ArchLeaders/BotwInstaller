@@ -160,5 +160,15 @@ namespace BotwInstaller.Wizard.ViewResources.Data
                 }
             },
         };
+
+        public static string PiracyWarning { get => new(
+                "To legally obtain The Legend of Zelda: Breath of the Wild you must dump " +
+                "it from your WiiU. Alternatively you can dump your WiiU online files and download " +
+                "the game legally from Nintendo's server through Cemu.\n\n" +
+                "[WiiU Homebrew Guide](https://wiiu.hacks.guide/#/) \n" +
+                "[Dumping Video](https://www.youtube.com/watch?v=bFTgv5mzSg8&t=300s) \n" +
+                "[Discord Help Server](https://discord.gg/cbA3AWwfJj)"
+            );
+        }
     }
 }
