@@ -79,6 +79,12 @@
     <Reference Include="BotwScripts.Lib.Common">
       <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.Operations">
+      <HintPath>..\..\..\..\..\Libraries\Acheron\Acheron\Release\net6.0-windows\System.Operations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Formatting">
+      <HintPath>..\..\..\..\..\Libraries\Acheron\Acheron\Release\net6.0-windows\System.Text.Formatting.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
