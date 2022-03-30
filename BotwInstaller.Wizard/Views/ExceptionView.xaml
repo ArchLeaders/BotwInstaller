@@ -57,10 +57,8 @@
             <TextBlock>
                 <Hyperlink FontSize="12"
                            FontWeight="Bold"
-                           Foreground="{DynamicResource SecondaryHueMidBrush}"
                            NavigateUri="https://github.com"
-                           RequestNavigate="{s:Action Copy}"
-                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                           RequestNavigate="{s:Action Copy}">
                     <Hyperlink.ToolTip>
                         <TextBlock>
                             <Run>Creates a HTML file with the exception details and opens it.</Run>
@@ -70,12 +68,9 @@
                 </Hyperlink>
                 <Run Foreground="{DynamicResource PrimaryHueMidBrush}" Text=" | " />
                 <Hyperlink FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource SecondaryHueMidBrush}"
                            IsEnabled="{Binding IsReportable}"
                            NavigateUri="https://github.com/ArchLeaders/BotwInstaller/issues/new/choose"
-                           RequestNavigate="{s:Action Report}"
-                           Style="{DynamicResource MaterialDesignBody2Hyperlink}">
+                           RequestNavigate="{s:Action Report}">
                     <Hyperlink.ToolTip>
                         <TextBlock>
                             <Run>Makes a new GitHub issue with the exception details.</Run>
