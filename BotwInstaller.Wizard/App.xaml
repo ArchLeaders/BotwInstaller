@@ -30,6 +30,8 @@
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ScrollViewer/DefaultScrollViewer.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/TextBoxes/DefaultTextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/TextEditor/FloatingTextEditor.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Menus/DefaultMenu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Menus/DefaultMenuItem.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
