@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CA1822
-#pragma warning disable CS8601
+#pragma warning disable CS8604
 
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Remote;
@@ -14,8 +14,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Formatting;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
@@ -26,6 +28,14 @@ namespace BotwInstaller.Wizard.ViewModels
             StringBuilder? strReturn, int iReturnLength, IntPtr hwndCallback);
 
         #region Actions
+
+        public async Task InstallHomebrew()
+        {
+            if (SplashViewModel.Mode == "switch") Setup.Hekate(WindowManager, Update);
+            else await Setup.Tiramisu(WindowManager, Update);
+        }
+
+        public async Task PrepCemu() => await Setup.CemuOnline(WindowManager, Update, Conf.Dirs.Dynamic);
 
         public void GoBack()
         {
@@ -99,7 +109,7 @@ namespace BotwInstaller.Wizard.ViewModels
                     string play = $"play MediaFile";
 
                     mciSendString(command, null, 0, IntPtr.Zero);
-                    mciSendString(play, null, 0, IntPtr.Zero);
+                    // mciSendString(play, null, 0, IntPtr.Zero);
 
                     WindowManager.Show($"You have collected your game files in a less than legal manner.\n" +
                         $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice", width: 420);
@@ -149,7 +159,7 @@ namespace BotwInstaller.Wizard.ViewModels
             ExceptionViewModel = new() {
                 Title = title,
                 Message = ex.Message,
-                ExtendedMessage = ex.ExtendedMessage.RenderMarkdown(),
+                ExtendedMessage = ex.ExtendedMessage.ToTextBlock(),
                 ExtendedMessageStr = ex.ExtendedMessage,
                 IsReportable = isReportable,
                 ShellViewModel = this
@@ -292,6 +302,20 @@ namespace BotwInstaller.Wizard.ViewModels
 
         #endregion
 
+        #region Updater Bindings
+
+        private double _toolValue;
+        public double UnboundToolValue { get; set; } = 0.0;
+        public double ToolValue
+        {
+            get => _toolValue;
+            set => SetAndNotify(ref _toolValue, value);
+        }
+
+        #endregion
+
+        #region Data Context
+
         // Private backers
         public readonly IWindowManager WindowManager;
         private ExceptionViewModel _exceptionViewModel = new();
@@ -318,38 +342,25 @@ namespace BotwInstaller.Wizard.ViewModels
             WindowManager = windowManager;
             SplashViewModel = new(this);
 
+
             // Start updater
-            //UpdateTimer.Start();
-            //UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            DispatcherTimer updateTimer = new();
+            updateTimer.Start();
+            updateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            updateTimer.Tick += (s, e) =>
+            {
+                if (UnboundToolValue > ToolValue) ToolValue++;
 
-            //UpdateTimer.Tick += (s, e) =>
-            //{
-            //    if (InstallViewModel.UValues["game"] > InstallViewModel.GameValue)
-            //        InstallViewModel.GameValue++;
+                if (ToolValue >= 100)
+                {
+                    UnboundToolValue = 0;
+                    ToolValue = 0;
+                }
 
-            //    if (InstallViewModel.UValues["cemu"] > InstallViewModel.CemuValue)
-            //        InstallViewModel.CemuValue++;
-
-            //    if (InstallViewModel.UValues["bcml"] > InstallViewModel.BcmlValue)
-            //        InstallViewModel.BcmlValue++;
-
-            //    //if (UnboundToolProgressValue > ToolValue)
-            //    //    ToolValue++;
-
-            //    //if (ToolProgressValue >= 100)
-            //    //{
-            //    //    UnboundToolProgressValue = 0;
-            //    //    ToolProgressValue = 0;
-            //    //}
-
-            //    if (InstallViewModel.BcmlValue >= 100)
-            //    {
-            //        LaunchPageVisibility = Visibility.Visible;
-            //        SplashPageVisibility = Visibility.Hidden;
-            //        SetupPageVisibility = Visibility.Hidden;
-            //        InstallPageVisibility = Visibility.Hidden;
-            //    }
-            //};
+                if (InstallViewModel.BcmlValue >= 100) LaunchPageVisibility = Visibility.Visible;
+            };
         }
+
+        #endregion
     }
 }
