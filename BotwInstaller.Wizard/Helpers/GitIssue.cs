@@ -32,7 +32,6 @@ namespace BotwInstaller.Wizard.Helpers
 
         public static async Task ViewReportAsHtml(this ShellViewModel shell)
         {
-            IWindowManager win = shell.WindowManager;
             ExceptionViewModel exView = shell.ExceptionViewModel;
 
             string htmlFile = $"{Config.AppData}\\Temp\\{new Random().Next(1000, 9999)}-{new Random().Next(1000, 9999)} - {exView.Message} - index.htm";
@@ -60,7 +59,7 @@ namespace BotwInstaller.Wizard.Helpers
             exView.IsReportable = false;
 
             // Create git client
-            var client = new GitHubClient(new ProductHeaderValue("botw-installer-v3"));
+            GitHubClient client = new(new ProductHeaderValue("botw-installer-v3"));
             client.Credentials = new Credentials(AuthKey.Get);
 
             // Get repo issues
@@ -115,13 +114,13 @@ namespace BotwInstaller.Wizard.Helpers
         {
             string strData = "";
 
-            strData = strData + FormatItems("Config Info", returnFormat,
+            strData += FormatItems("Config Info", returnFormat,
                 new Item(nameof(conf.ControllerApi), conf.ControllerApi),
                 new Item(nameof(conf.IsNX), conf.IsNX),
                 new Item(nameof(conf.ModPack), conf.ModPack)
             );
 
-            strData = strData + FormatItems("Directory Info", returnFormat,
+            strData += FormatItems("Directory Info", returnFormat,
                 new Item(nameof(conf.Dirs.Dynamic), conf.Dirs.Dynamic),
                 new Item(nameof(conf.Dirs.Base), conf.Dirs.Base),
                 new Item(nameof(conf.Dirs.Update), conf.Dirs.Update),
@@ -131,7 +130,7 @@ namespace BotwInstaller.Wizard.Helpers
                 new Item(nameof(conf.Dirs.Python), conf.Dirs.Python)
             );
 
-            strData = strData + FormatItems("Install Info", returnFormat,
+            strData += FormatItems("Install Info", returnFormat,
                 new Item(nameof(conf.Install.Cemu), conf.Install.Cemu),
                 new Item(nameof(conf.Install.Base), conf.Install.Base),
                 new Item(nameof(conf.Install.Update), conf.Install.Update),

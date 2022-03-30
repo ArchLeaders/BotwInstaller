@@ -19,7 +19,7 @@ namespace BotwInstaller.Wizard.ViewModels
             { "Installing . . .", "Installing ." },
         };
 
-        public Dictionary<string, double> UValues = new()
+        public Dictionary<string, double> UnboundValues = new()
         {
             { "game", 0.0 },
             { "cemu", 0.0 },
@@ -34,7 +34,14 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public void Update(double value, string id)
         {
+            // Set timer interval (miliseconds)
+            if (id == "rate") UpdateTimer.Interval = new(0, 0, 0, (int)value);
 
+            // Set timer interval (seconds)
+            if (id == "rate-s") UpdateTimer.Interval = new(0, 0, (int)value);
+
+            // Set unbound value
+            UnboundValues[id] = value;
         }
 
         public void ScrollViewerSizeChanged(ScrollViewer sender, DependencyPropertyChangedEventArgs e)
@@ -96,21 +103,33 @@ namespace BotwInstaller.Wizard.ViewModels
         public double GameValue
         {
             get => _gameValue;
-            set => SetAndNotify(ref _gameValue, value);
+            set
+            {
+                StrGameValue = $"{Math.Round(value)}";
+                SetAndNotify(ref _gameValue, value);
+            }
         }
 
         private double _cemuValue;
         public double CemuValue
         {
             get => _cemuValue;
-            set => SetAndNotify(ref _cemuValue, value);
+            set
+            {
+                StrCemuValue = $"{Math.Round(value)}";
+                SetAndNotify(ref _cemuValue, value);
+            }
         }
 
         private double _bcmlValue;
         public double BcmlValue
         {
             get => _bcmlValue;
-            set => SetAndNotify(ref _bcmlValue, value);
+            set
+            {
+                StrBcmlValue = $"{Math.Round(value)}";
+                SetAndNotify(ref _bcmlValue, value);
+            }
         }
 
         #endregion
@@ -121,6 +140,15 @@ namespace BotwInstaller.Wizard.ViewModels
             timer.Interval = new TimeSpan(0, 0, 0, 1);
             timer.Tick += (s, e) => Title = TitleKeys[Title];
             timer.Start();
+
+            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
+            UpdateTimer.Tick += (s, e) =>
+            {
+                if (UnboundValues["game"] > GameValue) GameValue++;
+                if (UnboundValues["cemu"] > CemuValue) CemuValue++;
+                if (UnboundValues["bcml"] > BcmlValue) BcmlValue++;
+            };
+            UpdateTimer.Start();
         }
     }
 }

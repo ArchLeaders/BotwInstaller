@@ -1,4 +1,6 @@
-﻿using BotwInstaller.Lib;
+﻿#pragma warning disable CS8602
+
+using BotwInstaller.Lib;
 using BotwInstaller.Lib.Configurations.Cemu;
 using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.Computer;
@@ -6,19 +8,15 @@ using BotwScripts.Lib.Common.Computer.Software.Resources;
 using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Web;
 using Stylet;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BotwInstaller.Wizard.Helpers
 {
     public class Setup
     {
-        public async Task Tiramisu(IWindowManager win, Interface.Update update)
+        public static async Task Tiramisu(IWindowManager win, Interface.Update update)
         {
             win.Show("Select an empty folder or SDCard to install Tiramisu onto.");
 
@@ -73,17 +71,17 @@ namespace BotwInstaller.Wizard.Helpers
             }
         }
 
-        public async Task Hekate(IWindowManager win, Interface.Update update)
+        public static void Hekate(IWindowManager win, Interface.Update update) // make async Task
         {
             // Install the APX drivers for TegraRCMSmash?
 
             win.Show("Your Switch must be vulnerable to fusee-gelee for the installed homebrew apps to work correctly.\n" +
-                "See [this guide](https://switch.homebrew.guide/gettingstarted/checkingrcm.html) for more info.", isYesNo: true, width: 300);
+                "See [this guide](https://switch.homebrew.guide/gettingstarted/checkingrcm.html) to get your switch info.\n\nContinue?", isYesNo: true, width: 300);
 
 
         }
 
-        public async Task CemuOnline(IWindowManager win, Interface.Update update, string dir)
+        public static async Task CemuOnline(IWindowManager win, Interface.Update update, string dir)
         {
             if (File.Exists($"{dir}\\Cemu.exe"))
             {

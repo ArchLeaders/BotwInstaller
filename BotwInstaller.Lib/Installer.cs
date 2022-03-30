@@ -52,9 +52,9 @@ namespace BotwInstaller.Lib
                 if ((string)gameInfo["Update"] == "NOT FOUND")
                     return conf;
 
-                if (File.Exists($"{gameInfo["Game"]}\\content\\System\\BuildTime.txt"))
+                if (File.Exists($"{conf.Dirs.Base}\\content\\System\\BuildTime.txt"))
                 {
-                    conf.Dirs.Base = $"{gameInfo["Game"]} (PIRATED)";
+                    conf.Dirs.Base += " (PIRATED)";
                     return conf;
                 }
 
