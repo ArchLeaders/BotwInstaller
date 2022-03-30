@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:BotwInstaller.Wizard.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         x:Name="parent"
         Width="{Binding Width}"
         MinWidth="{Binding Width}"
@@ -14,7 +15,7 @@
         Foreground="{DynamicResource MaterialDesignBody}"
         ResizeMode="NoResize"
         SizeToContent="Height"
-        Style="{StaticResource MaterialDesignWindow}"
+        Style="{StaticResource StyletWpfApp}"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
 
@@ -42,8 +43,7 @@
                                TextOptions.TextFormattingMode="Display"
                                TextOptions.TextRenderingMode="ClearType" />
 
-                    <Button x:Name="homeBtnWindowExit"
-                            Width="40"
+                    <Button Width="40"
                             Height="30"
                             Padding="0"
                             HorizontalAlignment="Right"
@@ -70,6 +70,16 @@
                             </Rectangle>
                         </Grid>
                     </Button>
+                    <Button Width="40"
+                            Height="30"
+                            Margin="0,0,40,0"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            Click="{s:Action Copy}"
+                            Content="ContentCopy"
+                            Foreground="{DynamicResource MaterialDesignBody}"
+                            Style="{DynamicResource VerifyClick}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" />
                 </Grid>
             </Border>
 
@@ -86,20 +96,20 @@
                         VerticalAlignment="Top"
                         Orientation="Horizontal">
                 <Button x:Name="btnYes"
-                        Width="80"
                         Height="25"
+                        MinWidth="80"
                         Margin="0,0,10,0"
                         Padding="0"
                         Click="{s:Action Yes}"
-                        Content="Yes"
-                        Visibility="{Binding YesBtnVisibility}" />
+                        Content="{Binding ButtonLeft}"
+                        Visibility="{Binding ButtonLeftVisibility}" />
                 <Button x:Name="btnOk"
-                        Width="80"
                         Height="25"
+                        MinWidth="80"
                         Margin="0,0,10,0"
                         Padding="0"
                         Click="{s:Action No}"
-                        Content="{Binding OkMode}" />
+                        Content="{Binding ButtonRight}" />
             </StackPanel>
         </Grid>
     </Border>

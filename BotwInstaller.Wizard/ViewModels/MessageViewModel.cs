@@ -1,19 +1,13 @@
-﻿#pragma warning disable CS0108
-#pragma warning disable CS8600
+﻿#pragma warning disable CS8600
 #pragma warning disable CS8601
-#pragma warning disable CS8612
-#pragma warning disable CS8618
 
-using BotwInstaller.Wizard.Helpers;
-using BotwInstaller.Wizard.ViewResources.Data;
 using MaterialDesignThemes.Wpf;
 using Stylet;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Formatting;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewModels
@@ -22,73 +16,11 @@ namespace BotwInstaller.Wizard.ViewModels
     {
         #region Actions
 
-        public void Yes()
-        {
-            RequestClose(false);
-        }
+        public void Yes() => RequestClose(false);
 
-        public void No()
-        {
-            RequestClose(true);
-        }
+        public void No() => RequestClose(true);
 
-        public void Copy()
-        {
-            RequestClose(true);
-        }
-
-        #endregion
-
-        #region Props
-
-        private bool _isYesNo = false;
-        public bool IsYesNo
-        {
-            get { return _isYesNo; }
-            set
-            {
-                _isYesNo = value;
-
-                if (_isYesNo)
-                {
-                    OkMode = "No";
-                    YesBtnVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    OkMode = "Ok";
-                    YesBtnVisibility = Visibility.Collapsed;
-                }
-
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _title = "Notice";
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                _title = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private TextBlock _message = new() { Text = "~No details were provided.~" };
-        public TextBlock Message
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region Bindings
+        public void Copy() => Clipboard.SetText(MessageStr);
 
         private static ITheme GetTheme()
         {
@@ -96,67 +28,79 @@ namespace BotwInstaller.Wizard.ViewModels
             return helper.GetTheme();
         }
 
+        #endregion
+
+        #region Props
+
+        private string _title = "Notice";
+        public string Title
+        {
+            get => _title;
+            set => SetAndNotify(ref _title, value);
+        }
+
+        private TextBlock _message = new() { Text = "No details were provided." };
+        public string MessageStr { get; set; } = "";
+        public TextBlock Message
+        {
+            get => _message;
+            set => SetAndNotify(ref _message, value);
+        }
+
         private Brush _foreground = new SolidColorBrush(GetTheme().Body);
         public Brush Foreground
         {
-            get { return _foreground; }
-            set
-            {
-                _foreground = value;
-                NotifyPropertyChanged();
-            }
+            get => _foreground;
+            set => SetAndNotify(ref _foreground, value);
         }
 
-        private string _okMode = "Ok";
-        public string OkMode
+        private string _buttonRight = "Ok";
+        public string ButtonRight
         {
-            get { return _okMode; }
-            set
-            {
-                _okMode = value;
-                NotifyPropertyChanged();
-            }
+            get { return _buttonRight; }
+            set => SetAndNotify(ref _buttonRight, value);
         }
 
-        private Visibility _btnVisibility = Visibility.Hidden;
-        public Visibility YesBtnVisibility
+        private string _buttonLeft = "Yes";
+        public string ButtonLeft
         {
-            get { return _btnVisibility; }
-            set
-            {
-                _btnVisibility = value;
-                NotifyPropertyChanged();
-            }
+            get { return _buttonLeft; }
+            set => SetAndNotify(ref _buttonLeft, value);
+        }
+
+        private Visibility _buttonLeftVisibility = Visibility.Collapsed;
+        public Visibility ButtonLeftVisibility
+        {
+            get => _buttonLeftVisibility;
+            set => SetAndNotify(ref _buttonLeftVisibility, value);
         }
 
         private double _width = 220;
         public double Width
         {
             get { return _width; }
-            set
-            {
-                _width = value;
-                NotifyPropertyChanged();
-            }
+            set => SetAndNotify(ref _width, value);
         }
 
         #endregion
 
-        public MessageViewModel(string message, string title = "Notice", bool isYesNo = false, string? messageColor = null, double width = 220, bool render = true)
+        public MessageViewModel(string message, string title = "Notice", bool isOption = false, string? messageColor = null, double width = 220,
+            string yesButtonText = "Yes", string noButtonText = "Auto")
         {
-            Message = message.RenderMarkdown();
+            MessageStr = $"**{title}**\n> {message.Replace("\n", "\n> ")}";
+            Message = message.ToTextBlock();
             Title = title;
-            IsYesNo = isYesNo;
             Width = width;
+            ButtonRight = noButtonText == "Auto" ? "Ok" : noButtonText;
+
+            if (isOption)
+            {
+                ButtonLeftVisibility = Visibility.Visible;
+                ButtonRight = noButtonText == "Auto" ? "No" : noButtonText;
+            }
 
             if (messageColor != null)
                 Foreground = (Brush)new BrushConverter().ConvertFromString(messageColor);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

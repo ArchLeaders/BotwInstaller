@@ -1,19 +1,16 @@
-﻿#pragma warning disable CS0108
-#pragma warning disable CS8600
+﻿#pragma warning disable CS8600
 #pragma warning disable CS8601
-#pragma warning disable CS8612
-#pragma warning disable CS8618
 
 using MaterialDesignThemes.Wpf;
 using Stylet;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Text.Formatting;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
-    public class HandledErrorViewModel : Screen, INotifyPropertyChanged
+    public class HandledErrorViewModel : Screen
     {
         #region Actions
 
@@ -27,70 +24,10 @@ namespace BotwInstaller.Wizard.ViewModels
             RequestClose(true);
         }
 
-        #endregion
-
-        #region Props
-
-        private bool _isYesNo = false;
-        public bool IsYesNo
+        public void Copy()
         {
-            get { return _isYesNo; }
-            set
-            {
-                _isYesNo = value;
-
-                if (_isYesNo)
-                {
-                    OkMode = "No";
-                    YesBtnVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    OkMode = "Ok";
-                    YesBtnVisibility = Visibility.Collapsed;
-                }
-
-                NotifyPropertyChanged();
-            }
+            Clipboard.SetText(MessageStr);
         }
-
-
-        private string _title = "Notice";
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                _title = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _extendedMessage = "";
-        public string ExtendedMessage
-        {
-            get { return _extendedMessage; }
-            set
-            {
-                _extendedMessage = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _message = "No details were provided.";
-        public string Message
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        #endregion
-
-        #region Bindings
 
         private static ITheme GetTheme()
         {
@@ -98,57 +35,82 @@ namespace BotwInstaller.Wizard.ViewModels
             return helper.GetTheme();
         }
 
+        #endregion
+
+        #region Props
+
+        private string _title = "Notice";
+        public string Title
+        {
+            get => _title;
+            set => SetAndNotify(ref _title, value);
+        }
+
+        private string _extendedMessage = "";
+        public string ExtendedMessage
+        {
+            get => _extendedMessage;
+            set => SetAndNotify(ref _extendedMessage, value);
+        }
+
+        private TextBlock _message = new() { Text = "No details were provided." };
+        public string MessageStr { get; set; } = "";
+        public TextBlock Message
+        {
+            get => _message;
+            set => SetAndNotify(ref _message, value);
+        }
+
         private Brush _foreground = new SolidColorBrush(GetTheme().Body);
         public Brush Foreground
         {
-            get { return _foreground; }
-            set
-            {
-                _foreground = value;
-                NotifyPropertyChanged();
-            }
+            get => _foreground;
+            set => SetAndNotify(ref _foreground, value);
         }
 
-        private string _okMode = "Ok";
-        public string OkMode
+        private string _buttonRight = "Ok";
+        public string ButtonRight
         {
-            get { return _okMode; }
-            set
-            {
-                _okMode = value;
-                NotifyPropertyChanged();
-            }
+            get { return _buttonRight; }
+            set => SetAndNotify(ref _buttonRight, value);
         }
 
-        private Visibility _btnVisibility = Visibility.Hidden;
-        public Visibility YesBtnVisibility
+        private string _buttonLeft = "Yes";
+        public string ButtonLeft
         {
-            get { return _btnVisibility; }
-            set
-            {
-                _btnVisibility = value;
-                NotifyPropertyChanged();
-            }
+            get { return _buttonLeft; }
+            set => SetAndNotify(ref _buttonLeft, value);
+        }
+
+        private Visibility _buttonLeftVisibility = Visibility.Hidden;
+        public Visibility ButtonLeftVisibility
+        {
+            get => _buttonLeftVisibility;
+            set => SetAndNotify(ref _buttonLeftVisibility, value);
         }
 
         private Visibility _detailVisibility = Visibility.Hidden;
         public Visibility DetailVisibility
         {
-            get { return _detailVisibility; }
-            set
-            {
-                _detailVisibility = value;
-                NotifyPropertyChanged();
-            }
+            get => _detailVisibility;
+            set => SetAndNotify(ref _detailVisibility, value);
         }
 
         #endregion
 
-        public HandledErrorViewModel(string message, string title = "Notice", bool isYesNo = false, string? extendedMessage = null, string? extendedMessageColor = null)
+        public HandledErrorViewModel(string message, string title = "Notice", bool isOption = false, string? extendedMessage = null,
+            string? extendedMessageColor = null, string yesButtonText = "Yes", string noButtonText = "Auto")
         {
-            Message = message;
+            MessageStr = $"**{title}**\n> {message.Replace("\n", "\n> ")}\n\n```\n{extendedMessage}\n```";
+            Message = message.ToTextBlock();
             Title = title;
-            IsYesNo = isYesNo;
+            ButtonRight = noButtonText == "Auto" ? "Ok" : noButtonText;
+
+            if (isOption)
+            {
+                ButtonLeftVisibility = Visibility.Visible;
+                ButtonRight = noButtonText == "Auto" ? "No" : noButtonText;
+            }
 
             if (extendedMessage != null)
             {
@@ -158,12 +120,6 @@ namespace BotwInstaller.Wizard.ViewModels
                 if (extendedMessageColor != null)
                     Foreground = (Brush)new BrushConverter().ConvertFromString(extendedMessageColor);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
