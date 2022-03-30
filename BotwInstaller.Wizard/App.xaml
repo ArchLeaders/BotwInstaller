@@ -21,6 +21,7 @@
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Buttons/WindowChromeSimple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Buttons/VerifyClick.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Buttons/DefaultButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/ContextMenus/DefaultContextMenu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Hyperlinks/DefaultHyperlink.xaml" />
@@ -32,6 +33,28 @@
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/TextEditor/FloatingTextEditor.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Menus/DefaultMenu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ViewThemes/Styles/Menus/DefaultMenuItem.xaml" />
+
+                <ResourceDictionary>
+                    <Style x:Key="StyletWpfApp" TargetType="{x:Type Window}">
+                        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                        <Setter Property="FontWeight" Value="Medium" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="WindowStyle" Value="ToolWindow" />
+                        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                        <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+                        <Setter Property="FontFamily" Value="Calibri" />
+                    </Style>
+                    <Style x:Key="StyletWpfApp_Control" TargetType="{x:Type UserControl}">
+                        <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                        <Setter Property="FontWeight" Value="Medium" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                        <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+                        <Setter Property="FontFamily" Value="Calibri" />
+                    </Style>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
