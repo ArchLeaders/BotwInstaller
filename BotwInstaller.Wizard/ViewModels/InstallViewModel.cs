@@ -1,15 +1,43 @@
 ﻿using Stylet;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
+    public class UpdateID
+    {
+        public double Value { get; set; } = 0;
+        public int FractionMax { get; set; } = 0;
+        public int FractionCurrent { get; set; } = 0;
+        public int Pos { get; set; } = 0;
+        public DispatcherTimer Updater { get; set; } = new();
+
+        public UpdateID(InstallViewModel vM, int pos, int interval = 80, bool isFractional = false)
+        {
+            Pos = pos;
+
+            Updater.Interval = new TimeSpan(0, 0, 0, 0, interval);
+            Updater.Tick += (s, e) =>
+            {
+                if (Value > vM.BoundValues[Pos])
+                {
+                    vM.BoundValues[Pos] += 1;
+
+                    if (isFractional)
+                        vM.BoundStrValues[Pos] = $"{FractionCurrent}/{FractionMax}";
+                    else
+                        vM.BoundStrValues[Pos] = $"{Math.Round(vM.BoundValues[Pos])}%";
+                }
+            };
+
+            Updater.Start();
+        }
+    }
+
     public class InstallViewModel : Screen
     {
         private static Dictionary<string, string> TitleKeys = new()
@@ -19,13 +47,24 @@ namespace BotwInstaller.Wizard.ViewModels
             { "Installing . . .", "Installing ." },
         };
 
-        public Dictionary<string, double> UnboundValues = new()
+
+        private ObservableCollection<double> _boundValues = new();
+        public ObservableCollection<double> BoundValues
         {
-            { "game", 0.0 },
-            { "cemu", 0.0 },
-            { "bcml", 0.0 }
-        };
-        
+            get => _boundValues;
+            set => SetAndNotify(ref _boundValues, value);
+        }
+
+        private ObservableCollection<string> _boundStrValues = new();
+        public ObservableCollection<string> BoundStrValues
+        {
+            get => _boundStrValues;
+            set => SetAndNotify(ref _boundStrValues, value);
+        }
+
+        public List<DispatcherTimer> Timers { get; set; } = new();
+        public Dictionary<string, UpdateID> UnboundValues { get; set; } = new();
+
         public void LogMessage(string text, ConsoleColor color = ConsoleColor.Gray)
         {
             Log = $"{Log}\n{text}";
@@ -34,22 +73,24 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public void Update(double value, string id)
         {
-            // Set timer interval (miliseconds)
-            if (id == "rate") UpdateTimer.Interval = new(0, 0, 0, (int)value);
-
-            // Set timer interval (seconds)
-            if (id == "rate-s") UpdateTimer.Interval = new(0, 0, (int)value);
-
-            // Set unbound value
-            UnboundValues[id] = value;
+            if (id.EndsWith('%'))
+            {
+                UnboundValues[id.Replace("%", "")].Updater.Interval = new TimeSpan(0, 0, 0, 0, (int)Math.Round(value));
+            }
+            else if (id.EndsWith('+'))
+            {
+                UnboundValues[id.Replace("+", "")].Value = UnboundValues[id.Replace("+", "")].Value + value;
+            }
+            else
+            {
+                UnboundValues[id].Value = value;
+            }
         }
 
         public void ScrollViewerSizeChanged(ScrollViewer sender, DependencyPropertyChangedEventArgs e)
         {
             sender.ScrollToBottom();
         }
-
-        public DispatcherTimer UpdateTimer { get; } = new();
 
         private bool _scrollUpdater = true;
         public bool ScrollUpdater
@@ -72,83 +113,28 @@ namespace BotwInstaller.Wizard.ViewModels
             set => SetAndNotify(ref _log, value);
         }
 
-        #region String Values
-
-        private string _strGameValue = "0%";
-        public string StrGameValue
-        {
-            get => _strGameValue;
-            set => SetAndNotify(ref _strGameValue, value);
-        }
-
-        private string _strCemuValue = "0%";
-        public string StrCemuValue
-        {
-            get => _strCemuValue;
-            set => SetAndNotify(ref _strCemuValue, value);
-        }
-
-        private string _strBcmlValue = "0%";
-        public string StrBcmlValue
-        {
-            get => _strBcmlValue;
-            set => SetAndNotify(ref _strBcmlValue, value);
-        }
-
-        #endregion
-
-        #region Double Values
-
-        private double _gameValue;
-        public double GameValue
-        {
-            get => _gameValue;
-            set
-            {
-                StrGameValue = $"{Math.Round(value)}";
-                SetAndNotify(ref _gameValue, value);
-            }
-        }
-
-        private double _cemuValue;
-        public double CemuValue
-        {
-            get => _cemuValue;
-            set
-            {
-                StrCemuValue = $"{Math.Round(value)}";
-                SetAndNotify(ref _cemuValue, value);
-            }
-        }
-
-        private double _bcmlValue;
-        public double BcmlValue
-        {
-            get => _bcmlValue;
-            set
-            {
-                StrBcmlValue = $"{Math.Round(value)}";
-                SetAndNotify(ref _bcmlValue, value);
-            }
-        }
-
-        #endregion
-
         public InstallViewModel()
         {
+            BoundValues.Clear();
+            BoundStrValues.Clear();
+            Timers.Clear();
+            UnboundValues.Clear();
+
+            UnboundValues.Add("bcml", new(this, 0));
+            UnboundValues.Add("cemu", new(this, 1));
+            UnboundValues.Add("game", new(this, 2, 120, true));
+            UnboundValues.Add("tool", new(this, 3));
+
+            for (int i = 0; i < 4; i++)
+            {
+                BoundValues.Add(0);
+                BoundStrValues.Add("0%");
+            }
+
             DispatcherTimer timer = new();
             timer.Interval = new TimeSpan(0, 0, 0, 1);
             timer.Tick += (s, e) => Title = TitleKeys[Title];
             timer.Start();
-
-            UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 80);
-            UpdateTimer.Tick += (s, e) =>
-            {
-                if (UnboundValues["game"] > GameValue) GameValue++;
-                if (UnboundValues["cemu"] > CemuValue) CemuValue++;
-                if (UnboundValues["bcml"] > BcmlValue) BcmlValue++;
-            };
-            UpdateTimer.Start();
         }
     }
 }

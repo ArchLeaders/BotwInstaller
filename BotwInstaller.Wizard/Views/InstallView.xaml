@@ -64,20 +64,20 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="BCML Install Progress —" />
-            <TextBlock Grid.Column="1" Text="{Binding StrBcmlValue}" />
+            <TextBlock Grid.Column="1" Text="{Binding BoundStrValues[0]}" />
             <ProgressBar Grid.Row="1"
                          Grid.ColumnSpan="2"
                          Height="15"
                          VerticalAlignment="Top"
                          Foreground="{DynamicResource SecondaryHueLightBrush}"
-                         Value="{Binding BcmlValue}" />
+                         Value="{Binding BoundValues[0]}" />
 
             <TextBlock Grid.Row="2"
                        Text="Cemu Install Progress —"
                        Visibility="{Binding IsCemuMode}" />
             <TextBlock Grid.Row="2"
                        Grid.Column="1"
-                       Text="{Binding StrCemuValue}"
+                       Text="{Binding BoundStrValues[1]}"
                        Visibility="{Binding IsCemuMode}" />
             <ProgressBar Grid.Row="3"
                          Grid.ColumnSpan="2"
@@ -85,14 +85,14 @@
                          VerticalAlignment="Top"
                          Foreground="{DynamicResource SecondaryHueLightBrush}"
                          Visibility="{Binding IsCemuMode}"
-                         Value="{Binding CemuValue}" />
+                         Value="{Binding BoundValues[1]}" />
 
             <TextBlock Grid.Row="4"
                        Text="Game Install Progress —"
                        Visibility="{Binding IsCemuMode}" />
             <TextBlock Grid.Row="4"
                        Grid.Column="1"
-                       Text="{Binding StrGameValue}"
+                       Text="{Binding BoundStrValues[2]}"
                        Visibility="{Binding IsCemuMode}" />
             <ProgressBar Grid.Row="5"
                          Grid.ColumnSpan="2"
@@ -100,7 +100,7 @@
                          VerticalAlignment="Top"
                          Foreground="{DynamicResource SecondaryHueLightBrush}"
                          Visibility="{Binding IsCemuMode}"
-                         Value="{Binding GameValue}" />
+                         Value="{Binding BoundValues[2]}" />
         </Grid>
     </Grid>
 </UserControl>

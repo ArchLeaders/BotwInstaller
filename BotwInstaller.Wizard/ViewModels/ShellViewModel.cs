@@ -9,6 +9,7 @@ using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Web;
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -31,11 +32,11 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public async Task InstallHomebrew()
         {
-            if (SplashViewModel.Mode == "switch") Setup.Hekate(WindowManager, Update);
-            else await Setup.Tiramisu(WindowManager, Update);
+            if (SplashViewModel.Mode == "switch") Setup.Hekate(WindowManager, InstallViewModel.Update);
+            else await Setup.Tiramisu(WindowManager, InstallViewModel.Update);
         }
 
-        public async Task PrepCemu() => await Setup.CemuOnline(WindowManager, Update, Conf.Dirs.Dynamic);
+        public async Task PrepCemu() => await Setup.CemuOnline(WindowManager, InstallViewModel.Update, Conf.Dirs.Dynamic);
 
         public void GoBack()
         {
@@ -68,17 +69,18 @@ namespace BotwInstaller.Wizard.ViewModels
             if (SplashViewModel.Mode == "cemu")
             {
                 // Check controller
-                if (SplashViewModel.Mode == "cemu" &&
-                    SetupViewModel.ControllerApi == "Controller -" &&
-                    !WindowManager.Show("No controller API was selected.\nUse the default? (XBox/XInput)", isYesNo: true, width: 250)
-                ) return;
+                if (SplashViewModel.Mode == "cemu" && SetupViewModel.ControllerApi == "Controller -")
+                    if (!WindowManager.Show("No controller API was selected.\nUse the default? (XBox/XInput)", isYesNo: true, width: 250))
+                        return;
+
                 else SetupViewModel.ControllerApi = "XBox Controller";
 
-                Conf.ControllerApi = SetupViewModel.ControllerApi;
+                Conf.ControllerApi = SetupViewModel.ControllerApiTranslate[SetupViewModel.ControllerApi];
                 Conf.Install.Cemu = true; Conf.UseCemu = true;
                 Conf.Install.Base = SetupViewModel.CopyGameFiles;
             }
-            else if (SplashViewModel.Mode == "switch") Conf.IsNX = true;
+            
+            if (SplashViewModel.Mode == "switch") Conf.IsNX = true;
 
             SetupPageVisibility = Visibility.Collapsed;
             InstallPageVisibility = Visibility.Visible;
@@ -109,7 +111,7 @@ namespace BotwInstaller.Wizard.ViewModels
                     string play = $"play MediaFile";
 
                     mciSendString(command, null, 0, IntPtr.Zero);
-                    // mciSendString(play, null, 0, IntPtr.Zero);
+                    mciSendString(play, null, 0, IntPtr.Zero);
 
                     WindowManager.Show($"You have collected your game files in a less than legal manner.\n" +
                         $"I can't stop you from pirating, but you should know you can't use this tool with illigal files.", "Piracy Notice", width: 420);
@@ -167,67 +169,6 @@ namespace BotwInstaller.Wizard.ViewModels
             LaunchPageVisibility = Visibility.Visible;
             ExceptionPageVisibility = Visibility.Visible;
         }
-
-        /// <summary>
-        /// Updates the ui progress bar based on the passed id.
-        /// <code>
-        /// Valid ID: game, cemu, bcml
-        /// </code>
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="id"></param>
-        public void Update(double value, string id = "")
-        {
-            //if (id == "game")
-            //{
-            //    if (value == -1)
-            //        UnboundGameInstallValue = 100;
-
-            //    if (value == -2)
-            //        GameInstallValue = 100;
-
-            //    if (UnboundGameInstallValue != 100)
-            //    {
-            //        if (UnboundGameInstallValue + value - 100 > 0)
-            //            UnboundGameInstallValue = UnboundGameInstallValue + value - (value - 100);
-            //        else
-            //            UnboundGameInstallValue = UnboundGameInstallValue + value;
-            //    }
-                    
-            //}
-            //else if (id == "cemu")
-            //{
-            //    if (UnboundCemuInstallValue != 100)
-            //    {
-            //        if (value - 100 > 0)
-            //            UnboundCemuInstallValue = value - (value - 100);
-            //        else
-            //            UnboundCemuInstallValue = value;
-            //    }
-            //}
-            //else if (id == "bcml")
-            //{
-            //    if (UnboundBcmlInstallValue != 100)
-            //    {
-            //        if (value - 100 > 0)
-            //            UnboundBcmlInstallValue = value - (value - 100);
-            //        else
-            //            UnboundBcmlInstallValue = value;
-            //    }
-            //}
-            //else if (id == "tool")
-            //{
-            //    if (UnboundToolProgressValue != 100)
-            //    {
-            //        if (value - 100 > 0)
-            //            UnboundToolProgressValue = value - (value - 100);
-            //        else
-            //            UnboundToolProgressValue = value;
-            //    }
-            //}
-        }
-
-        // public void SetSpeed(double value, string id = "placeholder") => UpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)Math.Round(value));
 
         #endregion
 
@@ -357,7 +298,7 @@ namespace BotwInstaller.Wizard.ViewModels
                     ToolValue = 0;
                 }
 
-                if (InstallViewModel.BcmlValue >= 100) LaunchPageVisibility = Visibility.Visible;
+                // if (InstallViewModel.BcmlValue >= 100) LaunchPageVisibility = Visibility.Visible;
             };
         }
 

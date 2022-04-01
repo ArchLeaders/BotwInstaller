@@ -92,7 +92,7 @@ namespace BotwInstaller.Wizard.Helpers
 
             // Create Temp Directory
             Directory.CreateDirectory($"{Config.AppData}\\Temp\\CEMU");
-            update(50, "!time");
+            update(50, "tool%");
             update(80, "tool");
 
             // Download Cemu

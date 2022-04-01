@@ -20,14 +20,14 @@ namespace BotwInstaller.Lib
         public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Config conf)
         {
             // Start search updater
-            update(100, "rate");
+            update(250, "tool%");
             update(95, "tool");
 
             // Get system information
             Dictionary<string, object> gameInfo = await GameInfo.GetFiles(print, conf.UseCemu ? conf.Dirs.Dynamic : "!ignore", conf.Dirs.Python, conf.IsNX);
+            update(15, "tool%");
             update(100, "tool");
 
-            update(80, "rate");
             if (conf.IsNX)
             {
                 conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
@@ -86,7 +86,10 @@ namespace BotwInstaller.Lib
 
             // Dummy install game
             if (!conf.Install.Base && !conf.Install.Update && (!conf.Install.DLC || conf.Dirs.DLC == ""))
-                update(-2, "game");
+            {
+                update(5, "game%");
+                update(100, "game+");
+            }
 
             // Install Cemu
             if (conf.UseCemu)
@@ -135,8 +138,9 @@ namespace BotwInstaller.Lib
 
             // Update timer speed
             await Task.WhenAll(t2);
-            update(-1, "game");
-            update(40, "rate");
+            update(5, "game");
+            update(100, "game");
+            update(40, "bcml%");
 
             // Install mods
             await Tasks.Mods(update, print, conf);
