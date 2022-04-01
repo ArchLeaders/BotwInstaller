@@ -214,10 +214,8 @@ namespace BotwInstaller.Lib
         public static async Task Mods(Interface.Update update, Interface.Notify print, Config conf)
         {
             List<Task> install = new();
-            List<string?> mods = conf.ModPacks["wiiu"][conf.ModPack];
+            List<string?> mods = conf.IsNX ? conf.ModPacks["switch"][conf.ModPack] : conf.ModPacks["wiiu"][conf.ModPack];
             string func = "[INSTALL.BCML.MODS]";
-
-            if (conf.IsNX) mods = conf.ModPacks["switch"][conf.ModPack];
 
             await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py");
             update(50, "bcml");
@@ -229,12 +227,13 @@ namespace BotwInstaller.Lib
                 {
                     install.Add(Task.Run(async() =>
                     {
-                        string last = mods.Count == i ? "True" : "False";
+                        string last = mods.Count == i ? "true" : "false";
 
                         print($"{func} Downloading {mod} . . .");
                         await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
 
                         print($"{func} Installing {mod} . . .");
+
                         await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
 
                         i++;
@@ -284,7 +283,7 @@ namespace BotwInstaller.Lib
 
                     if (index == 1000)
                     {
-                        update(inc, "game");
+                        update(inc, "game+");
                         index = 0;
                     }
 
