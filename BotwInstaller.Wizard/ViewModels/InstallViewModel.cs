@@ -16,7 +16,7 @@ namespace BotwInstaller.Wizard.ViewModels
         public int Pos { get; set; } = 0;
         public DispatcherTimer Updater { get; set; } = new();
 
-        public UpdateID(InstallViewModel vM, int pos, int interval = 80, bool isFractional = false)
+        public UpdateID(InstallViewModel vM, int pos, int interval = 80, bool isFractional = false, bool isLoop = false)
         {
             Pos = pos;
 
@@ -31,6 +31,15 @@ namespace BotwInstaller.Wizard.ViewModels
                         vM.BoundStrValues[Pos] = $"{FractionCurrent}/{FractionMax}";
                     else
                         vM.BoundStrValues[Pos] = $"{Math.Round(vM.BoundValues[Pos])}%";
+
+                    if (isLoop)
+                    {
+                        if (vM.BoundValues[Pos] == 100)
+                        {
+                            vM.BoundValues[Pos] = 0;
+                            Value = 0;
+                        }
+                    }
                 }
             };
 
@@ -81,6 +90,10 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 UnboundValues[id.Replace("+", "")].Value = UnboundValues[id.Replace("+", "")].Value + value;
             }
+            else if (id.EndsWith('@'))
+            {
+                UnboundValues[id.Replace("@", "")].FractionMax = (int)(UnboundValues[id.Replace("@", "")].Value + value);
+            }
             else
             {
                 UnboundValues[id].Value = value;
@@ -123,7 +136,7 @@ namespace BotwInstaller.Wizard.ViewModels
             UnboundValues.Add("bcml", new(this, 0));
             UnboundValues.Add("cemu", new(this, 1));
             UnboundValues.Add("game", new(this, 2, 120, true));
-            UnboundValues.Add("tool", new(this, 3));
+            UnboundValues.Add("tool", new(this, 3, isLoop: true));
 
             for (int i = 0; i < 4; i++)
             {
