@@ -273,7 +273,6 @@
                                 <TranslateTransform X="0" Y="0" />
                             </Canvas.RenderTransform>
                             <Canvas.Resources />
-                            <!--  Unknown tag: sodipodi:namedview  -->
                             <Canvas Name="layer1">
                                 <Rectangle Canvas.Left="2.2518623"
                                            Canvas.Top="2.2876084"
@@ -482,7 +481,7 @@
                          Background="{DynamicResource PrimaryHueDarkBrush}"
                          BorderThickness="0,1"
                          Foreground="{DynamicResource SecondaryHueLightBrush}"
-                         Value="{Binding ToolValue}" />
+                         Value="{Binding InstallViewModel.BoundValues[3]}" />
         </Grid>
 
     </Grid>

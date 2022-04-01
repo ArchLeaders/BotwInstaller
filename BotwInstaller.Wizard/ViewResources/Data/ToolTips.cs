@@ -1,10 +1,4 @@
-﻿
-
-using MaterialDesignThemes.Wpf;
-using System.Windows.Controls;
-using System.Windows.Media;
-
-namespace BotwInstaller.Wizard.ViewResources.Data
+﻿namespace BotwInstaller.Wizard.ViewResources.Data
 {
     public static class ToolTips
     {
