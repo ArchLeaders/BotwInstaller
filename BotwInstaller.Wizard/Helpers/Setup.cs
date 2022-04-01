@@ -90,9 +90,9 @@ namespace BotwInstaller.Wizard.Helpers
                 return;
             }
 
-            // Create Temp Directory
+            // Create temp and output Directory
             Directory.CreateDirectory($"{Config.AppData}\\Temp\\CEMU");
-            update(50, "tool%");
+            update(40, "tool%");
             update(80, "tool");
 
             // Download Cemu
@@ -103,20 +103,16 @@ namespace BotwInstaller.Wizard.Helpers
             await Task.Run(() => ZipFile.ExtractToDirectory($"{Config.AppData}\\Temp\\CEMU\\CEMU.PACK.res", $"{Config.AppData}\\Temp\\CEMU\\CEMU"));
             update(90, "tool");
 
-            // Install Cemu
-            await Task.Run(() => {
+            // Setup fonders and variables
+            string cemuTemp = $"{Config.AppData}\\Temp\\CEMU\\CEMU".SubFolder();
 
-                // Setup fonders and variables
-                string cemuTemp = $"{Config.AppData}\\Temp\\CEMU\\CEMU".SubFolder();
-
-                // Copy Cemu files
-                foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
-                {
-                    var dir = new FileInfo(file).DirectoryName;
-                    Directory.CreateDirectory($"{dir}\\{dir.Replace(cemuTemp, "")}");
-                    File.Copy(file, $"{dir}\\{file.Replace(cemuTemp, "")}", true);
-                }
-            });
+            // Copy Cemu files
+            foreach (var file in Directory.EnumerateFiles(cemuTemp, "*.*", SearchOption.AllDirectories))
+            {
+                var subDir = new FileInfo(file).DirectoryName;
+                Directory.CreateDirectory($"{dir}\\{subDir.Replace(cemuTemp, "")}");
+                File.Copy(file, $"{dir}\\{file.Replace(cemuTemp, "")}", true);
+            }
 
             update(95, "tool");
 
@@ -131,6 +127,7 @@ namespace BotwInstaller.Wizard.Helpers
             // Delete Temp Directory
             Directory.Delete($"{Config.AppData}\\Temp\\CEMU", true);
 
+            update(1, "tool%");
             update(100, "tool");
 
             win.Show("Cemu Installed successfully.");
