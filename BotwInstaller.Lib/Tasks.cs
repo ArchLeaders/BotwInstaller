@@ -219,7 +219,7 @@ namespace BotwInstaller.Lib
 
             if (conf.IsNX) mods = conf.ModPacks["switch"][conf.ModPack];
 
-            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py"); // skip this; run directly in the python interpreter
+            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py");
             update(50, "bcml");
 
             int i = 1;
@@ -235,8 +235,7 @@ namespace BotwInstaller.Lib
                         await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
 
                         print($"{func} Installing {mod} . . .");
-                        await HiddenProcess.Start( $"{conf.Dirs.Python}\\python.exe",
-                            $"from bcml import install; from pathlib import Path; install.install_mod(Path('{AppData}\\Temp\\BOTW\\MOD__{i}.bnp'), merge_now={last})");
+                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
 
                         i++;
                     }));
