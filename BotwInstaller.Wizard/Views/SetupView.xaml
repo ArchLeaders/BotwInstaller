@@ -79,10 +79,8 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <ComboBox Grid.Column="1"
-                              FontSize="18"
-                              ItemsSource="{Binding ModPresets}"
-                              SelectedItem="{Binding ModPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <ContentPresenter Grid.Column="1" Content="{Binding ModPresets}" />
+
                     <ComboBox Grid.Column="3"
                               Width="280"
                               Margin="10,0,0,0"

@@ -64,7 +64,7 @@ namespace BotwInstaller.Wizard.ViewModels
             Conf.Shortcuts.DS4Windows.Desktop = SetupViewModel.DesktopShortcuts;
 
             Conf.Dirs.Dynamic = SetupViewModel.GenericPath;
-            Conf.ModPack = SetupViewModel.ModPreset;
+            Conf.ModPacks = Mods.GetPresetDictionary(SetupViewModel.ModPresets, SplashViewModel.Mode);
 
             if (SplashViewModel.Mode == "cemu")
             {
@@ -125,14 +125,14 @@ namespace BotwInstaller.Wizard.ViewModels
             }
             catch (Exception ex)
             {
-                foreach (var handled in Texts.HandledExceptions)
-                {
-                    if (ex.Message.StartsWith(handled.Value.Exception))
-                    {
-                        ReportError(handled.Value, handled.Key);
-                        return;
-                    }
-                }
+                // foreach (var handled in Texts.HandledExceptions)
+                // {
+                //     if (ex.Message.StartsWith(handled.Value.Exception))
+                //     {
+                //         ReportError(handled.Value, handled.Key);
+                //         return;
+                //     }
+                // }
 
                 ReportError(new() { Message = ex.Message, ExtendedMessage = ex.StackTrace }, "Unhandled Exception");
             }
@@ -142,6 +142,9 @@ namespace BotwInstaller.Wizard.ViewModels
                     Directory.Delete($"{Config.AppData}\\Temp\\BOTW", true);
 
                 watch.Stop();
+
+                if (SplashViewModel.Mode == "cemu")
+                    SetupViewModel.ControllerApiVisibility = Visibility.Visible;
 
                 LaunchPageViewModel = new(SetupViewModel);
                 LaunchPageViewModel.Time = watch.ElapsedMilliseconds / 1000 >= 60
@@ -186,7 +189,7 @@ namespace BotwInstaller.Wizard.ViewModels
             get => _setupPageVisibility;
             set
             {
-                SetupViewModel.ModPresets = GameInfo.GetModPresets(SplashViewModel.Mode);
+                SetupViewModel.ModPresets = Mods.GetPresets(SplashViewModel.Mode);
                 SetupViewModel.ModPreset = "None";
 
                 if (SplashViewModel.Mode == "cemu")
@@ -282,7 +285,6 @@ namespace BotwInstaller.Wizard.ViewModels
         {
             WindowManager = windowManager;
             SplashViewModel = new(this);
-
 
             // Start updater
             DispatcherTimer updateTimer = new();

@@ -185,7 +185,7 @@ namespace BotwInstaller.Wizard.Views
             SourceInitialized += async (s, e) =>
             {
                 using HttpClient client = new();
-                GameInfo.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string?>>>>(await client.GetStringAsync(HttpLinks.ModPresets));
+                GameInfo.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, string>[]>>>(await client.GetStringAsync(HttpLinks.ModPresets));
             };
 
             // Assign state changed events

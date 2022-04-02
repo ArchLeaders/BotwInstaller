@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Navigation;
 
@@ -86,8 +87,8 @@ namespace BotwInstaller.Wizard.ViewModels
             set => SetAndNotify(ref _modPreset, value);
         }
 
-        private List<string> _modPresets = new();
-        public List<string> ModPresets
+        private ComboBox _modPresets = new();
+        public ComboBox ModPresets
         {
             get => _modPresets;
             set => SetAndNotify(ref _modPresets, value);
