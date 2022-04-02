@@ -1,26 +1,17 @@
 ﻿{
   "wiiu": {
-    "None": [],
     "Linkle Mod": [
-      "https://gamebanana.com/dl/759306"
-    ],
-    "Zelda's Ballad": [
-      "download_link (bnp)"
-    ],
-    "Second Wind": [
-      "download_link (bnp)"
+      {
+        "Name": "Linkle Base Mod by LynardKiller",
+        "Download": "https://gamebanana.com/dl/501676"
+      },
+      {
+        "Name": "Linkle Logical Braids by i2m",
+        "Download": "https://gamebanana.com/dl/768018"
+      }
     ]
   },
   "switch": {
-    "None": [],
-    "Linkle Mod": [
-      "download_link (bnp)"
-    ],
-    "Zelda's Ballad": [
-      "download_link (bnp)"
-    ],
-    "Second Wind": [
-      "download_link (bnp)"
-    ]
+
   }
 }
