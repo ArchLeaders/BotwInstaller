@@ -93,6 +93,7 @@ namespace BotwInstaller.Lib.Configurations.Cemu
             }
 
             XmlSerializer serializer = new(typeof(SettingsConfigFile));
+            if (File.Exists($"{conf.Dirs.Dynamic}\\settings.xml")) File.Delete($"{conf.Dirs.Dynamic}\\settings.xml");
             FileStream stream = File.OpenWrite($"{conf.Dirs.Dynamic}\\settings.xml");
 
             serializer.Serialize(stream, scf, xmlns);
