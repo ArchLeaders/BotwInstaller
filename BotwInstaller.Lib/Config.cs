@@ -53,18 +53,9 @@ namespace BotwInstaller.Lib
         public bool UseCemu { get; set; } = false;
 
         /// <summary>
-        /// The mod pack to be installed in BCML
-        /// </summary>
-        public string ModPack { get; set; } = "None";
-
-        /// <summary>
         /// Mod packs that can be installed
         /// </summary>
-        public Dictionary<string, Dictionary<string, List<string?>>> ModPacks { get; set; } = new()
-        {
-            { "wiiu", new() { { "None", new() { null } } } },
-            { "switch", new() { { "None", new() { null } } } }
-        };
+        public List<Dictionary<string, string?>> ModPacks { get; set; } = new();
 
         /// <summary>
         /// Directory list class

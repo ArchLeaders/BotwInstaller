@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8602
+#pragma warning disable CS8604
 
 using static BotwInstaller.Lib.Config;
 
@@ -78,7 +79,7 @@ namespace BotwInstaller.Lib
 
             // Unpack cemu to the temp folder
             print($"{func} Extracting Cemu . . .");
-            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\CEMU.PACK.res", $"{AppData}\\Temp\\BOTW\\CEMU")));
+            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\CEMU.PACK.res", $"{AppData}\\Temp\\BOTW\\CEMU", true)));
 
             // Unpack GFX to graphicPacks folder
             print($"{func} Extracting GFX . . .");
@@ -86,7 +87,7 @@ namespace BotwInstaller.Lib
 
             // Unpack CemuHook to the temp folder
             print($"{func} Extracting CemuHook . . .");
-            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\CEMUHOOK.PACK.res", $"{AppData}\\Temp\\BOTW\\CEMUHOOK")));
+            unpack.Add(Task.Run(() => ZipFile.ExtractToDirectory($"{AppData}\\Temp\\BOTW\\CEMUHOOK.PACK.res", $"{AppData}\\Temp\\BOTW\\CEMUHOOK", true)));
 
             // Download DS4
             if (conf.ControllerApi == "DSUController")
@@ -214,45 +215,38 @@ namespace BotwInstaller.Lib
         public static async Task Mods(Interface.Update update, Interface.Notify print, Config conf)
         {
             List<Task> install = new();
-            List<string?> mods = conf.IsNX ? conf.ModPacks["switch"][conf.ModPack] : conf.ModPacks["wiiu"][conf.ModPack];
+            var mods = conf.ModPacks;
             string func = "[INSTALL.BCML.MODS]";
 
-            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\python.py");
-            update(50, "bcml");
+            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\install.py");
+            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\remerge.py");
+            update(150, "bcml%");
+            update(85, "bcml");
 
             int i = 1;
             foreach (var mod in mods)
             {
-                if (mod != null)
+                if (mod["Download"] != null)
                 {
                     install.Add(Task.Run(async() =>
                     {
-                        string last = mods.Count == i ? "true" : "false";
-
-                        print($"{func} Downloading {mod} . . .");
-                        await Download.FromUrl(mod, $"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp");
-
-                        print($"{func} Installing {mod} . . .");
-
-                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\python.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i}.bnp\" {last}");
-
+                        // don't move this below the download and install operations, it will confuse the install order
+                        // implement static load order to prevent bad load orders (currently: first downloaded = first installed)
+                        // use i as insert point
                         i++;
+
+                        print($"{func} Downloading {mod["Name"]} . . .");
+                        await Download.FromUrl(mod["Download"], $"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp", 1000);
+
+                        print($"{func} Installing {mod["Name"]} . . .");
+                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\"");
                     }));
                 }
             }
 
             await Task.WhenAll(install);
-            update(80, "bcml");
-
-            if (Directory.Exists($"{conf.Dirs.BCML}\\mods\\9999_BCML"))
-            {
-                print($"{func} Merging mods . . .");
-
-                await Task.Run(() =>
-                    Batch.CopyDirectory($"{conf.Dirs.BCML}\\mods\\9999_BCML", conf.UseCemu ? $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" : conf.Dirs.Dynamic)
-                );
-            }
-
+            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\remerge.py\"");
+            update(5, "bcml%");
             update(95, "bcml");
         }
 

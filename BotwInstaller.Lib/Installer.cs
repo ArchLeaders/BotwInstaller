@@ -138,12 +138,19 @@ namespace BotwInstaller.Lib
 
             // Update timer speed
             await Task.WhenAll(t2);
-            update(5, "game");
+            update(5, "game%");
             update(100, "game");
             update(40, "bcml%");
 
             // Install mods
-            await Tasks.Mods(update, print, conf);
+            try
+            {
+                await Tasks.Mods(update, print, conf);
+            }
+            catch
+            {
+                print("Mod installing failed. Continueing setup . . .");
+            }
 
             // Create BCML shortcut(s)
             print($"[INSTALL] Creating BCML.lnk . . .");
