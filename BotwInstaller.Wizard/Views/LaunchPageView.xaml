@@ -40,8 +40,6 @@
             <Run Text="Arch Leaders (Programming, Design)" />
             <LineBreak />
             <Run Text="a_j_k_arts (Design)" />
-            <LineBreak />
-            <Run Text="reze_ha (Mod Packs)" />
         </TextBlock>
 
         <TextBlock Margin="25,0,0,25"
