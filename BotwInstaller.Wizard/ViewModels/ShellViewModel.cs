@@ -156,7 +156,7 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true, string ok = "OK")
+        public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true)
         {
             InstallViewModel.LogMessage($"---\nFailed - {ex.Message}\n---\n");
 

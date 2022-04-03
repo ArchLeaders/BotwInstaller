@@ -252,7 +252,7 @@ namespace BotwInstaller.Lib
             await Task.WhenAll(install);
             await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", installLastMod);
             await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\remerge.py\"");
-            update(5, "bcml%");
+            update(80, "bcml%");
             update(95, "bcml");
         }
 
