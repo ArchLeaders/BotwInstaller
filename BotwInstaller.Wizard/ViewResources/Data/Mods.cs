@@ -40,7 +40,7 @@ namespace BotwInstaller.Wizard.ViewResources.Data
                     info += $"{mod["Name"]} | {mod["Download"]}\n";
 
                 var _notifyIcon = new System.Windows.Forms.NotifyIcon();
-                _notifyIcon.Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+                _notifyIcon.Icon = Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
                 _notifyIcon.BalloonTipClosed += (s, e) => _notifyIcon.Visible = false;
                 _notifyIcon.BalloonTipClicked += async (s, e) =>
                 {
