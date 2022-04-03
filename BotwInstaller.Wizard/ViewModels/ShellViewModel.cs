@@ -16,6 +16,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -155,7 +156,7 @@ namespace BotwInstaller.Wizard.ViewModels
             }
         }
 
-        public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true)
+        public void ReportError(HandledException ex, string title, bool isReportable = true, bool showDialog = true, string ok = "OK")
         {
             InstallViewModel.LogMessage($"---\nFailed - {ex.Message}\n---\n");
 
@@ -171,6 +172,22 @@ namespace BotwInstaller.Wizard.ViewModels
             };
             LaunchPageVisibility = Visibility.Visible;
             ExceptionPageVisibility = Visibility.Visible;
+        }
+
+        public void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Exception ex = e.Exception as Exception ?? new();
+            File.WriteAllText("error.log.txt", $"[{DateTime.Now}]\n- {ex.Message}\n[Stack Trace]\n{ex.StackTrace}\n- - - - - - - - - - - - - - -\n\n");
+            ReportError(new() { Message = ex.Message, ExtendedMessage = ex.StackTrace }, "Unhandled Exception (TERMINATING)");
+            Environment.Exit(0);
+        }
+
+        public void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception ?? new();
+            File.WriteAllText("error.log.txt", $"[{DateTime.Now}]\n- {ex.Message}\n[Stack Trace]\n{ex.StackTrace}\n- - - - - - - - - - - - - - -\n\n");
+            ReportError(new() { Message = ex.Message, ExtendedMessage = ex.StackTrace }, "Unhandled Exception (TERMINATING)");
+            Environment.Exit(0);
         }
 
         #endregion

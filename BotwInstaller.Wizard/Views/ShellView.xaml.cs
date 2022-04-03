@@ -184,6 +184,9 @@ namespace BotwInstaller.Wizard.Views
 
             SourceInitialized += async (s, e) =>
             {
+                System.Windows.Forms.Application.ThreadException += new ThreadExceptionEventHandler(((ShellViewModel)DataContext).Application_ThreadException);
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(((ShellViewModel)DataContext).CurrentDomain_UnhandledException);
+
                 using HttpClient client = new();
                 GameInfo.ModPresetData = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, string>[]>>>(await client.GetStringAsync(HttpLinks.ModPresets));
             };
