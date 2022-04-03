@@ -135,7 +135,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
             UnboundValues.Add("bcml", new(this, 0));
             UnboundValues.Add("cemu", new(this, 1));
-            UnboundValues.Add("game", new(this, 2, 120, true));
+            UnboundValues.Add("game", new(this, 2, 120));
             UnboundValues.Add("tool", new(this, 3, isLoop: true));
 
             for (int i = 0; i < 4; i++)
