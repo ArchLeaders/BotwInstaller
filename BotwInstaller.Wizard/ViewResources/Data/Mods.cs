@@ -92,9 +92,10 @@ namespace BotwInstaller.Wizard.ViewResources.Data
             {
                 CheckBox presetData = (CheckBox)preset.Children[0];
 
-                foreach (var mod in GameInfo.ModPresetData[mode.Replace("cemu", "wiiu")][(string)presetData.Content])
-                    if (mod != null)
-                        mods.Add(mod);
+                if (presetData.IsChecked == true)
+                    foreach (var mod in GameInfo.ModPresetData[mode.Replace("cemu", "wiiu")][(string)presetData.Content])
+                        if (mod != null)
+                            mods.Add(mod);
             }
 
             return mods;

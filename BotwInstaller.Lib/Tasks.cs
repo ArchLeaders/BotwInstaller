@@ -219,9 +219,11 @@ namespace BotwInstaller.Lib
             string func = "[INSTALL.BCML.MODS]";
 
             await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\install.py");
-            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\remerge.py");
-            update(500, "bcml%");
+            await Download.FromUrl(HttpLinks.ModRemerger, $"{AppData}\\Temp\\BOTW\\remerge.py");
+            update(1000, "bcml%");
             update(85, "bcml");
+
+            string installLastMod = "";
 
             int i = 1;
             foreach (var mod in mods)
@@ -230,21 +232,25 @@ namespace BotwInstaller.Lib
                 {
                     install.Add(Task.Run(async() =>
                     {
-                        // don't move this below the download and install operations, it will confuse the install order
-                        // implement static load order to prevent bad load orders (currently: first downloaded = first installed)
-                        // use i as insert point
+                        string last = mods.Count == i ? "true" : "false";
                         i++;
 
                         print($"{func} Downloading {mod["Name"]} . . .");
                         await Download.FromUrl(mod["Download"], $"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp", 1000);
 
                         print($"{func} Installing {mod["Name"]} . . .");
-                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\" {i-1}");
+
+                        // Add safety in the case the last mod does not take the longest to install
+                        if (last == "false")
+                            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\" {last} {i-1}");
+                        else
+                            installLastMod = $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i - 1}.bnp\" {last} {i - 1}";
                     }));
                 }
             }
 
             await Task.WhenAll(install);
+            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", installLastMod);
             await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\remerge.py\"");
             update(5, "bcml%");
             update(95, "bcml");
