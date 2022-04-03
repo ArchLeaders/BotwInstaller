@@ -1,9 +1,9 @@
 import sys
-from bcml.install import refresh_master_export
+from bcml.install import link_master_mod
 from pathlib import Path
 
 def main():
-    refresh_master_export()
+    link_master_mod()
 
 if __name__ == '__main__':
     main()

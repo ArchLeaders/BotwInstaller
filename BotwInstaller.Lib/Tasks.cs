@@ -220,7 +220,7 @@ namespace BotwInstaller.Lib
 
             await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\install.py");
             await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\remerge.py");
-            update(150, "bcml%");
+            update(500, "bcml%");
             update(85, "bcml");
 
             int i = 1;
@@ -239,7 +239,7 @@ namespace BotwInstaller.Lib
                         await Download.FromUrl(mod["Download"], $"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp", 1000);
 
                         print($"{func} Installing {mod["Name"]} . . .");
-                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\"");
+                        await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\" {i-1}");
                     }));
                 }
             }
