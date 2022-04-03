@@ -116,8 +116,7 @@ namespace BotwInstaller.Wizard.Helpers
 
             strData += FormatItems("Config Info", returnFormat,
                 new Item(nameof(conf.ControllerApi), conf.ControllerApi),
-                new Item(nameof(conf.IsNX), conf.IsNX),
-                new Item(nameof(conf.ModPack), conf.ModPack)
+                new Item(nameof(conf.IsNX), conf.IsNX)
             );
 
             strData += FormatItems("Directory Info", returnFormat,
