@@ -54,6 +54,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[UNSAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
                     foreach (var file in Files.GetUnsafe(dv.Name, "Cemu.exe"))
@@ -77,6 +83,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[SAFE] Searching '{dv.Name}'");
 
                     foreach (var file in Files.GetSafe(dv.Name, "Cemu.exe"))
@@ -110,6 +122,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[UNSAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
                     bool _break = false;
@@ -137,6 +155,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives().Reverse())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[SAFE] Searching '{dv.Name}'");
 
                     bool _break = false;
@@ -168,6 +192,12 @@ namespace BotwInstaller.Lib
 
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[UNSAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
                         print($"{func}[UNSAFE] Searching '{dv.Name}'");
 
                         foreach (var file in Files.GetUnsafe(dv.Name, "RollpictDLC001.sbstftex"))
@@ -188,6 +218,12 @@ namespace BotwInstaller.Lib
 
                     foreach (var dv in DriveInfo.GetDrives().Reverse())
                     {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
                         print($"{func}[SAFE] Searching '{dv.Name}'");
 
                         foreach (var file in Files.GetSafe(dv.Name, "RollpictDLC001.sbstftex"))
