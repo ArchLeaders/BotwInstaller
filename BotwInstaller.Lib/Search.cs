@@ -279,6 +279,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[UNSAFE] Searching {dv.Name}");
 
                     foreach (var file in Files.GetUnsafe(dv.Name, "python.exe"))
@@ -305,6 +311,12 @@ namespace BotwInstaller.Lib
 
                 foreach (var dv in DriveInfo.GetDrives())
                 {
+                    if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                    {
+                        print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                        continue;
+                    }
+
                     print($"{func}[SAFE] Searching {dv.Name}");
 
                     foreach (var file in Files.GetSafe(dv.Name, "python.exe"))
