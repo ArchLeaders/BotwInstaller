@@ -11115,7 +11115,6 @@ namespace BotwScripts.Lib.CheckSum
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_ShootingStar.sbactorpack",
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_ShrineIceDisabling.sbactorpack",
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_SignboardStone_A_01.sbactorpack",
-				$"{gameFolder}content\\Actor\\Pack\\FldObj_SignboardStone_A_02.sbactorpack",
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_SignboardStone_giant.sbactorpack",
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_SignboardStone_Macuse.sbactorpack",
 				$"{gameFolder}content\\Actor\\Pack\\FldObj_SignboardWood_A_01.sbactorpack",
