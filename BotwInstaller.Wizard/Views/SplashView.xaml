@@ -97,7 +97,7 @@
                         Margin="0,10"
                         Command="{s:Action Open}"
                         CommandParameter="cemu"
-                        Content="PC"
+                        Content="PC/Cemu"
                         FontSize="25"
                         FontWeight="Bold" />
 
