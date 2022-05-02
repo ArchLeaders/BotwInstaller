@@ -14,7 +14,7 @@
         public static string DS4BatchFile { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/BatchFiles/ds4windows.bat";
         public static string PipInstaller { get; } = "https://bootstrap.pypa.io/get-pip.py";
         public static string ModInstaller { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/mod_install.py";
-        public static string ModRemerger { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/mod_remerge.py";
+        public static string ModRemerger { get; } = "https://raw.githubusercontent.com/ArchLeaders/BotwInstaller/master/BotwInstaller.Lib/Configurations/Mods/mods_export.py";
         public static string Audio { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Wizard/ViewResources/Sound/audio.mp3";
         public static string LibUsbK { get; } = "https://github.com/ArchLeaders/BotwInstaller/raw/master/BotwInstaller.Lib/Configurations/Homebrew/libusbK.exe";
         public static string TegraRCMSmash { get; } = "https://files.sshnuke.net/TegraRcmSmash1213.zip";

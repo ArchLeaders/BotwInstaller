@@ -10,12 +10,11 @@ using BotwScripts.Lib.Common.Web;
 using BotwScripts.Lib.Common.Web.GitHub;
 using System.IO.Compression;
 using BotwInstaller.Lib.Configurations.Cemu;
-using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Computer;
 using BotwInstaller.Lib.Configurations;
-using BotwScripts.Lib.Common.IO;
 using System.Diagnostics;
 using BotwInstaller.Lib.Remote;
+using System.Operations;
 
 namespace BotwInstaller.Lib
 {
@@ -214,47 +213,56 @@ namespace BotwInstaller.Lib
         /// <returns></returns>
         public static async Task Mods(Interface.Update update, Interface.Notify print, Config conf)
         {
+            List<Task> download = new();
             List<Task> install = new();
+
+            Directory.CreateDirectory($"{AppData}\\Temp\\BOTW\\MODS");
+
             var mods = conf.ModPacks;
             string func = "[INSTALL.BCML.MODS]";
 
-            await Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\install.py");
-            await Download.FromUrl(HttpLinks.ModRemerger, $"{AppData}\\Temp\\BOTW\\remerge.py");
-            update(1000, "bcml%");
-            update(85, "bcml");
+            download.Add(Download.FromUrl(HttpLinks.ModInstaller, $"{AppData}\\Temp\\BOTW\\install.py"));
+            download.Add(Download.FromUrl(HttpLinks.ModRemerger, $"{AppData}\\Temp\\BOTW\\export.py"));
 
-            string installLastMod = "";
+            update(1000, "bcml%");
+            update(90, "bcml");
 
             int i = 1;
+
             foreach (var mod in mods)
             {
                 if (mod["Download"] != null)
                 {
-                    install.Add(Task.Run(async() =>
+                    mod.Add("File", $"{AppData}\\Temp\\BOTW\\MODS\\{i}.bnp");
+                    mod.Add("Order", $"{i}");
+                    i++;
+
+                    download.Add(Task.Run(async() =>
                     {
-                        string last = mods.Count == i ? "true" : "false";
-                        i++;
-
                         print($"{func} Downloading {mod["Name"]} . . .");
-                        await Download.FromUrl(mod["Download"], $"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp", 1000);
-
-                        print($"{func} Installing {mod["Name"]} . . .");
-
-                        // Add safety in the case the last mod does not take the longest to install
-                        if (last == "false")
-                            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i-1}.bnp\" {last} {i-1}");
-                        else
-                            installLastMod = $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{AppData}\\Temp\\BOTW\\MOD__{i - 1}.bnp\" {last} {i - 1}";
+                        await Download.FromUrl(mod["Download"], mod["File"], 1000);
                     }));
                 }
+
+            }
+
+            await Task.WhenAll(download);
+
+            foreach (var mod in mods)
+            {
+                install.Add(Task.Run(async () =>
+                {
+                    print($"{func} Installing mods {mod["Order"]}/{mods.Count} . . .");
+                    await Execute.App($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\install.py\" \"{mod["File"]}\" {mod["Order"]}");
+                }));
             }
 
             await Task.WhenAll(install);
-            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", installLastMod);
-            await HiddenProcess.Start($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\remerge.py\"");
+            print($"{func} Merging {mods.Count} mods . . .");
+            await Execute.App($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\export.py\"");
 
             update(80, "bcml%");
-            update(95, "bcml");
+            update(99, "bcml");
         }
 
         public static async Task CopyFolderAsync(Interface.Notify print, Interface.Update update, int updateValue, int fileCount, string inputDir, string outputDir, string func = "[INSTALL.BOTW]")
