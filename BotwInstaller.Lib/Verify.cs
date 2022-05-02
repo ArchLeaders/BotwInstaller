@@ -100,15 +100,51 @@ namespace BotwInstaller.Lib
         /// <param name="uking"></param>
         /// <param name="paths"></param>
         /// <returns>Boolean</returns>
-        public static bool RollPictDLC(Interface.Notify print, string rollpict, ref Dictionary<string, object> paths, string func = "[VERIFY.ROLLPICTDLC]")
+        public static bool RollPictDLC(Interface.Notify print, string rollpict, ref Dictionary<string, object> paths, string func = "[VERIFY.ROLLPICTDLC]", string? nx = null)
         {
-            if (BotwContents("DLC", rollpict.EditPath(5), print, func))
+            int index = 5;
+
+            if (nx != null)
+                index = 2;
+
+            if (BotwContents("DLC", rollpict.EditPath(index), print, func))
             {
-                print($"{func} DLC found in '{rollpict.EditPath(5)}'");
-                paths["DLC"] = rollpict.EditPath(5);
+                print($"{func} DLC found in '{rollpict.EditPath(nx == null ? index : index+1)}'");
+                paths["DLC"] = rollpict.EditPath(index);
                 return true;
             }
-            else return false;
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Searches for the botw game paths relative to the passed RollPictDLC.sbstftex file.
+        /// <para>Returns <c>true</c> when the Game and Update paths have been located.</para>
+        /// </summary>
+        /// <param name="uking"></param>
+        /// <param name="paths"></param>
+        /// <returns>Boolean</returns>
+        public static bool AglResource(Interface.Notify print, string aglResource, ref Dictionary<string, object> paths, string func = "[VERIFY.AGLRESOURCE]")
+        {
+            if (BotwContents("GameNX", aglResource.EditPath(3), print, func, "01007EF00011E000"))
+            {
+                print($"{func} Game found in '{aglResource.EditPath(4)}'");
+                paths["Game"] = aglResource.EditPath(4);
+            }
+
+            if (Directory.Exists($"{aglResource.EditPath(5)}\\01007EF00011F001\\romfs"))
+            {
+                if (BotwContents("DlcNX", $"{aglResource.EditPath(5)}\\01007EF00011F001\\romfs", print, func, "01007EF00011F001"))
+                {
+                    print($"{func} DLC found in '{aglResource.EditPath(5)}\\01007EF00011F001'");
+                    paths["DLC"] = $"{aglResource.EditPath(5)}\\01007EF00011F001";
+                }
+            }
+
+            if (paths["Game"] != "NOT FOUND")
+                return true;
+
+            return false;
         }
 
         /// <summary>
@@ -180,9 +216,9 @@ namespace BotwInstaller.Lib
         /// <param name="key"></param>
         /// <param name="folder"></param>
         /// <returns>Boolean</returns>
-        public static bool BotwContents(this string key, string folder, Interface.Notify print, string func = "[VERIFY.BOTW]")
+        public static bool BotwContents(this string key, string folder, Interface.Notify print, string func = "[VERIFY.BOTW]", string? nx = null)
         {
-            var checkSum = folder.GetCheckSum(print, func);
+            var checkSum = folder.GetCheckSum(print, func, nx);
             var diff = checkSum.Except(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
 
             if (diff.Any())
@@ -200,12 +236,25 @@ namespace BotwInstaller.Lib
         /// </summary>
         /// <param name="gameFiles"></param>
         /// <returns></returns>
-        public static List<string> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]")
+        public static List<string> GetCheckSum(this string gameFiles, Interface.Notify print, string func = "[VERIFY.CHECKSUM]", string? nx = null)
         {
+            gameFiles = gameFiles.EndsWith("\\") ? gameFiles : $"{gameFiles}\\";
+
+            if (nx != null)
+            {
+                print($"{func} Returning NX data check as '{nx}'");
+
+                return nx switch
+                {
+                    "01007EF00011E000" => BaseNX.Set(gameFiles),
+                    "01007EF00011F001" => DlcNX.Set(gameFiles),
+                    _ => new()
+                };
+            }
+
             string ID = GameInfo.GetTitleID(gameFiles);
             string region = GameInfo.GetTitleID(gameFiles, ITitleIDFormat.Region);
 
-            gameFiles = gameFiles.EndsWith("\\") ? gameFiles : $"{gameFiles}\\";
             print($"{func} Returning {region} data check as '{ID}'");
 
             return ID switch
