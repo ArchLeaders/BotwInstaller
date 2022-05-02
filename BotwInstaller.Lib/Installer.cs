@@ -2,6 +2,7 @@
 using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.Computer.Software;
 using BotwScripts.Lib.Common.IO;
+using System.Diagnostics;
 
 namespace BotwInstaller.Lib
 {
@@ -164,10 +165,11 @@ namespace BotwInstaller.Lib
             // Install mods
             try
             {
-                // await Tasks.Mods(update, print, conf);
+                await Tasks.Mods(update, print, conf);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine($"{ex.Message}\n{ex.StackTrace}");
                 print("Mod installing failed. Continueing setup . . .");
             }
 

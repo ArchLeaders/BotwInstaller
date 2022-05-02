@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -76,6 +77,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
         public void LogMessage(string text, ConsoleColor color = ConsoleColor.Gray)
         {
+            Debug.WriteLine(text);
             Log = $"{Log}\n{text}";
             ScrollUpdater = !ScrollUpdater;
         }
