@@ -137,6 +137,10 @@ namespace BotwInstaller.Lib
                 if (cemu != "!ignore")
                     tasks.Add(Task.Run(() => Search.Cemu(ref paths, print, cemu)));
             }
+            else
+            {
+                tasks.Add(Task.Run(() => Search.BotwNX(ref paths, print)));
+            }
 
             tasks.Add(Task.Run(() => paths["Python"] = Search.Python(print, python)));
 
