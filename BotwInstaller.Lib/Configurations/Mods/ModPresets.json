@@ -1,17 +1,91 @@
 {
   "wiiu": {
+
+    "Second Wind": [
+      {
+        "Name": "Second Wind lead by CEObrainz",
+        "Download": "https://github.com/CEObrainz/Second-Wind/releases/download/v1.9.12.1/SecondWindv1.9.12a.bnp"
+      }
+    ],
+
     "Linkle Mod": [
       {
         "Name": "Linkle Base Mod by LynardKiller",
         "Download": "https://gamebanana.com/dl/501676"
       },
       {
-        "Name": "Linkle Logical Braids by Sofia (Port by i2m)",
+        "Name": "Linkle Logical Braids by Sofia",
+        "Download": "https://gamebanana.com/dl/743634"
+      },
+      {
+        "Name": "Linkle Logical Braids Headgear port by i2m",
         "Download": "https://gamebanana.com/dl/768018"
       }
+    ],
+
+    "Zelda's Ballad'": [
+      {
+        "Name": "Zelda's Ballad by YamGaming and Amiibolad",
+        "Download": "https://gamebanana.com/dl/479151"
+      },
+      {
+        "Name": "Shield Fix",
+        "Download": "https://gamebanana.com/dl/478121"
+      },
+      {
+        "Name": "Royal Guard Redesign",
+        "Download": "https://gamebanana.com/dl/680677"
+      },
+      {
+        "Name": "Amiibo Outfits",
+        "Download": "https://gamebanana.com/dl/617198"
+      }
+    ],
+
+    "Relics of the Past": [
+      {
+        "Name": "Relics of the Past lead by ShadowMarth-JTW",
+        "Download": "https://relicsofthepast.dev/assets/ModFiles/WiiU/%5BCEMU%5D-BreathOfTheWild_Relics-Of-The-Past-Official-Final-Beta_v2.9.5b.7z"
+      }
+    ],
+
+    "Waikuteru's Randomaizer": [
+      {
+        "Name": "Base mod by Waikuteru (v2.0.2)",
+        "Download": "https://gamebanana.com/dl/770872"
+      }
     ]
+
   },
   "switch": {
+
+    "Second Wind": [
+      {
+        "Name": "Second Wind lead by CEObrainz",
+        "Download": "https://github.com/Nitr4m12/Second-Wind-Switch/releases/download/v1.9.10.1/SecondWindv1.9.10a_switch.bnp"
+      }
+    ],
+
+    "Zelda's Ballad'": [
+      {
+        "Name": "Zelda's Ballad by YamGaming and Amiibolad (Port by Nitram12)",
+        "Download": "https://gamebanana.com/dl/686421"
+      }
+    ],
+
+    "Relics of the Past": [
+      {
+        "Name": "Relics of the Past lead by ShadowMarth-JTW",
+        "Download": "https://relicsofthepast.dev/assets/ModFiles/NX/%5BSwitch%5D-Relics-of-the-Past_Official-Final-Beta-v2.9.5b.7z"
+      }
+    ],
+
+    "Survival of the Wild": [
+      {
+        "Name": "Survival of the Wild by silentverge",
+        "Download": "https://gamebanana.com/dl/677856"
+      }
+    ]
 
   }
 }
