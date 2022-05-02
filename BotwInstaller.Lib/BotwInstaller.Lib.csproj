@@ -16,6 +16,9 @@
     <Reference Include="BotwScripts.Lib.Common">
       <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.Operations">
+      <HintPath>..\..\..\BotwScripts (RE)\BotwScripts\BotwScripts.Lib\bin\Release\net6.0\System.Operations.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
