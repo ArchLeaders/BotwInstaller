@@ -105,9 +105,9 @@ namespace BotwInstaller.Lib
             int index = 5;
 
             if (nx != null)
-                index = 2;
+                index = 3;
 
-            if (BotwContents("DLC", rollpict.EditPath(index), print, func))
+            if (BotwContents("DLC", rollpict.EditPath(index), print, func, nx))
             {
                 print($"{func} DLC found in '{rollpict.EditPath(nx == null ? index : index+1)}'");
                 paths["DLC"] = rollpict.EditPath(index);
@@ -126,10 +126,13 @@ namespace BotwInstaller.Lib
         /// <returns>Boolean</returns>
         public static bool AglResource(Interface.Notify print, string aglResource, ref Dictionary<string, object> paths, string func = "[VERIFY.AGLRESOURCE]")
         {
-            if (BotwContents("GameNX", aglResource.EditPath(3), print, func, "01007EF00011E000"))
+            if (File.Exists(aglResource))
             {
-                print($"{func} Game found in '{aglResource.EditPath(4)}'");
-                paths["Game"] = aglResource.EditPath(4);
+                if (BotwContents("GameNX", aglResource.EditPath(3), print, func, "01007EF00011E000"))
+                {
+                    print($"{func} Game found in '{aglResource.EditPath(4)}'");
+                    paths["Game"] = aglResource.EditPath(4);
+                }
             }
 
             if (Directory.Exists($"{aglResource.EditPath(5)}\\01007EF00011F001\\romfs"))
