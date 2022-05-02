@@ -3,7 +3,7 @@ from bcml.install import install_mod
 from pathlib import Path
 
 def main():
-    install_mod(Path(sys.argv[1]), merge_now=bool(sys.argv[2].lower() == "true"), insert_priority=int(sys.argv[3]))
+    install_mod(Path(sys.argv[1]), insert_priority=int(sys.argv[2]))
 
 if __name__ == '__main__':
     main()
