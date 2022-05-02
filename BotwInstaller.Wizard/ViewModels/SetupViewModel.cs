@@ -1,16 +1,7 @@
-﻿using BotwInstaller.Lib;
-using BotwInstaller.Wizard.Views;
-using Stylet;
-using System;
+﻿using Stylet;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Navigation;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
@@ -28,7 +19,7 @@ namespace BotwInstaller.Wizard.ViewModels
                 GenericPath = browse.SelectedPath;
         }
 
-        public static Dictionary<string, string> ControllerApiTranslate = new()
+        public static Dictionary<string, string> ControllerApiTranslate { get; } = new()
         {
             { "Controller -", "XInput" },
             { "XBox Controller", "XInput" },

@@ -1,4 +1,7 @@
-﻿using Stylet;
+﻿#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1822 // Mark members as static
+
+using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -50,7 +53,7 @@ namespace BotwInstaller.Wizard.ViewModels
 
     public class InstallViewModel : Screen
     {
-        private static Dictionary<string, string> TitleKeys = new()
+        private static Dictionary<string, string> TitleKeys { get; } = new()
         {
             { "Installing .", "Installing . ." },
             { "Installing . .", "Installing . . ." },

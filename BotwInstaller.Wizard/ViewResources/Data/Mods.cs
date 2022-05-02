@@ -5,11 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.Formatting;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,6 +23,9 @@ namespace BotwInstaller.Wizard.ViewResources.Data
 
             comboBox.ToolTip = null;
 
+            if (GameInfo.ModPresetData == null)
+                return comboBox;
+
             foreach (var package in GameInfo.ModPresetData[mode.Replace("cemu", "wiiu")])
             {
                 Grid stack = new();
@@ -36,10 +34,15 @@ namespace BotwInstaller.Wizard.ViewResources.Data
                 stack.ColumnDefinitions.Add(new() { Width = new(50) });
 
                 string info = "";
-                foreach (var mod in package.Value)
-                    info += $"{mod["Name"]} | {mod["Download"]}\n";
+                string richInfo = "";
 
-                var _notifyIcon = new System.Windows.Forms.NotifyIcon();
+                foreach (var mod in package.Value)
+                {
+                    info += $"{mod["Name"]}\n";
+                    richInfo += $"{mod["Name"]} | {mod["Download"]}\n";
+                }
+
+                System.Windows.Forms.NotifyIcon _notifyIcon = new();
                 _notifyIcon.Icon = Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
                 _notifyIcon.BalloonTipClosed += (s, e) => _notifyIcon.Visible = false;
                 _notifyIcon.BalloonTipClicked += async (s, e) =>
@@ -47,7 +50,7 @@ namespace BotwInstaller.Wizard.ViewResources.Data
                     string random = $"{new Random().Next(1000, 9999)}-{new Random().Next(1000, 9999)}-{new Random().Next(1000, 9999)}-{new Random().Next(1000, 9999)}";
 
                     Directory.CreateDirectory($"{Config.AppData}\\Temp\\BOTW");
-                    await File.WriteAllTextAsync($"{Config.AppData}\\Temp\\BOTW\\{random}.txt", $"[{package.Key}]\n{info}");
+                    await File.WriteAllTextAsync($"{Config.AppData}\\Temp\\BOTW\\{random}.txt", $"[{package.Key}]\n{richInfo}");
                     await HiddenProcess.Start("explorer.exe", $"{Config.AppData}\\Temp\\BOTW\\{random}.txt");
                 };
 
@@ -70,7 +73,7 @@ namespace BotwInstaller.Wizard.ViewResources.Data
                 button.Click += (s, e) =>
                 {
                     _notifyIcon.Visible = true;
-                    _notifyIcon.ShowBalloonTip(5000, package.Key, info, System.Windows.Forms.ToolTipIcon.Info);
+                    _notifyIcon.ShowBalloonTip(5000, package.Key, "(Click for more info)\n"+info, System.Windows.Forms.ToolTipIcon.Info);
                 };
 
                 Grid.SetColumn(button, 1);
@@ -91,6 +94,9 @@ namespace BotwInstaller.Wizard.ViewResources.Data
             foreach (Grid preset in uiModPresets.Items)
             {
                 CheckBox presetData = (CheckBox)preset.Children[0];
+
+                if (GameInfo.ModPresetData == null)
+                    return mods;
 
                 if (presetData.IsChecked == true)
                     foreach (var mod in GameInfo.ModPresetData[mode.Replace("cemu", "wiiu")][(string)presetData.Content])

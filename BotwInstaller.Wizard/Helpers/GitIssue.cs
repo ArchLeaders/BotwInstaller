@@ -1,19 +1,12 @@
 ﻿using BotwInstaller.Lib;
-using BotwInstaller.Wizard.Helpers;
 using BotwInstaller.Wizard.ViewModels;
-using BotwInstaller.Wizard.ViewResources;
 using BotwInstaller.Wizard.ViewResources.Data;
 using BotwScripts.Lib.Common.Computer;
-using Microsoft.Win32;
 using Octokit;
 using Stylet;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace BotwInstaller.Wizard.Helpers
 {

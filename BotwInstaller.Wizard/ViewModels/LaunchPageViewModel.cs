@@ -1,11 +1,6 @@
 ﻿using BotwInstaller.Lib;
 using BotwScripts.Lib.Common.Computer;
 using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BotwInstaller.Wizard.ViewModels
 {
@@ -13,7 +8,23 @@ namespace BotwInstaller.Wizard.ViewModels
     {
         public void LaunchBotw()
         {
+            IsEnabled = false;
+            Content = "Loading . . .";
             _ = HiddenProcess.Start("cmd.exe", $"/c \"{Config.Root}\\botw.bat\"");
+        }
+
+        private bool _isEnabled = true;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set => SetAndNotify(ref _isEnabled, value);
+        }
+
+        private string _content = "Launch BOTW";
+        public string Content
+        {
+            get => _content;
+            set => SetAndNotify(ref _content, value);
         }
 
         private string _time = "0 Seconds";

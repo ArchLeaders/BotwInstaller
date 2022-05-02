@@ -92,9 +92,10 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Command="{s:Action LaunchBotw}"
-                Content="Launch BOTW"
+                Content="{Binding Content}"
                 FontSize="25"
                 FontWeight="Bold"
+                IsEnabled="{Binding IsEnabled}"
                 Visibility="{Binding SetupViewModel.ControllerApiVisibility}" />
     </Grid>
 </UserControl>

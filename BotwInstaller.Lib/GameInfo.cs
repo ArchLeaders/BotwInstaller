@@ -186,6 +186,6 @@ namespace BotwInstaller.Lib
 
             return new(ModPresetData[mode.Replace("cemu", "wiiu")].Keys);
         }
-        public static Dictionary<string, Dictionary<string, Dictionary<string, string?>[]>> ModPresetData { get; set; }
+        public static Dictionary<string, Dictionary<string, Dictionary<string, string?>[]>>? ModPresetData { get; set; }
     }
 }

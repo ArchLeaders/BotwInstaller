@@ -1,5 +1,4 @@
-﻿#pragma warning disable CA1822
-#pragma warning disable CS8604
+﻿#pragma warning disable CS8604
 
 using BotwInstaller.Lib;
 using BotwInstaller.Lib.Remote;
@@ -9,7 +8,6 @@ using BotwScripts.Lib.Common.IO.FileSystems;
 using BotwScripts.Lib.Common.Web;
 using Stylet;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;

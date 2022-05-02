@@ -1,5 +1,6 @@
-﻿#pragma warning disable CS8601
-#pragma warning disable CS8604
+﻿#pragma warning disable CS8604
+#pragma warning disable CS8605
+#pragma warning disable CS8619
 #pragma warning disable CS0649
 
 using BotwInstaller.Lib;
@@ -31,18 +32,6 @@ namespace BotwInstaller.Wizard.Views
         private readonly IWindowManager WindowManager;
 
         #region Fix Window Size in fullscreen.
-
-        private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            switch (msg)
-            {
-                case 0x0024:
-                    WmGetMinMaxInfo(hwnd, lParam, 0, 0); // Use 0 only in this case as it's not being used in the View instance
-                    handled = true;
-                    break;
-            }
-            return (IntPtr)0;
-        }
 
         internal static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam, int minWidth, int minHeight)
         {

@@ -11,6 +11,7 @@
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 	<PackageLicenseFile>D:\Visual Studio\Projects\- Botw Scripts\BotwInstaller (RE)\BotwInstaller\LICENSE</PackageLicenseFile>
 	<DebugType>embedded</DebugType>
+	<AssemblyName>BOTW Installer - v3</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

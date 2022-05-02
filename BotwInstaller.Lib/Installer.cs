@@ -1,7 +1,6 @@
 ﻿using BotwInstaller.Lib.Configurations.Shortcuts;
 using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.Computer.Software;
-using BotwScripts.Lib.Common.IO;
 using System.Diagnostics;
 
 namespace BotwInstaller.Lib

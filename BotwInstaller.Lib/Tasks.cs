@@ -240,10 +240,9 @@ namespace BotwInstaller.Lib
                     download.Add(Task.Run(async() =>
                     {
                         print($"{func} Downloading {mod["Name"]} . . .");
-                        await Download.FromUrl(mod["Download"], mod["File"], 1000);
+                        await Download.FromUrl(mod["Download"], mod["File"], 1000, true);
                     }));
                 }
-
             }
 
             await Task.WhenAll(download);
@@ -258,6 +257,7 @@ namespace BotwInstaller.Lib
             }
 
             await Task.WhenAll(install);
+
             print($"{func} Merging {mods.Count} mods . . .");
             await Execute.App($"{conf.Dirs.Python}\\python.exe", $"\"{AppData}\\Temp\\BOTW\\export.py\"");
 

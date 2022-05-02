@@ -1,8 +1,4 @@
 ﻿using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using BotwInstaller.Wizard.Helpers;
 using System.Windows.Controls;
