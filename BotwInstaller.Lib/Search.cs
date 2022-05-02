@@ -8,6 +8,7 @@
 using BotwScripts.Lib.Common;
 using BotwScripts.Lib.Common.IO;
 using BotwScripts.Lib.Common.IO.FileSystems;
+using System.Operations;
 
 namespace BotwInstaller.Lib
 {
@@ -230,6 +231,140 @@ namespace BotwInstaller.Lib
                         {
                             while (!Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW][DLC]"))
                                 break;
+
+                            if (paths["DLC"] != "NOT FOUND")
+                                return;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Searches for BotW and returns a Dictionary with the paths.
+        /// </summary>
+        /// <returns></returns>
+        public static void BotwNX(ref Dictionary<string, object> paths, Interface.Notify print)
+        {
+            var func = "[SEARCH.BOTW-NX]";
+
+            // Check Yuzu directory
+            Verify.AglResource(print, $"%appdata%\\yuzu\\dump\\01007EF00011E000\\romfs\\System\\Agl\\agl_resource.Nngfx_NX_NVN.release.ssarc".ParsePathVars(), ref paths);
+
+            if (paths["Game"] == "NOT FOUND")
+            {
+                try
+                {
+                    // Get SafeFiles [UNSAFE]
+                    print($"{func} Start Unsafe");
+
+                    foreach (var dv in DriveInfo.GetDrives().Reverse())
+                    {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[UNSAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
+                        print($"{func}[UNSAFE] Searching '{dv.Name}'");
+
+                        bool _break = false;
+
+                        foreach (string file in Files.GetUnsafe(dv.Name, "agl_resource.Nngfx_NX_NVN.release.ssarc"))
+                        {
+                            Verify.AglResource(print, file, ref paths);
+
+                            if (paths["Game"] != "NOT FOUND")
+                            {
+                                _break = true;
+                                break;
+                            }
+                        }
+
+                        if (_break) break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Get SafeFiles [STABLE]
+                    print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                    print($"{func} Start Safe");
+
+                    foreach (var dv in DriveInfo.GetDrives().Reverse())
+                    {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
+                        print($"{func}[SAFE] Searching '{dv.Name}'");
+
+                        bool _break = false;
+
+                        foreach (var file in Files.GetSafe(dv.Name, "agl_resource.Nngfx_NX_NVN.release.ssarc"))
+                        {
+                            Verify.AglResource(print, file, ref paths);
+
+                            if (paths["Game"] != "NOT FOUND")
+                            {
+                                _break = true;
+                                break;
+                            }
+                        }
+
+                        if (_break) break;
+                    }
+                }
+            }
+
+            func = $"{func}[DLC]";
+
+            if (paths["DLC"] == "NOT FOUND")
+            {
+                try
+                {
+                    // Get SafeFiles [UNSAFE]
+                    print($"{func} Start Unsafe");
+
+                    foreach (var dv in DriveInfo.GetDrives().Reverse())
+                    {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[UNSAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
+                        print($"{func}[UNSAFE] Searching '{dv.Name}'");
+
+                        foreach (var file in Files.GetUnsafe(dv.Name, "RollpictDLC001.sbstftex"))
+                        {
+                            Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW-NX][DLC][VERIFY]", "01007EF00011F001");
+
+                            if (paths["DLC"] != "NOT FOUND")
+                                return;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Get SafeFiles [SAFE]
+                    print($"{func} Warning - {ex.Message}", ConsoleColor.DarkYellow);
+                    print($"{func} Start Safe");
+
+                    foreach (var dv in DriveInfo.GetDrives().Reverse())
+                    {
+                        if (dv.DriveType == DriveType.Ram || dv.DriveType == DriveType.CDRom || dv.DriveType == DriveType.Network)
+                        {
+                            print($"{func}[SAFE] Skipping {dv.DriveType} '{dv.Name}' | Format not parsable");
+                            continue;
+                        }
+
+                        print($"{func}[SAFE] Searching '{dv.Name}'");
+
+                        foreach (var file in Files.GetSafe(dv.Name, "RollpictDLC001.sbstftex"))
+                        {
+                            Verify.RollPictDLC(print, file, ref paths, "[SEARCH.BOTW-NX][DLC]", "01007EF00011F001");
 
                             if (paths["DLC"] != "NOT FOUND")
                                 return;
