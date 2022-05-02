@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Console", "Bo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotwInstaller.Wizard", "BotwInstaller.Wizard\BotwInstaller.Wizard.csproj", "{099A4D03-ED8F-4111-8119-A464F331B8C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotwInstaller.Dev", "BotwInstaller.Dev\BotwInstaller.Dev.csproj", "{48CD8F5B-ED05-4363-A9C5-54667BF0E976}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{099A4D03-ED8F-4111-8119-A464F331B8C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48CD8F5B-ED05-4363-A9C5-54667BF0E976}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48CD8F5B-ED05-4363-A9C5-54667BF0E976}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48CD8F5B-ED05-4363-A9C5-54667BF0E976}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48CD8F5B-ED05-4363-A9C5-54667BF0E976}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
