@@ -110,6 +110,7 @@ namespace BotwInstaller.Wizard.ViewModels
             {
                 ButtonLeftVisibility = Visibility.Visible;
                 ButtonRight = noButtonText == "Auto" ? "No" : noButtonText;
+                ButtonLeft = yesButtonText;
             }
 
             if (extendedMessage != null)

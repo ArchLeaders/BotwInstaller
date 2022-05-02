@@ -23,7 +23,7 @@ namespace BotwInstaller.Wizard.ViewThemes.App
             Storyboard.SetTargetName(anim, control);
             Storyboard.SetTargetProperty(anim, new PropertyPath(property));
 
-            Storyboard storyboard = new Storyboard();
+            Storyboard storyboard = new();
             storyboard.Children.Add(anim);
 
             storyboard.Begin(parentControl);
@@ -46,7 +46,7 @@ namespace BotwInstaller.Wizard.ViewThemes.App
             Storyboard.SetTargetName(anim, control);
             Storyboard.SetTargetProperty(anim, new PropertyPath(property));
 
-            Storyboard storyboard = new Storyboard();
+            Storyboard storyboard = new();
             storyboard.Children.Add(anim);
 
             storyboard.Begin(parentControl);
