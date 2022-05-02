@@ -20,7 +20,7 @@ namespace BotwInstaller.Lib
         public static async Task<Config> RunInstallerAsync(Interface.Notify print, Interface.Update update, Config conf)
         {
             // Start search updater
-            update(250, "tool%");
+            update(1000, "tool%");
             update(95, "tool");
 
             // Get system information
@@ -28,36 +28,17 @@ namespace BotwInstaller.Lib
             update(15, "tool%");
             update(100, "tool");
 
+            conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
+            conf.Install.Python = !(File.Exists($"{gameInfo["Python"]}\\python38.dll") || File.Exists($"{gameInfo["Python"]}\\python37.dll"));
+
             if (conf.IsNX)
             {
-                conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
-                conf.Install.Python = !(File.Exists($"{gameInfo["Python"]}\\python38.dll") || File.Exists($"{gameInfo["Python"]}\\python37.dll"));
-
                 conf.Install.Base = false;
                 conf.Install.Update = false;
                 conf.Install.DLC = false;
             }
             else
             {
-                // Set dictionary values to static parameters
-                conf.Dirs.Python = (string)gameInfo["Python"] == "NOT FOUND" ? conf.Dirs.Python : (string)gameInfo["Python"];
-
-                conf.Dirs.Base = (string)gameInfo["Game"];
-                conf.Dirs.Update = (string)gameInfo["Update"];
-                conf.Dirs.DLC = (string)gameInfo["DLC"] == "NOT FOUND" ? "" : (string)gameInfo["DLC"];
-
-                if ((string)gameInfo["Game"] == "NOT FOUND")
-                    return conf;
-
-                if ((string)gameInfo["Update"] == "NOT FOUND")
-                    return conf;
-
-                if (File.Exists($"{conf.Dirs.Base}\\content\\System\\BuildTime.txt"))
-                {
-                    conf.Dirs.Base += " (PIRATED)";
-                    return conf;
-                }
-
                 if (conf.UseCemu)
                 {
                     if (conf.Install.Base)
@@ -71,6 +52,22 @@ namespace BotwInstaller.Lib
                 }
 
                 conf.Install.Python = !(File.Exists($"{gameInfo["Python"]}\\python38.dll") || File.Exists($"{gameInfo["Python"]}\\python37.dll"));
+            }
+
+            conf.Dirs.Base = (string)gameInfo["Game"];
+            conf.Dirs.Update = conf.IsNX ? "chill bro, it's all good" : (string)gameInfo["Update"];
+            conf.Dirs.DLC = (string)gameInfo["DLC"] == "NOT FOUND" ? "" : (string)gameInfo["DLC"];
+
+            if ((string)gameInfo["Game"] == "NOT FOUND")
+                return conf;
+
+            if ((string)gameInfo["Update"] == "NOT FOUND" && !conf.IsNX)
+                return conf;
+
+            if (File.Exists($"{conf.Dirs.Base}\\content\\System\\BuildTime.txt"))
+            {
+                conf.Dirs.Base += " (PIRATED)";
+                return conf;
             }
 
             // Update shortcut parameters
@@ -142,16 +139,6 @@ namespace BotwInstaller.Lib
             update(100, "game");
             update(40, "bcml%");
 
-            // Install mods
-            try
-            {
-                await Tasks.Mods(update, print, conf);
-            }
-            catch
-            {
-                print("Mod installing failed. Continueing setup . . .");
-            }
-
             // Create BCML shortcut(s)
             print($"[INSTALL] Creating BCML.lnk . . .");
             await Shortcuts.Write(conf.Shortcuts.BCML);
@@ -172,6 +159,16 @@ namespace BotwInstaller.Lib
                 // Create DS4Windows shortcut(s)
                 print($"[INSTALL] Creating DS4Windows.lnk . . .");
                 await Shortcuts.Write(conf.Shortcuts.DS4Windows);
+            }
+
+            // Install mods
+            try
+            {
+                // await Tasks.Mods(update, print, conf);
+            }
+            catch
+            {
+                print("Mod installing failed. Continueing setup . . .");
             }
 
             update(100, "bcml");

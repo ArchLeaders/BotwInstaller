@@ -19,10 +19,10 @@ namespace BotwInstaller.Lib.Configurations
             {
                 { "cemu_dir", conf.UseCemu ? conf.Dirs.Dynamic : "" },
                 { "game_dir", conf.IsNX ? "" : $"{conf.Dirs.Base}\\content" },
-                { "game_dir_nx", conf.IsNX ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\dump\\01007EF00011E000\\romfs" : "" },
+                { "game_dir_nx", conf.IsNX ? $"{conf.Dirs.Base}\\romfs" : "" },
                 { "update_dir", conf.IsNX ? "" : $"{conf.Dirs.Update}\\content" },
                 { "dlc_dir", conf.IsNX ? "" : $"{conf.Dirs.DLC}\\content\\0010" },
-                { "dlc_dir_nx", conf.IsNX ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\dump\\01007EF00011F001\\romfs" : "" },
+                { "dlc_dir_nx", conf.IsNX ? $"{conf.Dirs.DLC}\\romfs" : "" },
                 { "store_dir", conf.Dirs.BCML },
                 { "export_dir", conf.UseCemu ? $"{conf.Dirs.Dynamic}\\graphicPacks\\BreathOfTheWild_BCML" : conf.Dirs.Dynamic },
                 { "export_dir_nx", conf.Dirs.Dynamic == "" ? $"{Config.AppData.EditPath()}\\Roaming\\yuzu\\load" : conf.Dirs.Dynamic },
