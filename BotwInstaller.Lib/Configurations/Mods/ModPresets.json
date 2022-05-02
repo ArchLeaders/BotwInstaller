@@ -1,6 +1,45 @@
 {
   "wiiu": {
 
+    "Developer's Choice": [
+      {
+        "Name": "Phantom Knight Revamped by N8endo",
+        "Download": "https://gamebanana.com/dl/663725"
+      },
+      {
+        "Name": "No Korok Mask by ColdRamen",
+        "Download": "https://gamebanana.com/dl/631256"
+      },
+      {
+        "Name": "Soldier's Armor Visual Progression by N8endo",
+        "Download": "https://gamebanana.com/dl/645869"
+      },
+      {
+        "Name": "Royal Blue by N8endo",
+        "Download": "https://gamebanana.com/dl/646394"
+      },
+      {
+        "Name": "Ancient Armor Dyes by Torphedo",
+        "Download": "https://gamebanana.com/dl/660318"
+      },
+      {
+        "Name": "Great Plateau Wooden Weapons by N8endo",
+        "Download": "https://gamebanana.com/dl/663411"
+      },
+      {
+        "Name": "Ancient Zonai Armor by banan039",
+        "Download": "https://gamebanana.com/dl/607186"
+      },
+      {
+        "Name": "Mad Master'd Motorcycle Mod",
+        "Download": "https://gamebanana.com/dl/640788"
+      },
+      {
+        "Name": "Second Wind",
+        "Download": "https://github.com/CEObrainz/Second-Wind/releases/download/v1.9.12.1/SecondWindv1.9.12a.bnp"
+      }
+    ],
+
     "Second Wind": [
       {
         "Name": "Second Wind lead by CEObrainz",
@@ -23,7 +62,7 @@
       }
     ],
 
-    "Zelda's Ballad'": [
+    "Zelda's Ballad": [
       {
         "Name": "Zelda's Ballad by YamGaming and Amiibolad",
         "Download": "https://gamebanana.com/dl/479151"
@@ -49,10 +88,17 @@
       }
     ],
 
-    "Waikuteru's Randomaizer": [
+    "Waikuteru's Randomizer": [
       {
         "Name": "Base mod by Waikuteru (v2.0.2)",
-        "Download": "https://gamebanana.com/dl/770872"
+        "Download": "https://onedrive.live.com/download?cid=74309C0E337BBADE&resid=74309C0E337BBADE%21360315&authkey=AFj_b4bs6UxN7Y4"
+      }
+    ],
+
+    "Survival of the Wild": [
+      {
+        "Name": "Survival of the Wild by silentverge",
+        "Download": "https://gamebanana.com/dl/677856"
       }
     ]
 
@@ -66,10 +112,17 @@
       }
     ],
 
-    "Zelda's Ballad'": [
+    "Zelda's Ballad": [
       {
         "Name": "Zelda's Ballad by YamGaming and Amiibolad (Port by Nitram12)",
         "Download": "https://gamebanana.com/dl/686421"
+      }
+    ],
+
+    "Linkle Mod": [
+      {
+        "Name": "Linkle Base Mod by LynardKiller",
+        "Download": "https://gamebanana.com/dl/491884"
       }
     ],
 
@@ -80,10 +133,10 @@
       }
     ],
 
-    "Survival of the Wild": [
+    "Waikuteru's Randomizer": [
       {
-        "Name": "Survival of the Wild by silentverge",
-        "Download": "https://gamebanana.com/dl/677856"
+        "Name": "Base mod by Waikuteru (v2.0.2)",
+        "Download": "https://onedrive.live.com/embed?cid=74309C0E337BBADE&resid=74309C0E337BBADE%21360314&authkey=ABU7suqzgGY5t-8"
       }
     ]
 
