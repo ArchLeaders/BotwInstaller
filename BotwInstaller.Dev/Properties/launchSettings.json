@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BotwInstaller.Dev": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\ArchLeaders\\AppData\\Roaming\\yuzu\\dump"
+    }
+  }
+}
