@@ -1,3 +1,4 @@
+from bcml import mergers
 from bcml.install import link_master_mod
 
 def main():
