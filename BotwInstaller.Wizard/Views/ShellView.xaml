@@ -161,6 +161,17 @@
                         Content="Install"
                         FontSize="18"
                         Visibility="{Binding SetupPageVisibility}" />
+                <TextBlock Margin="0,0,5,0"
+                           VerticalAlignment="Center"
+                           Text="Timeout:"
+                           Visibility="{Binding SplashPageVisibility}" />
+                <TextBox Width="70"
+                         Height="30"
+                         Margin="3,3,7,3"
+                         Padding="0"
+                         HorizontalContentAlignment="Center"
+                         Text="{Binding Timeout}"
+                         Visibility="{Binding SplashPageVisibility}" />
             </StackPanel>
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <Button x:Name="footerRequestHelp"

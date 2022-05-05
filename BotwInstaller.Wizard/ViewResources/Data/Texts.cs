@@ -17,12 +17,12 @@ namespace BotwInstaller.Wizard.ViewResources.Data
         public static Dictionary<string, HandledException> HandledExceptions { get; set; } = new()
         {
             {
-                "Network Error", new()
+                "Network Error|The request was canceled due to the configured HttpClient.Timeout of ", new()
                 {
-                    Exception = "The request was canceled due to the configured HttpClient.Timeout of ",
+                    Exception = "The download request canceled because the configured timeout elapsed.",
                     Message = "The server took too long to respond.",
-                    ExtendedMessage = "If the issue persists report the error.\n\n" +
-                        "[Error Details]\n$exmsg\n$exstack"
+                    ExtendedMessage = "Please confirm you are connected to the internet.\n" +
+                        "If you are but the problem still opccurs, go back to the splash screen and increase the **timeout** value in the bottom right corner and try again."
                 }
             },
         };

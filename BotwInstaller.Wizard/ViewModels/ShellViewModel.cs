@@ -124,14 +124,14 @@ namespace BotwInstaller.Wizard.ViewModels
             }
             catch (Exception ex)
             {
-                // foreach (var handled in Texts.HandledExceptions)
-                // {
-                //     if (ex.Message.StartsWith(handled.Value.Exception))
-                //     {
-                //         ReportError(handled.Value, handled.Key);
-                //         return;
-                //     }
-                // }
+                foreach (var handled in Texts.HandledExceptions)
+                {
+                    if (ex.Message.StartsWith(handled.Key.Split("|")[1]))
+                    {
+                        ReportError(handled.Value, handled.Key.Split("|")[0], false);
+                        return;
+                    }
+                }
 
                 ReportError(new() { Message = ex.Message, ExtendedMessage = ex.StackTrace }, "Unhandled Exception");
             }
@@ -295,6 +295,13 @@ namespace BotwInstaller.Wizard.ViewModels
         public SetupViewModel SetupViewModel { get; private set; } = new();
         public InstallViewModel InstallViewModel { get; private set; } = new();
         public Config Conf { get; set; } = new();
+
+        private double _timeout = 150;
+        public double Timeout
+        {
+            get => _timeout;
+            set => SetAndNotify(ref _timeout, value);
+        }
 
         public ShellViewModel(IWindowManager windowManager)
         {

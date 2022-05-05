@@ -1,4 +1,5 @@
-﻿using Stylet;
+﻿using BotwScripts.Lib.Common.Web;
+using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace BotwInstaller.Wizard.ViewModels
         {
             Mode = gameMode;
             Shell.SetupPageVisibility = Visibility.Visible;
+            Shell.SplashPageVisibility = Visibility.Collapsed;
+            Download.GlobalTimout = Shell.Timeout;
         }
         
         private string _mode = "wiiu";
@@ -24,7 +27,6 @@ namespace BotwInstaller.Wizard.ViewModels
         }
 
         public ShellViewModel Shell;
-
         public SplashViewModel(ShellViewModel shell)
         {
             Shell = shell;
