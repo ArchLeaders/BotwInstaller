@@ -136,6 +136,7 @@
 
                 <RichTextBox Grid.Row="2"
                              Margin="2"
+                             Background="Transparent"
                              BorderThickness="0"
                              FontFamily="Consolas"
                              FontSize="15"
