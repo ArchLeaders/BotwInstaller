@@ -15,7 +15,7 @@ try
 
     Console.WriteLine();
 
-    await Installer.RunInstallerAsync(Interface.WriteLine, Interface.UpdateNull, new());
+    await Installer.RunInstallerAsync(Interface.WriteLine, Interface.UpdateNull, conf);
 }
 catch (Exception ex)
 {

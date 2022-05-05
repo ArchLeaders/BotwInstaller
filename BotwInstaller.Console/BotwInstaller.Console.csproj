@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <AssemblyName>BOTW-Installer-Lite</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
