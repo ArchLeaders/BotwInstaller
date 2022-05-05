@@ -128,7 +128,7 @@ namespace BotwInstaller.Wizard.ViewModels
                 {
                     if (ex.Message.StartsWith(handled.Key.Split("|")[1]))
                     {
-                        ReportError(handled.Value, handled.Key.Split("|")[0], false);
+                        ReportError(handled.Value, handled.Key.Split("|")[0], false, false);
                         return;
                     }
                 }
