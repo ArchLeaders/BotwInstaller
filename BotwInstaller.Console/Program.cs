@@ -1,9 +1,20 @@
 ﻿using BotwInstaller.Lib;
 using BotwScripts.Lib.Common;
-using BotwScripts.Lib.Common.IO.FileSystems;
 
 try
 {
+    Config conf = new();
+
+    Console.Write("Please select a mode:\n\n1. Cemu\n2. Switch/Yuzu\nX. WiiU\n\n> ");
+    var rl = Console.ReadLine();
+
+    if (rl == "1")
+        conf.UseCemu = true;
+    else if (rl == "2")
+        conf.IsNX = true;
+
+    Console.WriteLine();
+
     await Installer.RunInstallerAsync(Interface.WriteLine, Interface.UpdateNull, new());
 }
 catch (Exception ex)
