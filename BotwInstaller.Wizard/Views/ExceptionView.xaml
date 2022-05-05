@@ -39,8 +39,8 @@
                 BorderThickness="2"
                 CornerRadius="5">
             <ScrollViewer Grid.Row="2"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
                           Content="{Binding ExtendedMessage}"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Visible" />
