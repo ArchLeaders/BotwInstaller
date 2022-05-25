@@ -100,7 +100,7 @@ namespace BotwInstaller.Lib
                 {
                     t2.Add(
                         Tasks.CopyFolderAsync(print, update, 30, conf.Dirs.Base.FileCount(), conf.Dirs.Base,
-                            $"{mlc01}\\usr\\title\\00050000\\{GameInfo.GetTitleID(conf.Dirs.Base, ITitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\00050000\\{GameInfo.GetTitleID(conf.Dirs.Base, TitleIDFormat.HexEnd)}"
                         )
                     );
                 }
@@ -110,7 +110,7 @@ namespace BotwInstaller.Lib
                 {
                     t2.Add(
                         Tasks.CopyFolderAsync(print, update, 50, conf.Dirs.Update.FileCount(), conf.Dirs.Update,
-                            $"{mlc01}\\usr\\title\\0005000e\\{GameInfo.GetTitleID(conf.Dirs.Update, ITitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\0005000e\\{GameInfo.GetTitleID(conf.Dirs.Update, TitleIDFormat.HexEnd)}"
                         )
                     );
                 }
@@ -120,7 +120,7 @@ namespace BotwInstaller.Lib
                 {
                     t2.Add(
                         Tasks.CopyFolderAsync(print, update, 20, conf.Dirs.DLC.FileCount(), conf.Dirs.DLC,
-                            $"{mlc01}\\usr\\title\\0005000c\\{GameInfo.GetTitleID(conf.Dirs.DLC, ITitleIDFormat.HexEnd)}"
+                            $"{mlc01}\\usr\\title\\0005000c\\{GameInfo.GetTitleID(conf.Dirs.DLC, TitleIDFormat.HexEnd)}"
                         )
                     );
                 }

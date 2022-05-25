@@ -29,7 +29,7 @@ namespace BotwInstaller.Lib.Configurations
                 { "load_reverse", false },
                 { "site_meta", "" },
                 { "no_guess", false },
-                { "lang", conf.IsNX ? "USen" : $"{GameInfo.GetTitleID(conf.Dirs.Base, ITitleIDFormat.Region)}en" },
+                { "lang", conf.IsNX ? "USen" : $"{GameInfo.GetTitleID(conf.Dirs.Base, TitleIDFormat.Region)}en" },
                 { "no_cemu", !conf.UseCemu },
                 { "wiiu", !conf.IsNX },
                 { "no_hardlinks", false },

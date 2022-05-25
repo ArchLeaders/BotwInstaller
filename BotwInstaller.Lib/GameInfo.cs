@@ -3,18 +3,18 @@
 namespace BotwInstaller.Lib
 {
     /// <summary>
-    /// Basic interface for TitleID format modes
+    /// TitleID format enum
     /// </summary>
-    public interface ITitleIDFormat
+    public enum TitleIDFormat
     {
-        public static string CemuFolder { get; } = "CF";
-        public static string Region { get; } = "RE";
-        public static string DecimalFull { get; } = "DF";
-        public static string HexFull { get; } = "HF";
-        public static string DecimalStart { get; } = "DS";
-        public static string HexStart { get; } = "HS";
-        public static string DecimalEnd { get; } = "DE";
-        public static string HexEnd { get; } = "HE";
+        CemuFolder = 0,
+        Region = 1,
+        DecimalFull = 2,
+        HexFull = 3,
+        DecimalStart = 4,
+        HexStart = 5,
+        DecimalEnd = 6,
+        HexEnd = 7
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace BotwInstaller.Lib
         /// <param name="gameFiles"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        public static string GetTitleID(this string gameFiles, string format = "HF")
+        public static string GetTitleID(this string gameFiles, TitleIDFormat format = TitleIDFormat.HexEnd)
         {
             string results = "";
 
@@ -82,14 +82,14 @@ namespace BotwInstaller.Lib
 
             return format switch
             {
-                "CF" => $"{start}\\{end}",
-                "RE" => region,
-                "DF" => Convert.ToInt64(results, 16).ToString(),
-                "HF" => results,
-                "DS" => Convert.ToInt64(start, 16).ToString(),
-                "HS" => start,
-                "DE" => Convert.ToInt64(end, 16).ToString(),
-                "HE" => end,
+                TitleIDFormat.CemuFolder => $"{start}\\{end}",
+                TitleIDFormat.Region => region,
+                TitleIDFormat.DecimalFull => Convert.ToInt64(results, 16).ToString(),
+                TitleIDFormat.HexFull => results,
+                TitleIDFormat.DecimalStart => Convert.ToInt64(start, 16).ToString(),
+                TitleIDFormat.HexStart => start,
+                TitleIDFormat.DecimalEnd => Convert.ToInt64(end, 16).ToString(),
+                TitleIDFormat.HexEnd => end,
                 _ => results,
             };
         }

@@ -170,7 +170,7 @@ namespace BotwInstaller.Lib
             }
 
             // Check for cemu structure
-            var id = code.EditPath().GetTitleID(ITitleIDFormat.HexEnd);
+            var id = code.EditPath().GetTitleID(TitleIDFormat.HexEnd);
 
             foreach (var set in Checks)
             {
@@ -256,7 +256,7 @@ namespace BotwInstaller.Lib
             }
 
             string ID = GameInfo.GetTitleID(gameFiles);
-            string region = GameInfo.GetTitleID(gameFiles, ITitleIDFormat.Region);
+            string region = GameInfo.GetTitleID(gameFiles, TitleIDFormat.Region);
 
             print($"{func} Returning {region} data check as '{ID}'");
 
