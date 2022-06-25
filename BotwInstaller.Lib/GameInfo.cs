@@ -32,19 +32,9 @@ namespace BotwInstaller.Lib
         {
             string results = "";
 
-            if (File.Exists($"{gameFiles}\\code\\app.xml"))
-            {
-                foreach (string line in File.ReadAllLines($"{gameFiles}\\code\\app.xml"))
-                    if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
-                        results = line.Split('>')[1].Replace("</title_id", "");
-            }
-            else
-            {
-                foreach (string line in File.ReadAllLines($"{gameFiles}\\meta\\meta.xml"))
-                    if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
-                        results = line.Split('>')[1].Replace("</title_id", "");
-            }
-
+            foreach (string line in File.ReadAllLines($"{gameFiles}\\meta\\meta.xml"))
+                if (line.StartsWith("  <title_id type=\"hexBinary\" length=\"8\">"))
+                    results = line.Split('>')[1].Replace("</title_id", "");
 
             string[] starts = new[]
             {
