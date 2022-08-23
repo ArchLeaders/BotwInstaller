@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
+    <PackageReference Include="Yaz0Library" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BotwInstaller.Core\BotwInstaller.Core.csproj" />
+    <ProjectReference Include="..\BotwInstaller.Lib\BotwInstaller.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BotwScripts.Lib.Common">
+      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Common\bin\Release\net6.0\BotwScripts.Lib.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="BotwScripts.Lib.Formats">
+      <HintPath>..\..\..\BotwScripts\BotwScripts.Lib.Formats\bin\Release\net6.0\BotwScripts.Lib.Formats.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
