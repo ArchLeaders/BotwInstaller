@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\CheckSum\raw\**" />
+    <EmbeddedResource Remove="Data\CheckSum\raw\**" />
+    <None Remove="Data\CheckSum\raw\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\ArchLeaders\.nuget\packages\yaz0library\1.0.4\contentFiles\any\net6.0\Lib\Yaz0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\CheckSum\00050000101C9300" />
+    <EmbeddedResource Include="Data\CheckSum\00050000101C9400" />
+    <EmbeddedResource Include="Data\CheckSum\00050000101C9500" />
+    <EmbeddedResource Include="Data\CheckSum\0005000C101C9300" />
+    <EmbeddedResource Include="Data\CheckSum\0005000C101C9400" />
+    <EmbeddedResource Include="Data\CheckSum\0005000C101C9500" />
+    <EmbeddedResource Include="Data\CheckSum\0005000E101C9300" />
+    <EmbeddedResource Include="Data\CheckSum\0005000E101C9400" />
+    <EmbeddedResource Include="Data\CheckSum\0005000E101C9500" />
+    <EmbeddedResource Include="Data\CheckSum\01007EF00011E000" />
+    <EmbeddedResource Include="Data\CheckSum\01007EF00011F001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="securifybv.PropertyStore" Version="0.1.0" />
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
+    <PackageReference Include="Yaz0Library" Version="1.0.4" />
+  </ItemGroup>
+
+</Project>
