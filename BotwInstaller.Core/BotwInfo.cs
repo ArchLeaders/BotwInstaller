@@ -67,7 +67,7 @@ namespace BotwInstaller.Core
 
             if (expHashTable != null) {
                 var diff = expHashTable.Except(genHashTable!);
-                return new(!diff.Any(), diff.ToList());
+                return new(!diff.Any(), await GetMissingFileTable(diff.ToList(), titleid));
             }
 
             throw new FileNotFoundException($"Could not find a checksum for the specified path '{root}'.");
