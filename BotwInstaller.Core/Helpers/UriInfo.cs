@@ -4,10 +4,10 @@
     {
         private static Dictionary<string, object> cache = new();
 
-        public static string Get(string key)
+        public static string? Get(string key)
         {
             Sync();
-            return (string)cache[key];
+            return cache[key].ToString();
         }
 
         public static void Sync(bool reload = false)
