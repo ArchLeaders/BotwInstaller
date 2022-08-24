@@ -23,7 +23,7 @@ namespace BotwInstaller.Core.Software
         public static async Task Install(DotNetType dotNetType = DotNetType.Runtime)
         {
             var url = UriInfo.Get($"DotNET.{dotNetType}");
-            var path = $"{Environment.GetEnvironmentVariable("%TEMP%")}\\DotNET-{dotNetType}-Setup";
+            var path = $"{Environment.GetEnvironmentVariable("TEMP")}\\DotNET-{dotNetType}-Setup";
 
             using HttpClient client = new();
             byte[] bytes = await client.GetByteArrayAsync(url);

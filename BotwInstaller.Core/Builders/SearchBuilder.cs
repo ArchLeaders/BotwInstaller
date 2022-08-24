@@ -115,7 +115,7 @@ namespace BotwInstaller.Core.Builders
 
         private Task CheckYuzu()
         {
-            root.HasYuzu = File.Exists($"{Environment.GetEnvironmentVariable("%LOCALAPPDATA%")}\\yuzu\\yuzu-windows-msvc\\yuzu.exe");
+            root.HasYuzu = File.Exists($"{Environment.GetEnvironmentVariable("LOCALAPPDATA")}\\yuzu\\yuzu-windows-msvc\\yuzu.exe");
             return Task.CompletedTask;
         }
 
